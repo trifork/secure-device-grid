@@ -7,10 +7,10 @@
 These clients are for handout at the Trifork booth at the conference.
 
 *   [Linux 64 bit (Build on Ubuntu 15.04)](./binaries/sandbox/ubuntu/sandbox-demo)
-*   [OSX for Mac](./binaries/sandbox/macosx/sandbox-demo)
-*   [Windows](./binaries/sandbox/windows/sandbox.zip)
+*   [OSX for Mac](./binaries/sandbox/macosx/Sandbox-demo)
+*   [Windows](./binaries/sandbox/windows/win32-sandbox.zip)
 *   [Android 4+](./binaries/sandbox/android/sandbox-demo.apk)
-*   [iOS 8+ (source code)](./binaries/sandbox/ios/sandbox-demo.zip)
+*   [iOS 8+ (source code)] Coming soon...
 
 The "desktop" clients are ready-to-run executables. They store their
 local state in the filesystem in the directory where they are
