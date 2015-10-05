@@ -1,6 +1,6 @@
 # Trifork Secure Device Grid
 
-[A secure device-to-device communications solution for IOT!](http://securedevicegrid.com)
+[A secure device-to-device communications solution for IoT!](http://securedevicegrid.com)
 
 ## Demo clients for GOTO Copenhagen 2015
 
