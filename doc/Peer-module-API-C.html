@@ -1,0 +1,2264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.9" />
+<title>MDG peer module API</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #777777;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+tt {
+  font-family: monospace;
+  font-size: inherit;
+  color: navy;
+}
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+.monospaced {
+  font-family: monospace;
+  font-size: inherit;
+  color: navy;
+}
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+/*
+ * Theme specific overrides of the preceding (asciidoc.css) CSS.
+ *
+ */
+body {
+  font-family: Garamond, Georgia, serif;
+  font-size: 17px;
+  color: #3E4349;
+  line-height: 1.3em;
+}
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Garmond, Georgia, serif;
+  font-weight: normal;
+  border-bottom-width: 0;
+  color: #3E4349;
+}
+div.title, caption.title { color: #596673; font-weight: bold; }
+h1 { font-size: 240%; }
+h2 { font-size: 180%; }
+h3 { font-size: 150%; }
+h4 { font-size: 130%; }
+h5 { font-size: 115%; }
+h6 { font-size: 100%; }
+#header h1 { margin-top: 0; }
+#toc {
+  color: #444444;
+  line-height: 1.5;
+  padding-top: 1.5em;
+}
+#toctitle {
+  font-size: 20px;
+}
+#toc a {
+    border-bottom: 1px dotted #999999;
+    color: #444444 !important;
+    text-decoration: none !important;
+}
+#toc a:hover {
+    border-bottom: 1px solid #6D4100;
+    color: #6D4100 !important;
+    text-decoration: none !important;
+}
+div.toclevel1 { margin-top: 0.2em; font-size: 16px; }
+div.toclevel2 { margin-top: 0.15em; font-size: 14px; }
+em, dt, td.hdlist1 { color: black; }
+strong { color: #3E4349; }
+a { color: #004B6B; text-decoration: none; border-bottom: 1px dotted #004B6B; }
+a:visited { color: #615FA0; border-bottom: 1px dotted #615FA0; }
+a:hover { color: #6D4100; border-bottom: 1px solid #6D4100; }
+div.tableblock > table, table.tableblock { border: 3px solid #E8E8E8; }
+th.tableblock, td.tableblock { border: 1px solid #E8E8E8; }
+ul > li > * { color: #3E4349; }
+pre, tt, .monospaced { font-family: Consolas,Menlo,'Deja Vu Sans Mono','Bitstream Vera Sans Mono',monospace; }
+tt, .monospaced { font-size: 0.9em; color: black;
+}
+div.exampleblock > div.content, div.sidebarblock > div.content, div.listingblock > div.content { border-width: 0 0 0 3px; border-color: #E8E8E8; }
+div.verseblock { border-left-width: 0; margin-left: 3em; }
+div.quoteblock { border-left-width: 3px; margin-left: 0; margin-right: 0;}
+div.admonitionblock td.content { border-left: 3px solid #E8E8E8; }
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install();
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>MDG peer module API</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>This document describes the API provided by the MDG Peer Module for use by
+software using a "C" calling interface.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_interface_form">Interface form</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This API uses invocation of C functions. All function must retunr zero
+on success and non-zero on failure. Actual returned values are always
+handled as pointer arguments.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_function_overview">Function overview</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Most parts of the API are meant for all peers. A few are mostly usefull for "App" (user interface end) or "Device" (non-user interface end) as indicated by the "Profile" column.</p></div>
+<div class="paragraph"><p>The following functions are provided:</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="25%" />
+<col width="8%" />
+<col width="66%" />
+<thead>
+<tr>
+<th align="left" valign="top"> Function                                                </th>
+<th align="left" valign="top"> Profile </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-init">mdg_init</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Init at startup</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-status">mdg_status</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Get connectivity and pairing-mode status</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-aggressive-ping">mdg_aggressive_ping</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Put the peer in aggressive ping mode for a while</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-make-private-key">mdg_make_private_key</a></p></td>
+<td align="left" valign="top"><p class="table">App</p></td>
+<td align="left" valign="top"><p class="table">Create fresh identity</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-whoami">mdg_whoami</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Information about own identity</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-connect">mdg_connect</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Connect to grid</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-disconnect">mdg_disconnect</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Disconnect from grid</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-enable-pairing-mode">mdg_enable_pairing_mode</a></p></td>
+<td align="left" valign="top"><p class="table">Device</p></td>
+<td align="left" valign="top"><p class="table">Activate local or remote pairing mode</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-disable-pairing-mode">mdg_disable_pairing_mode</a></p></td>
+<td align="left" valign="top"><p class="table">Device</p></td>
+<td align="left" valign="top"><p class="table">Deactivate local or remote pairing mode</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-add-pairing">mdg_add_pairing</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Add a specific pairing from other source</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-revoke-pairing">mdg_revoke_pairing</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Revoke a specific pairing</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-revoke-all-pairings">mdg_revoke_all_pairings</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Security reset&#8201;&#8212;&#8201;revoke all pairings</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-pair-remote">mdg_pair_remote</a></p></td>
+<td align="left" valign="top"><p class="table">App</p></td>
+<td align="left" valign="top"><p class="table">Pair with a remote device given an OTP</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-pair-local">mdg_pair_local</a></p></td>
+<td align="left" valign="top"><p class="table">App</p></td>
+<td align="left" valign="top"><p class="table">Pair with a local device given an IP and an OTP</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-place-call">mdg_place_call_remote</a></p></td>
+<td align="left" valign="top"><p class="table">App</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-place-call-local">mdg_place_call_local</a></p></td>
+<td align="left" valign="top"><p class="table">App</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-send-to-peer">mdg_send_to_peer</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Transmit a frame of data to a connected peer</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-receive-from-peer">mdg_receive_from_peer</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Issue a receive request for a frame of data from peer</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-enable-remote-logging">mdg_enable_remote_logging</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Enable remote logging (UDP) for a limited period</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-set-debug-log-target">mdg_set_debug_log_target</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">make remote debugging go to local / remote target</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-set-mdns-service-type">mdg_set_mdns_service_type</a></p></td>
+<td align="left" valign="top"><p class="table">Device</p></td>
+<td align="left" valign="top"><p class="table">Configure type part of mDNS name for local discovery.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-mdg-close-peer-connection">mdg_close_peer_connection</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Release / close tunnel to a peer.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-mdg-get-connection-info">mdg_get_connection_info</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Lookup the other end of an established connection.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>The following callback functions must be provided by the user of the library:</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="25%" />
+<col width="8%" />
+<col width="66%" />
+<thead>
+<tr>
+<th align="left" valign="top"> Callback                                                </th>
+<th align="left" valign="top"> Profile </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-incoming-call">mdguser_incoming_call</a></p></td>
+<td align="left" valign="top"><p class="table">Device</p></td>
+<td align="left" valign="top"><p class="table">Callback invoked when a peer places a call</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-pairing-state">mdguser_pairing_state</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Callback invoked during pairing mode</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-routing">mdguser_routing</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Callback invoked with info about a routing</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-control-status">mdguser_control_status</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Callback invoked when cloud connection succeeds / fails</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_workflows">Workflows</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pairing">Pairing</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+User tells Device to start pairing. (Pressing pair button, rebooting or otherwise)
+</p>
+</li>
+<li>
+<p>
+Device calls the <a href="#cmd-enable-pairing-mode">enable-pairing-mode</a>  function with a suitable timeout.
+</p>
+</li>
+<li>
+<p>
+TDGlib decides if the pairing is local or remote depending on current connectivity to the TDG servers.
+</p>
+</li>
+<li>
+<p>
+Device displays the OTP to be used for pairing. (Display required, see below for non-display version)
+</p>
+</li>
+<li>
+<p>
+App for pairing can be on any network, as long as it has access to the device grid servers.
+</p>
+</li>
+<li>
+<p>
+The Device gets notified by invocations of <a href="#cmd-pairing-state">mdguser_pairing_state</a>
+  about the current state of the pairing flow. This includes being informed about the OTP to use,
+  and the DeviceID of the new peer once the pairing completes, as well as failure to pair.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_local_pairing">Local pairing</h3>
+<div class="paragraph"><p>Local pairing may happen when the App detects that is on a WiFi. It is
+mainly intended as a fall-back to allow pairing when one or both
+parties do not have internet-connectivity, but can contact each other
+directly on the local network.
+- If the App cannot connect to the TDG servers, a local pairing is the only possible way
+- Even if the app can connect to the TDG servers, it may scan the local network, using mDNS, to detect if a
+  local Device is present, and try to start a pairing with the local device.
+- For Devices with display, the OTP has a all-zeroes prefix of a length 4. The TDG servers to not issue OTP
+  prefixes of all-zero. This allows the app to know that the Device intends a local pairing.
+- for Devices without display, the App has to try all local devices
+  and also remote if no local device want to connect using the "pairing" protocol. There is no way for the
+  App to know in advance if the Device has a TDG-server connection or not.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_pairing_when_device_does_not_have_a_display">Pairing when Device does not have a display</h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Devices without display have two options
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+Pairing is only allowed in bootstrap mode, using an ad-hoc local
+  network, and only in a limited time window, (e.g. 300 seconds from
+  power on). In this case, the pairing can happen without having the
+  user enter any OTP. This may be combined in the app with support for
+  configuring the Device with local wifi settings. Additional pairings
+  should then happen as <code>3rd party access</code>, or by having an app add
+  another app the pairing directly to the Device.
+</p>
+</li>
+<li>
+<p>
+Device is already on the local network, has an OTP printed on a
+  label on the device, and only in a limited time window, (e.g. 300
+   seconds from power on), and only when no pairings exist, and a
+  <code>master pairing</code> button is pressed during reboot. The user can now
+  perform a pairing in <code>remote mode</code>, entering the OTP. Limiting the
+  time this is possible reduces the risk of collision on the OTP, from
+  either another app or device. Avoiding collisions completely is
+  possible by making the OTP sufficiently long to be unique.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="_3rd_party_access">3rd party access</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+User tells Device to start 3rd party pairing.
+  This can happen on device display or through an App instance already paired with the Device.
+</p>
+</li>
+<li>
+<p>
+Device invokes the <a href="#cmd-prepare-3rdparty-access">prepare-3rdparty-access</a> function.
+</p>
+</li>
+<li>
+<p>
+Device (or App) displays the resulting token.
+</p>
+</li>
+<li>
+<p>
+This token can now be utilised in another App instance to gain access.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_roles_and_access_control">Roles and access control</h3>
+<div class="paragraph"><p>The MDG library does not impose any access restrictions other that the
+"pairing" concept: Only paired devices can establish connections to
+paired devices.</p></div>
+<div class="paragraph"><p>An application in a device can implement any kind of access
+control. Incoming data from a peer is accompanied by the peer-id of
+the peer. The local application can then decide if the request is
+valid coming from that particular peer. See
+<a href="#cmd-mdg-get-connection-info">mdg_get_connection_info</a> and
+<a href="#cmd-routing">mdguser_routing</a></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_common_defines">Common defines</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>These set the sizes that are ued for buffer reservations inside the
+library. Do not increase these in your build without getting a library
+build using the same values.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">#include</span></span> <span style="color: #FF0000">&lt;stdint.h&gt;</span>
+
+<span style="font-weight: bold"><span style="color: #000080">#ifndef</span></span> MDG_MAX_PAIRING_COUNT
+<span style="font-weight: bold"><span style="color: #000080"># define</span></span> MDG_MAX_PAIRING_COUNT <span style="color: #993399">32</span>
+<span style="font-weight: bold"><span style="color: #000080">#endif</span></span>
+<span style="font-weight: bold"><span style="color: #000080">#ifndef</span></span> MDG_MAX_CONNECTION_COUNT
+<span style="font-weight: bold"><span style="color: #000080"># define</span></span> MDG_MAX_CONNECTION_COUNT <span style="color: #993399">8</span>
+<span style="font-weight: bold"><span style="color: #000080">#endif</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> PAIRING_DURATION_LIMIT <span style="color: #993399">120</span>
+
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MDG_PEER_ID_SIZE <span style="color: #993399">32</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MDG_PEER_PUBLIC_KEY_SIZE <span style="color: #993399">32</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MDG_LICENSEKEY_SIZE <span style="color: #993399">128</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_ENDPOINT_BYTES <span style="color: #993399">64</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_PROTOCOL_BYTES <span style="color: #993399">40</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_TOKEN_BYTES <span style="color: #993399">40</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_TICKET_BYTES <span style="color: #993399">40</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_ENDPOINT_ROUTES <span style="color: #993399">4</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_OTP_BYTES <span style="color: #993399">32</span>
+<span style="font-style: italic"><span style="color: #9A1900">/* Lenght of part of otp, that is never sent to server: */</span></span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> LOCAL_PART_OTP_LEN <span style="color: #993399">3</span>
+<span style="font-style: italic"><span style="color: #9A1900">/* Rest of OTP is for server (when remote) and at least this many bytes: */</span></span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> SERVER_PART_OTP_MIN_LEN <span style="color: #993399">4</span>
+
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MDG_CONNECTION_STATUS_PEER_OFFLINE <span style="color: #993399">0</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MDG_CONNECTION_STATUS_PEER_LOCAL   <span style="color: #993399">1</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MDG_CONNECTION_STATUS_PEER_GRID    <span style="color: #993399">2</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">/* Holds internal type definitions for portability: */</span></span>
+<span style="font-weight: bold"><span style="color: #000080">#include</span></span> <span style="color: #FF0000">"mdg_internal_t.h"</span>
+<span style="font-style: italic"><span style="color: #9A1900">/* Such as:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">typedef struct {</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">  Platform dependent way of having an IP address.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">} mdg_ip_addr_t;</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">*/</span></span>
+</tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_function_details">Function details</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="cmd-init">Function <code>init</code></h3>
+<div class="paragraph"><p>Bootstrap init. Invoke only once after booting. Must be invoked before any other method.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+flags: Control execution of main loop. Values:
+</p>
+</li>
+<li>
+<p>
+0: Run main loop in native thread forever
+</p>
+</li>
+<li>
+<p>
+3: Do not start main loop from init. User must keep executing <code>mdg_run_main_loop</code>
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_init</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> flags<span style="color: #990000">);</span>
+_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdg_run_main_loop</span></span><span style="color: #990000">();</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-set-mdns-service-type">Function <code>mdg_set_mdns_service_type</code></h3>
+<div class="paragraph"><p>Configure the <code>type</code> part of the mDNS responder name for local connections.
+Only if compiled with <code>MDG_USE_MDNS</code></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">#if</span></span> MDG_USE_MDNS
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_set_mdns_service_type</span></span><span style="color: #990000">(</span><span style="color: #009900">char</span> <span style="color: #990000">*</span>name<span style="color: #990000">);</span>
+<span style="font-weight: bold"><span style="color: #000080">#endif</span></span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+name: Name part. Max length is 14 bytes.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Name cannot contain <code>.</code> nor <code>_</code>.
+Must match the string in other clients that need to be able to discover this device.
+Preferably use something like <code>BRANDNAME-tdg</code> or <code>BRANDNAME-PROTOCOLKIND-tdg</code>.
+Example value: <code>unix-chat-tdg</code>.
+The TDG lib appends the required "._tcp.local" suffix, and prepends <code>_</code>.
+The TDG lib uses a subset of the public key as the instance name.</p></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-status">Function <code>status</code></h3>
+<div class="paragraph"><p>Get connectivity, pairing-mode, and list of currently connected devices.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="color: #009900">void</span><span style="color: #990000">*</span> mdg_peer_id_t<span style="color: #990000">;</span>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+  mdg_pairing_mode_disabled <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+  mdg_pairing_mode_waiting_for_pairing_attempt <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
+  mdg_pairing_mode_pairing_attempt_in_progress <span style="color: #990000">=</span> <span style="color: #993399">2</span><span style="color: #990000">,</span>
+<span style="color: #FF0000">}</span> mdg_pairing_mode<span style="color: #990000">;</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #FF0000">{</span>
+  <span style="color: #008080">uint32_t</span> unixtime_utc<span style="color: #990000">;</span>    <span style="font-style: italic"><span style="color: #9A1900">/* Zero when not known, otherwise "UTC seconds since epoch=1970". */</span></span>
+  <span style="color: #008080">uint8_t</span> connect_switch<span style="color: #990000">;</span>   <span style="font-style: italic"><span style="color: #9A1900">/* 0/1 does client desire a mdg grid connection */</span></span>
+  <span style="color: #008080">uint8_t</span> connected_to_mdg<span style="color: #990000">;</span> <span style="font-style: italic"><span style="color: #9A1900">/* 0/1 does mdg consider this device to be connected to mdg grid? */</span></span>
+  <span style="color: #008080">mdg_pairing_mode</span> pairing_mode<span style="color: #990000">;</span>     <span style="font-style: italic"><span style="color: #9A1900">/* State of pairing state machine */</span></span>
+  <span style="color: #008080">uint8_t</span> aggressive_ping<span style="color: #990000">;</span>  <span style="font-style: italic"><span style="color: #9A1900">/* 0/1 is aggressive ping enabled? */</span></span>
+  <span style="color: #008080">uint8_t</span> remote_logging_enabled<span style="color: #990000">;</span> <span style="font-style: italic"><span style="color: #9A1900">/* Is remote logging enabled at the moment? */</span></span>
+<span style="color: #FF0000">}</span> mdg_status_t<span style="color: #990000">;</span>
+
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_status</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_status_t</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+status: Out buffer.
+</p>
+</li>
+<li>
+<p>
+connected_devices_count: Out buffer.
+</p>
+</li>
+<li>
+<p>
+connected_devices: Out buffer.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Output
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+updates <code>status</code> with current status.
+</p>
+</li>
+<li>
+<p>
+connected_devices: Number of actual entries in connected_devices. Note, that the list <strong>may</strong> contain paired devices that are not connected at the moment.
+</p>
+</li>
+<li>
+<p>
+connected_devices holds pointers to currently connected devices. Note, that the pairing table and their connection status may change after the return. The connected_devices may contain pointers into internal data, and is thus only valid until next invocation of a <code>mdg_*</code> method that may modify the pairings, e.g. <code>mdg_revoke_pairing</code>. Connection status of a device in the list may change at any time. Do not modify any data inside connected_devices!
+</p>
+</li>
+<li>
+<p>
+returns 0 on success.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="paragraph"><p><code>connect_switch</code> tells whether the peer module is presently configured to be attempting to be connected to the grid. This flag is directly controlled by the "connect" and "disconnect" functions.</p></div>
+<div class="paragraph"><p><code>connected_to_mdg</code> tells whether the peer module is connected to the grid at this moment. The peer module will always attempt to make <code>connected_to_mdg</code> equal to <code>connect_switch</code>.</p></div>
+<div class="paragraph"><p><code>connected_devices</code> tells which devices are currently talking to this
+device; the sub-field <code>connection_status</code> tells whether the connection is direct
+("local") or via the grid ("grid") or not at all.</p></div>
+<div class="paragraph"><p><code>aggressive_ping_mode</code> tells whether the peer module is in aggressive
+ping mode (see the <code>aggressive-ping</code> function.)</p></div>
+<div class="paragraph"><p><code>remote_logging_enabled</code> tells whether remote logging is enabled</p></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-aggressive-ping">Function <code>mdg_aggressive_ping</code></h3>
+<div class="paragraph"><p>Put the peer in aggressive ping mode for a duration of up to 10
+minutes, <strong>or</strong> until the grid connection is broken, whichever comes first.
+(See the "aggressive_ping_mode" field in the response from <code>status</code> to check
+whether aggressive ping is on.)</p></div>
+<div class="paragraph"><p>In aggressive ping mode the peer will send pings/keep-alive messages
+to the MDG infrastructure every 10 seconds.  This is useful when a peer
+wants to provide faster status feedback to a user.</p></div>
+<div class="paragraph"><p>Every time aggressive-ping is called, the duration is reset to the
+specified duration.
+(This means that the mode can be turned off by specifying a duration of 0.)</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_aggressive_ping</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> duration<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>duration</code> = &lt;integer&gt;    // Seconds. Maximum is 600. Recommended value is 60.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Outputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 for success.
+</p>
+</li>
+<li>
+<p>
+non-zero for failure.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-make-private-key">Function <code>mdg_make_private_key</code></h3>
+<div class="paragraph"><p>Intended to be invoked from within <code>mdgstorage_load_private_key</code> when
+this instance has never been run before, and thus needs to create an
+identity. Note, that most "devices" receive their identity in the
+factory when the flash is written. This method is intended for "App"
+instances, and other software-instances, where the key cannot be
+factory-preset.</p></div>
+<div class="paragraph"><p>Note: The strength of the key depends on <code>mdgstorage_load_random_base</code> doing a proper job of seeding the random.</p></div>
+<div class="paragraph"><p>Return 0 on success, and nonzero error code on error.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_make_private_key</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span> <span style="color: #990000">*</span>private_key<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Output
+</dt>
+<dd>
+<p>
+Fills the data pointed by <code>private_key</code> with MDG_PEER_ID_SIZE bytes data represented as a new random key.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-whoami">Function <code>whoami</code></h3>
+<div class="paragraph"><p>Get information about the device&#8217;s identity.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_whoami</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> <span style="color: #990000">*</span>device_id<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<p>
+None
+</p>
+</dd>
+<dt class="hdlist1">
+Output
+</dt>
+<dd>
+<p>
+Sets device_id to point to internal string representing the device id for this device.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-connect">Function <code>connect</code></h3>
+<div class="paragraph"><p>Set the connection toggle to "try to be connected" and register metadata to be sent to grid server.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #FF0000">{</span>
+  <span style="color: #009900">char</span> <span style="color: #990000">*</span>name<span style="color: #990000">;</span>
+  <span style="color: #009900">char</span> <span style="color: #990000">*</span>value<span style="color: #990000">;</span>
+<span style="color: #FF0000">}</span> mdg_property_t<span style="color: #990000">;</span>
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_connect</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_property_t</span> <span style="color: #990000">*</span>properties<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+properties: array of mdg_property.
+  Properties hold pointers to zero-terminated UTF-8 strings for both name and value fields.
+  End list using an instance with name=0.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Output
+</dt>
+<dd>
+<p>
+0 for succes, non-zero for failure. Note, that this method connects asynchronously, and returns immediately. Failure to connect to the grid is <strong>not</strong> signalled as a failure here. See <code>mdg_status</code> for connectivity status.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Properties are formatted as a byte array. | key1 | 0 | value1 | 0 | key2 | value2 | 0 | &#8230;</p></div>
+<div class="paragraph"><p>Property names starting with "<code>mdg_</code>" are reserved and will be ignored.</p></div>
+<div class="paragraph"><p>The following property names have special meaning:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>domain_key</code>&#8201;&#8212;&#8201;Use for the peer&#8217;s domain ID, e.g. its serial number.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Note: Properties are sent to grid server only when connecting. Invoking <code>mdg_connect</code> while connected does not ship changes to properties.</p></div>
+<div class="paragraph"><p>Note: Properties need to fit in the initial handshake, thus keep th number of properties low and the keys and values short.</p></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-disconnect">Function <code>mdg_disconnect</code></h3>
+<div class="paragraph"><p>Set the connection toggle to "be disconnected".</p></div>
+<div class="paragraph"><p>Return 0 on success.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_disconnect</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<p>
+None.
+</p>
+</dd>
+<dt class="hdlist1">
+Output
+</dt>
+<dd>
+<p>
+None.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-pairing-state">Function <code>mdguser_pairing_state</code></h3>
+<div class="paragraph"><p>The field <code>otp</code> contains the one-time password to be used in the
+subsequent pairing steps, as a zero-terminated string of ascii digits [0-9].</p></div>
+<div class="paragraph"><p>Note, when pairing is local, the first x digits in the otp
+(one-time-password) will be zeros. Refer to  <code>pairing_mode</code> field to tell if it&#8217;s local or remote or failed.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #FF0000">{</span>
+  <span style="color: #008080">mdg_pairing_mode</span> pairing_mode<span style="color: #990000">;</span>
+  <span style="color: #008080">uint32_t</span> start_timestamp<span style="color: #990000">;</span>
+  <span style="color: #008080">uint32_t</span> end_timestamp<span style="color: #990000">;</span>
+  <span style="color: #009900">char</span> otp<span style="color: #990000">[</span>MAX_OTP_BYTES<span style="color: #990000">];</span>
+  <span style="color: #008080">mdg_peer_id_t</span> new_peer<span style="color: #990000">;</span>
+<span style="color: #FF0000">}</span> mdg_pairing_mode_state_t<span style="color: #990000">;</span>
+
+
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+        mdg_pairing_starting <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+        mdg_pairing_otp_ready <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
+        mdg_pairing_completed <span style="color: #990000">=</span> <span style="color: #993399">2</span><span style="color: #990000">,</span>
+        mdg_pairing_failed_generic <span style="color: #990000">=</span> <span style="color: #993399">3</span><span style="color: #990000">,</span>
+        mdg_pairing_failed_otp <span style="color: #990000">=</span> <span style="color: #993399">4</span>
+<span style="color: #FF0000">}</span> mdg_pairing_status<span style="color: #990000">;</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">/* Callback invoked by MDG on state changes. Do not refer state after returning. */</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">extern</span></span> <span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">mdguser_pairing_state</span></span><span style="color: #990000">(</span>mdg_pairing_mode_state_t<span style="color: #990000">*</span> state<span style="color: #990000">,</span> <span style="color: #008080">mdg_pairing_status</span> status<span style="color: #990000">);</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-enable-pairing-mode">Function <code>mdg_enable_pairing_mode</code></h3>
+<div class="paragraph"><p>Activate local or remote pairing mode.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_enable_pairing_mode</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> duration<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="paragraph"><p>If the device is already in pairing mode, the preexisting pairing mode
+will be cancelled.</p></div>
+<div class="paragraph"><p>Remote pairing is default, and only if no connection to MDG is
+present, will the pairing be local.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>duration</code> = &lt;integer&gt;    // Pairing window, in seconds. Maximum is 120.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Outputs
+</dt>
+<dd>
+<p>
+return 0 on success.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-disable-pairing-mode">Function <code>mdg_disable_pairing_mode</code></h3>
+<div class="paragraph"><p>Deactivate local or remote pairing mode.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdg_disable_pairing_mode</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span><span style="color: #990000">);</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-revoke-pairing">Function <code>mdg_revoke_pairing</code></h3>
+<div class="paragraph"><p>Revoke a specific pairing.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_revoke_pairing</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> device_id<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>device_id</code> of device to revoke pairing for.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Outputs
+</dt>
+<dd>
+<p>
+None
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Returns 0 on success. Note that revoking a non-existing pairing counts as a success.</p></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-add-pairing">Function <code>mdg_add_pairing</code></h3>
+<div class="paragraph"><p>Add a (new) pairing, where the identity of the new peer has been proven by another peer.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_add_pairing</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> device_id<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>device_id</code> of device to accept new pairing for.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Outputs
+</dt>
+<dd>
+<p>
+None
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Returns 0 on success.</p></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-revoke-all-pairings">Function <code>mdg_revoke_all_pairings</code></h3>
+<div class="paragraph"><p>Security reset&#8201;&#8212;&#8201;revoke all pairings.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_revoke_all_pairings</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<p>
+None
+</p>
+</dd>
+<dt class="hdlist1">
+Outputs
+</dt>
+<dd>
+<p>
+None
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Returns 0 on success.</p></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-pair-remote">Function <code>mdg_pair_remote</code></h3>
+<div class="paragraph"><p>Pair with a remote device given an OTP.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_pair_remote</span></span><span style="color: #990000">(</span><span style="color: #009900">char</span> <span style="color: #990000">*</span>otp<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>otp</code> = &lt;string&gt;. Only digits [0-9] are used, other chars are silently discarded.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Outputs
+</dt>
+<dd>
+<p>
+Returns 0 on success. Status is signalled by calls to <code>mdguser_pairing_state</code>.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-pair-local">Function <code>mdg_pair_local</code></h3>
+<div class="paragraph"><p>Pair with a local device given an IP and an OTP.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_pair_local</span></span><span style="color: #990000">(</span><span style="color: #009900">char</span> <span style="color: #990000">*</span>otp<span style="color: #990000">,</span> <span style="color: #008080">mdg_ip_addr_t</span> peer_ip<span style="color: #990000">,</span> <span style="color: #008080">uint16_t</span> port<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>otp</code> = &lt;string&gt;
+</p>
+</li>
+<li>
+<p>
+<code>peer_ip</code> which peer on local network to establish connection to. (mdg_ip_addr_t depends on OS)
+</p>
+</li>
+<li>
+<p>
+<code>port</code> tcp port for peer.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Outputs
+</dt>
+<dd>
+<p>
+Returns 0 on success. Status is signalled by calls to <code>mdguser_pairing_state</code>.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>The client is expected to use mDNS or similiar protocol to find network-local peers,
+then try them one at a time, until a pairing succeeds.</p></div>
+</div>
+<div class="paragraph"><p>Callback invoked by MDG on changes to state of control-server connections.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+        mdg_control_not_desired <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+        mdg_control_connecting <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
+        mdg_control_connected <span style="color: #990000">=</span> <span style="color: #993399">2</span><span style="color: #990000">,</span>
+        mdg_control_failed <span style="color: #990000">=</span> <span style="color: #993399">3</span>
+<span style="color: #FF0000">}</span> mdg_control_status_t<span style="color: #990000">;</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">/* Implement this callback: */</span></span>
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">mdguser_control_status</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_control_status_t</span> state<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="sect2">
+<h3 id="cmd-routing">Function <code>mdguser_routing</code></h3>
+<div class="paragraph"><p>Callback invoked by MDG on changes to state of routing connections.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+        mdg_routing_disconnected <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+        mdg_routing_connected <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
+        mdg_routing_failed <span style="color: #990000">=</span> <span style="color: #990000">-</span><span style="color: #993399">1</span><span style="color: #990000">,</span>
+        mdg_routing_peer_not_available <span style="color: #990000">=</span> <span style="color: #990000">-</span><span style="color: #993399">2</span>
+<span style="color: #FF0000">}</span> mdg_routing_status_t<span style="color: #990000">;</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">/* Implement this callback: */</span></span>
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">mdguser_routing</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> connection_id<span style="color: #990000">,</span> <span style="color: #008080">mdg_routing_status_t</span> state<span style="color: #990000">);</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-place-call">Function <code>mdg_place_call_remote</code></h3>
+<div class="paragraph"><p>Place a call to another (paired) peer, through the grid.</p></div>
+<div class="paragraph"><p>To receive data, issue a receive request using <code>mdg_receive_from_peer</code> when connection succeeds.</p></div>
+<div class="paragraph"><p>To cancel connection, also while it is not yet completed, invoke <code>mdg_close_peer_connection</code>.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_place_call_remote</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> device_id<span style="color: #990000">,</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>protocol<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> <span style="color: #990000">*</span>connection_id<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> timout<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>device_id</code> = &lt;string&gt;
+</p>
+</li>
+<li>
+<p>
+<code>protocol</code> = &lt;string&gt;
+</p>
+</li>
+<li>
+<p>
+<code>connection_id</code> = out param, set to connection_id on success.
+</p>
+</li>
+<li>
+<p>
+<code>timeout</code> = time in seconds to allow for connection to succeed.
+If timer fires, the connection attempt is dropped, and <code>mdguser_routing</code> is invoked.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-place-call-local">Function <code>mdg_place_call_local</code></h3>
+<div class="paragraph"><p>Place a call to another peer over LAN.</p></div>
+<div class="paragraph"><p>To receive data, issue a receive request using <code>mdg_receive_from_peer</code> when connection succeeds.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_place_call_local</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> device_id<span style="color: #990000">,</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>protocol<span style="color: #990000">,</span> <span style="color: #008080">mdg_ip_addr_t</span> peer_ip<span style="color: #990000">,</span> <span style="color: #008080">uint16_t</span> port<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> <span style="color: #990000">*</span>connection_id<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> timeout<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>device_id</code> = &lt;string&gt;
+</p>
+</li>
+<li>
+<p>
+<code>protocol</code> = &lt;string&gt;
+</p>
+</li>
+<li>
+<p>
+<code>peer_ip</code> = IP address of peer on local network
+</p>
+</li>
+<li>
+<p>
+<code>port</code> = Port of peer on local network
+</p>
+</li>
+<li>
+<p>
+<code>connection_id</code> = out param, set to connection_id on success.
+</p>
+</li>
+<li>
+<p>
+<code>timeout</code> = time in seconds to allow for connection to succeed.
+If timer fires, the connection attempt is dropped, and <code>mdguser_routing</code> is invoked.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="mdg-receive-from-peer">Function <code>mdg_receive_from_peer</code></h3>
+<div class="paragraph"><p>Handle (application) data received through mdg from another peer.</p></div>
+<div class="paragraph"><p>Invoke this method, giving a callback function, to receive data.
+Once invoked, a single packet of data may be received.
+To receive further data, invoke this method again.</p></div>
+<div class="paragraph"><p>This implements "back pressure" and ensures that the client does not
+receive new packets before it is ready to process them. It is okay to
+invoke this function from within the callback it invokes.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="color: #009900">void</span> <span style="color: #990000">(*</span>mdg_receive_data<span style="color: #990000">)(</span><span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #009900">unsigned</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>data<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> count<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> connection_id<span style="color: #990000">);</span>
+<span style="font-style: italic"><span style="color: #9A1900">/* Arguments sent when invoking mdg_receive_data:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `data` = memory buffer holding data received. Only valid during invocation of call.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `count` = number of bytes in buffer</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `connection_id` that identifies this connection. (Use in `mdg_send_to_peer` when sending data)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> */</span></span>
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_receive_from_peer</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> connection_id<span style="color: #990000">,</span> <span style="color: #008080">mdg_receive_data</span> cb<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>connection_id</code> that identifies this connection.
+</p>
+</li>
+<li>
+<p>
+<code>cb</code> the callback for the connection.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<p>
+None
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="mdg_send_to_peer">Function <code>mdg_send_to_peer</code></h3>
+<div class="paragraph"><p>Transmit (application) data to another peer through a connection.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_send_to_peer</span></span><span style="color: #990000">(</span><span style="color: #008080">uint8_t</span> <span style="color: #990000">*</span>data<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> count<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> connection_id<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>data</code> = memory buffer holding data received. Only valid during invocation of call.
+</p>
+</li>
+<li>
+<p>
+<code>count</code> = number of bytes in buffer
+</p>
+</li>
+<li>
+<p>
+<code>connection_id</code> which connection to send data to. (Returned by a <code>place-call</code>)
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success
+</p>
+</li>
+<li>
+<p>
+1 if connection is invalid or no longer valid.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-mdg-close-peer-connection">Function <code>mdg_close_peer_connection</code></h3>
+<div class="paragraph"><p>Release / close tunnel to a peer.
+Makes the connection_id available for reuse.
+Closing a connection that is not open or partially open is okay.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_close_peer_connection</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> connection_id<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>connection_id</code> which connection to send data to. (Returned by a <code>place-call</code>)
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success
+</p>
+</li>
+<li>
+<p>
+1 if connection_id is out of bounds.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-incoming-call">Function <code>mdguser_incoming_call</code></h3>
+<div class="paragraph"><p>Decide if a incoming call for a protocol should be rejected or accepted.</p></div>
+<div class="paragraph"><p>To be implemented by application using mdg lib.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">extern</span></span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdguser_incoming_call</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>protocol<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>protocol</code> = &lt;string&gt; sent by other peer requesting connection.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 to accept the connection.
+</p>
+</li>
+<li>
+<p>
+non-zero to reject the connection.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="paragraph"><p>A peer is always open to incoming calls from all its paired peers.
+Any new incoming calls on protocol <code>protocol</code> will cause the library
+to establish a connection to the caller,
+unless the client using the mdg lib rejects the connection by returning non-zero.
+See also <a href="#cmd-routing">mdguser_routing</a>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-mdg-get-connection-info">Function <code>mdg_get_connection_info</code></h3>
+<div class="paragraph"><p>Let the client lookup the other end of an incoming call that has been answered and connection established. Also works for connections initiated by this peer.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_get_connection_info</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> connection_id<span style="color: #990000">,</span> <span style="color: #008080">mdg_peer_id_t</span> sender_device_id<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>connection_id</code> that identifies this connection.
+</p>
+</li>
+<li>
+<p>
+<code>sender_device_id</code> device that placed the call. Outbuffer.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-enable-remote-logging">Function <code>mdg_enable_remote_logging</code></h3>
+<div class="paragraph"><p>Enable remote logging for a limited period of time.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_enable_remote_logging</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> duration<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>duration</code> = &lt;integer&gt;    // Seconds. Maximum is 24*3600. Recommended value is 300.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Output
+</dt>
+<dd>
+<p>
+None.
+</p>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-set-debug-log-target">Function <code>mdg_set_debug_log_target</code></h3>
+<div class="paragraph"><p>If remote logging is enabled, set the target for the logs.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_set_debug_log_target</span></span><span style="color: #990000">(</span><span style="color: #008080">int32_t</span> target<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>target</code> = &lt;integer&gt;.
+</p>
+</li>
+<li>
+<p>
+0=print to stderr, whatever that is locally on the platform.
+</p>
+</li>
+<li>
+<p>
+1=print as UDP packets to Trifork debug service, prefixing with my device_id.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Output
+</dt>
+<dd>
+<p>
+None.
+</p>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2015-10-05 07:47:18 CEST
+</div>
+</div>
+</body>
+</html>
