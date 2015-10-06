@@ -35,6 +35,18 @@ for the platform.
 *   [Broadcom WICED on NetX Duo (Using WICED-SDK v3.1.2)](./binaries/release_wiced.zip)
 *   [TI CC3200 Simplelink SDK (Using CC3200SDK v1.1.0)](./binaries/release_cc3200.zip)
 
+## Quick start guide
+
+Here are the steps to get started ussing the example clients.
+
+*   Run two clients. If you run them on the same machine, start them in each their directory.
+*   In either client (or both) execute "/email youremail@example.org Your Name" to register your client for the conference price-draw. This is optional.
+*   On one of them, execute "/op" to open it for pairings. This should get you a "pairing code".
+*   On the other, execute "/pair code" to pair with the first one.
+*   Both acknowledges that the pairing took place by printing "Pairing completed" and stating the peerID of the other party. PeerID's are 32 bytes of data printed as hex.
+*   You can now place a call from one to the other using "/pcr peerID". This works in either direction. Both clients should print out a "routing started" and a connection ID, a small integer.
+*   You can now send a message through the secure tunnel from one client to the other using "/send 0 message" where "0" is the connection id you got when you executed "/pcr".
+
 ## Licensing
 
 You may use these examples and demos for evaluation purposes only.
