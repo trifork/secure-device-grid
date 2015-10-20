@@ -15,13 +15,13 @@ These clients are for handout at the Trifork booth at the conference.
 The "desktop" clients are ready-to-run executables. They store their
 local state in the filesystem in the directory where they are
 launched. You can run multiple copies on one machine, provided you
-keep thoses directories distinct.
+keep those directories distinct.
 
 The above Android/iOS applications need installing on your phone. If
 you are a developer for the smartphone platform, you know how to do
 this.
 
-On Windows, you need to have [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145) installled. If not, it will complain about missing vcruntime140.dll
+On Windows, you need to have [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145) installled. If not, it will complain about missing vcruntime140.dll. The redistributable runtime is included in the win32-sandbox.zip file.
 
 ## Embedded device examples and client library binaries.
 
