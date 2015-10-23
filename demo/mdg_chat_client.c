@@ -7,6 +7,10 @@
 #include <unistd.h>
 #elif MDG_WINDOWS
 #include <Windows.h>
+#elif defined(MDG_CC3200)
+#include <simplelink.h>
+#elif defined(MDG_UCOS)
+#include <simplelink/simplelink.h>
 #endif
 
 #include "mdg_peer_api.h"
@@ -27,6 +31,7 @@ static int chat_pairings_count = 0;
 
 static int pcr_timeout = 10;
 static int incomingcall_testdelay = 0;
+static int hex_output_mode = 0;
 
 struct cmd {
   char *short_name;
@@ -37,12 +42,28 @@ struct cmd {
 
 static void save_all_pairings_to_file()
 {
+#if defined(MDG_CC3200) ||defined(MDG_UCOS)
+  _i32 s, f;
+  s = sl_FsOpen("chat_demo_pairings.bin", FS_MODE_OPEN_CREATE(3584, 0), NULL, &f);
+  if (s == SL_FS_FILE_NAME_EXIST) {
+    s = sl_FsOpen("chat_demo_pairings.bin", FS_MODE_OPEN_WRITE, NULL, &f);
+    if (s != 0) {
+      sl_FsClose(f, NULL, NULL, 0);
+    }
+  }
+  if (s == 0) {
+    sl_FsWrite(f, 0, (unsigned char*) &chat_pairings_count, sizeof(chat_pairings_count));
+    sl_FsWrite(f, 0, (unsigned char*) chat_pairings, sizeof(chat_pairings));
+    sl_FsClose(f, NULL, NULL, 0);
+  }
+#else
   FILE *f = fopen("chat_demo_pairings.bin", "wb");
   if (f != NULL) {
     fwrite(&chat_pairings_count, 1, sizeof(chat_pairings_count), f);
     fwrite(chat_pairings, 1, sizeof(chat_pairings), f);
     fclose(f);
   }
+#endif
 }
 
 static void load_all_pairings_from_file()
@@ -50,6 +71,21 @@ static void load_all_pairings_from_file()
   static int has_loaded = 0;
   if (!has_loaded) {
     has_loaded = 1;
+#if defined(MDG_CC3200) || defined(MDG_UCOS)
+    _i32 s, f;
+    s = sl_FsOpen("chat_demo_pairings.bin", FS_MODE_OPEN_READ, NULL, &f);
+    if (s == 0) {
+      s = sl_FsRead(f, 0, (unsigned char*) &chat_pairings_count, sizeof(chat_pairings_count));
+      if (s == sizeof(chat_pairings_count)) {
+        s = sl_FsRead(f, sizeof(chat_pairings_count), (unsigned char*) chat_pairings, sizeof(chat_pairings));
+        if (s != sizeof(chat_pairings)) {
+          // Make warning on s get ignored.
+          has_loaded = 2;
+        }
+      }
+      sl_FsClose(f, NULL, NULL, 0);
+    }
+#else
     FILE *f = fopen("chat_demo_pairings.bin", "rb");
     if (f != NULL) {
       int s = fread(&chat_pairings_count, 1, sizeof(chat_pairings_count), f);
@@ -62,6 +98,7 @@ static void load_all_pairings_from_file()
       }
       fclose(f);
     }
+#endif
   }
 }
 
@@ -215,6 +252,24 @@ static void pair_remote_handler(char *args_buf, int len)
   s = mdg_pair_remote(otp_arg);
   if (s) {
     mdg_chat_output_fprintf("mdg_pair_remote failed with %d\n", s);
+  }
+}
+
+static void set_hex_output_mode_handler(char *args_buf, int len)
+{
+  char *flag_arg = args_buf;
+  long flag;
+  if (!arg_decode_gotonext(&args_buf, &len)) {
+    flag = strtol(flag_arg, 0, 10);
+    hex_output_mode = (flag != 0);
+  } else {
+    hex_output_mode ^= 1;
+  }
+
+  if (hex_output_mode != 0) {
+    mdg_chat_output_fprintf("outputting data from peers as hex\n");
+  } else {
+    mdg_chat_output_fprintf("outputting data from peers as text\n");
   }
 }
 
@@ -386,7 +441,7 @@ static void email_handler(char *args_buf, int len)
     return;
   }
   strncpy(client_email, a1, sizeof(client_email));
-  client_email[sizeof(client_email) - 1] = 0;
+  client_email[sizeof(client_email) - 1] = 0; // strncpy does not ensure termination in buffer overflow case.
   mdg_chat_output_fprintf("Email for next connect set to %s\n", client_email);
   disconnect_handler(0, 0);
   connect_handler(0, 0);
@@ -412,7 +467,7 @@ static void send_handler(char *args_buf, int len)
 static void send_hex_handler(char *args_buf, int len)
 {
   int conn_id, s;
-  uint8_t data[2048];
+  uint8_t data[512]; // Be carefull with large chunks on stack.
 
   if (!set_intparam_handler(&args_buf, &len, "connection_id",
                             &conn_id,
@@ -639,7 +694,7 @@ static void place_call_local_handler(char *args_buf, int len)
 
 static void basic_help_handler(char *args_buf, int len);
 static void advanced_help_handler(char *args_buf, int len);
-static struct cmd advanced_commands[] = {
+static const struct cmd advanced_commands[] = {
   {"/c", "/connect",
    "Set connection-wanted flag to true",
    connect_handler },
@@ -649,6 +704,9 @@ static struct cmd advanced_commands[] = {
   {"/atp", "/add-test-pairing",
    "Add (fake) pairing, provide device-id as arg",
    add_test_pairing_handler },
+  {"/hexm", "/hex-mode",
+   "Set whether input from peer should output in hex, 0/1 as optional arg",
+   set_hex_output_mode_handler },
   {"/agp", "/agressive_ping",
    "Invokes mdg_aggressive_ping, provide duration as optional arg, 0 to cancel",
    aggressive_ping_handler },
@@ -670,7 +728,7 @@ static struct cmd advanced_commands[] = {
   { 0, 0, 0, 0 }
 };
 
-static struct cmd basic_commands[] = {
+static const struct cmd basic_commands[] = {
   {"/email", "/email",
    "Set email address in client properties",
    email_handler },
@@ -724,7 +782,7 @@ static struct cmd basic_commands[] = {
   { 0, 0, 0, 0 }
 };
 
-static void do_help_handler(struct cmd *cmd)
+static void do_help_handler(const struct cmd *cmd)
 {
   mdg_chat_output_fprintf("Usage:\n");
   mdg_chat_output_fprintf("  In general, commands and their output incl errors show up on stdout.\n"
@@ -746,7 +804,7 @@ static void advanced_help_handler(char *args_buf, int len)
 }
 
 
-static struct cmd* find_command(struct cmd *cmd, char *input)
+static const struct cmd* find_command(const struct cmd *cmd, char *input)
 {
   for (; cmd->short_name != 0; cmd++) {
     if (!strcmp(cmd->short_name, input)) {
@@ -760,7 +818,7 @@ static struct cmd* find_command(struct cmd *cmd, char *input)
 
 void mdg_chat_client_input(char *in_buf, int len)
 {
-  struct cmd *cmd;
+  const struct cmd *cmd;
   int i, args_len;
   char *args;
   for (i = 0; i < len; i++) {
@@ -790,9 +848,22 @@ void mdg_chat_client_input(char *in_buf, int len)
   }
 }
 
-static void chatclient_data_received(const uint8_t *data, uint32_t count, uint32_t connection_id)
+static void chatclient_data_received(const uint8_t *data, const uint32_t count, const uint32_t connection_id)
 {
-  mdg_chat_output_fprintf("Received data from peer on connection %d: %.*s\n", connection_id, count, data);
+  if (hex_output_mode) {
+    char buf[512];
+    const int maxlen = (sizeof(buf) / 2) - 1;
+    const int hexcount = count < maxlen ? count : maxlen;
+    mdg_chat_output_fprintf("Received data from peer on connection %d, count=%u, %u hexbytes follows:\n",
+                            connection_id, count, hexcount);
+    if (hexcount > 0) {
+      hex_encode_bytes(data, buf, hexcount);
+      mdg_chat_output_fprintf("%.*s\n", hexcount * 2, buf);
+    }
+  } else {
+    mdg_chat_output_fprintf("Received data from peer on connection %d: %.*s\n",
+                            connection_id, count, data);
+  }
   if (mdg_receive_from_peer(connection_id, chatclient_data_received)) {
     mdg_chat_output_fprintf("mdg_receive_from_peer failed\n");
   }
@@ -803,17 +874,20 @@ static void chatclient_data_received(const uint8_t *data, uint32_t count, uint32
 void mdguser_routing(uint32_t connection_id, mdg_routing_status_t state)
 {
   switch (state) {
-  case 0:
+  case mdg_routing_disconnected:
     mdg_chat_output_fprintf("Callback: mdguser_routing connection_id=%d, state=disconnected\n", connection_id);
     break;
-  case 1:
+  case mdg_routing_connected:
     mdg_chat_output_fprintf("Callback: mdguser_routing connection_id=%d, state=connected\n", connection_id);
     break;
-  case -1:
+  case mdg_routing_failed:
     mdg_chat_output_fprintf("Callback: mdguser_routing connection_id=%d, state=failed\n", connection_id);
     break;
-  case -2:
+  case mdg_routing_peer_not_available:
     mdg_chat_output_fprintf("Callback: mdguser_routing connection_id=%d, state=peer_not_available\n", connection_id);
+    break;
+  case mdg_routing_peer_not_paired: // Note! server is allowed to respond "not available"...
+    mdg_chat_output_fprintf("Callback: mdguser_routing connection_id=%d, state=peer_not_paired\n", connection_id);
     break;
   default:
     mdg_chat_output_fprintf("Callback: mdguser_routing connection_id=%d, state=%d\n", connection_id, state);
@@ -866,6 +940,7 @@ int mdgstorage_remove_pairing(unsigned char *peer_id)
         // overwrite pairing with remaining pairings.
         while (j < chat_pairings_count) {
           memcpy(&chat_pairings[j-1], &chat_pairings[j], sizeof(pairing_t));
+          j++;
         }
       } else {
         // Wipe pairing.
@@ -938,8 +1013,26 @@ int mdgstorage_load_license_key(void *license_key)
 }
 
 // Load/create+store private key for this instance in local filesystem.
-void chatclient_load_or_create_private_key(uint8_t *pk)
+static void chatclient_load_or_create_private_key(uint8_t *pk)
 {
+#if defined(MDG_CC3200) || defined(MDG_UCOS)
+  _i32 s = 0;
+  _i32 f;
+  s = sl_FsOpen("chat_demo_private.key", FS_MODE_OPEN_READ, NULL, &f);
+  if (s == 0) {
+    s = sl_FsRead(f, NULL, pk, MDG_PEER_ID_SIZE);
+    sl_FsClose(f, NULL, NULL, 0);
+  }
+  if (s != MDG_PEER_ID_SIZE)
+  {
+    mdg_make_private_key(pk);
+    s = sl_FsOpen("chat_demo_private.key", FS_MODE_OPEN_CREATE(3584, 0), NULL, &f);
+    if (s == 0) {
+      s = sl_FsWrite(f, 0, pk, MDG_PEER_ID_SIZE);
+      sl_FsClose(f, NULL, NULL, 0);
+    }
+  }
+#else
   FILE *f = fopen("chat_demo_private.key", "rb");
   int s = 0;
   if (f != NULL) {
@@ -952,6 +1045,47 @@ void chatclient_load_or_create_private_key(uint8_t *pk)
     if (f != NULL) {
       s = fwrite(pk, 1, MDG_PEER_ID_SIZE, f);
       fclose(f);
+    }
+  }
+#endif
+}
+
+static uint8_t chatclient_private_key[MDG_PRIVATE_KEY_DATA_SIZE];
+static uint8_t chatclient_private_key_set = 0;
+int mdgstorage_load_private_key(void *private_key)
+{
+  if (!chatclient_private_key_set) {
+    chatclient_load_or_create_private_key(chatclient_private_key);
+  }
+  memcpy(private_key, chatclient_private_key, MDG_PRIVATE_KEY_DATA_SIZE);
+  return 0;
+}
+
+void chatclient_set_private_key(uint8_t *pk)
+{
+  if (pk == 0) {
+    memset(chatclient_private_key, 0, MDG_PRIVATE_KEY_DATA_SIZE);
+    chatclient_private_key_set = 0;
+  } else {
+    memcpy(chatclient_private_key, pk, MDG_PRIVATE_KEY_DATA_SIZE);
+    chatclient_private_key_set = 1;
+  }
+}
+
+void chatclient_parse_cmd_args(int c, char**a)
+{
+  // Never replace key again...
+  if (chatclient_private_key_set == 0) {
+    if (c > 1) {
+      uint8_t pk[MDG_PRIVATE_KEY_DATA_SIZE];
+      char hexed[MDG_PRIVATE_KEY_DATA_SIZE * 2 + 1];
+      memset(pk, 0, MDG_PRIVATE_KEY_DATA_SIZE);
+      hex_decode_bytes(a[1], pk, MDG_PRIVATE_KEY_DATA_SIZE);
+      hex_encode_bytes(pk, hexed, MDG_PRIVATE_KEY_DATA_SIZE);
+      mdg_chat_output_fprintf("Chat-client, my private key %s\n", hexed);
+      chatclient_set_private_key(pk);
+    } else {
+      chatclient_set_private_key(0);
     }
   }
 }

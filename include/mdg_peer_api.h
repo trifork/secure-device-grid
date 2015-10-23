@@ -6,7 +6,7 @@
 # define MDG_MAX_PAIRING_COUNT 32
 #endif
 #ifndef MDG_MAX_CONNECTION_COUNT
-# define MDG_MAX_CONNECTION_COUNT 8
+# define MDG_MAX_CONNECTION_COUNT 16
 #endif
 
 #define PAIRING_DURATION_LIMIT 120
@@ -109,7 +109,8 @@ typedef enum {
         mdg_routing_disconnected = 0,
         mdg_routing_connected = 1,
         mdg_routing_failed = -1,
-        mdg_routing_peer_not_available = -2
+        mdg_routing_peer_not_available = -2,
+        mdg_routing_peer_not_paired = -3
 } mdg_routing_status_t;
 
 /* Implement this callback: */

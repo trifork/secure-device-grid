@@ -21,8 +21,6 @@ The above Android/iOS applications need installing on your phone. If
 you are a developer for the smartphone platform, you know how to do
 this.
 
-On Windows, you need to have [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145) installled. If not, it will complain about missing vcruntime140.dll. The redistributable runtime is included in the win32-sandbox.zip file.
-
 ## Embedded device examples and client library binaries.
 
 These examples are for embedded boards. We don't provide complete

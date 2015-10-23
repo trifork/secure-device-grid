@@ -1148,7 +1148,7 @@ http://www.gnu.org/software/src-highlite -->
 <span style="font-weight: bold"><span style="color: #000080"># define</span></span> MDG_MAX_PAIRING_COUNT <span style="color: #993399">32</span>
 <span style="font-weight: bold"><span style="color: #000080">#endif</span></span>
 <span style="font-weight: bold"><span style="color: #000080">#ifndef</span></span> MDG_MAX_CONNECTION_COUNT
-<span style="font-weight: bold"><span style="color: #000080"># define</span></span> MDG_MAX_CONNECTION_COUNT <span style="color: #993399">8</span>
+<span style="font-weight: bold"><span style="color: #000080"># define</span></span> MDG_MAX_CONNECTION_COUNT <span style="color: #993399">16</span>
 <span style="font-weight: bold"><span style="color: #000080">#endif</span></span>
 
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> PAIRING_DURATION_LIMIT <span style="color: #993399">120</span>
@@ -1798,7 +1798,8 @@ http://www.gnu.org/software/src-highlite -->
         mdg_routing_disconnected <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
         mdg_routing_connected <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
         mdg_routing_failed <span style="color: #990000">=</span> <span style="color: #990000">-</span><span style="color: #993399">1</span><span style="color: #990000">,</span>
-        mdg_routing_peer_not_available <span style="color: #990000">=</span> <span style="color: #990000">-</span><span style="color: #993399">2</span>
+        mdg_routing_peer_not_available <span style="color: #990000">=</span> <span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">,</span>
+        mdg_routing_peer_not_paired <span style="color: #990000">=</span> <span style="color: #990000">-</span><span style="color: #993399">3</span>
 <span style="color: #FF0000">}</span> mdg_routing_status_t<span style="color: #990000">;</span>
 
 <span style="font-style: italic"><span style="color: #9A1900">/* Implement this callback: */</span></span>
@@ -2257,7 +2258,7 @@ Returns
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2015-10-05 07:47:18 CEST
+ 2015-10-12 11:46:29 CEST
 </div>
 </div>
 </body>

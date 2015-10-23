@@ -25,7 +25,7 @@
 typedef struct hostent mdg_ip_addr_t;
 #elif MDG_WINDOWS
 typedef struct hostent mdg_ip_addr_t;
-#elif MDG_CC3200 || MDG_WICED || MDG_UCOS
+#elif defined(MDG_CC3200) || defined(MDG_WICED) || defined(MDG_UCOS)
 struct hostent {
 	char  *h_name;      /* Official name of the host. */
 	char **h_aliases;   /* A pointer to an array of pointers to alternative host names,
