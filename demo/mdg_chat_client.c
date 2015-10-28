@@ -77,7 +77,7 @@ static void load_all_pairings_from_file()
     if (s == 0) {
       s = sl_FsRead(f, 0, (unsigned char*) &chat_pairings_count, sizeof(chat_pairings_count));
       if (s == sizeof(chat_pairings_count)) {
-        s = sl_FsRead(f, sizeof(chat_pairings_count), (unsigned char*) chat_pairings, sizeof(chat_pairings));
+        s = sl_FsRead(f, 0, (unsigned char*) chat_pairings, sizeof(chat_pairings));
         if (s != sizeof(chat_pairings)) {
           // Make warning on s get ignored.
           has_loaded = 2;
@@ -942,6 +942,8 @@ int mdgstorage_remove_pairing(unsigned char *peer_id)
           memcpy(&chat_pairings[j-1], &chat_pairings[j], sizeof(pairing_t));
           j++;
         }
+        memset(&chat_pairings[j-1], 0, sizeof(pairing_t));
+        chat_pairings_count--;
       } else {
         // Wipe pairing.
         memset(&chat_pairings[i], 0, sizeof(pairing_t));
