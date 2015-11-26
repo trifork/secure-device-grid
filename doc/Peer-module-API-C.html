@@ -956,6 +956,11 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table"></p></td>
 <td align="left" valign="top"><p class="table">Lookup the other end of an established connection.</p></td>
 </tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-set-peer-verifying-cb">mdg_set_peer_verifying_cb</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Implement custom check for verifyin peer.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1138,7 +1143,7 @@ valid coming from that particular peer. See
 library. Do not increase these in your build without getting a library
 build using the same values.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1173,11 +1178,6 @@ http://www.gnu.org/software/src-highlite -->
 
 <span style="font-style: italic"><span style="color: #9A1900">/* Holds internal type definitions for portability: */</span></span>
 <span style="font-weight: bold"><span style="color: #000080">#include</span></span> <span style="color: #FF0000">"mdg_internal_t.h"</span>
-<span style="font-style: italic"><span style="color: #9A1900">/* Such as:</span></span>
-<span style="font-style: italic"><span style="color: #9A1900">typedef struct {</span></span>
-<span style="font-style: italic"><span style="color: #9A1900">  Platform dependent way of having an IP address.</span></span>
-<span style="font-style: italic"><span style="color: #9A1900">} mdg_ip_addr_t;</span></span>
-<span style="font-style: italic"><span style="color: #9A1900">*/</span></span>
 </tt></pre></div></div>
 </div>
 </div>
@@ -1212,7 +1212,7 @@ flags: Control execution of main loop. Values:
 </dd>
 </dl></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1224,7 +1224,7 @@ _MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bol
 <div class="paragraph"><p>Configure the <code>type</code> part of the mDNS responder name for local connections.
 Only if compiled with <code>MDG_USE_MDNS</code></p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1254,9 +1254,9 @@ The TDG lib uses a subset of the public key as the instance name.</p></div>
 </div>
 <div class="sect2">
 <h3 id="cmd-status">Function <code>status</code></h3>
-<div class="paragraph"><p>Get connectivity, pairing-mode, and list of currently connected devices.</p></div>
+<div class="paragraph"><p>Get connectivity, pairing-mode, and general status.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1289,16 +1289,6 @@ Inputs
 status: Out buffer.
 </p>
 </li>
-<li>
-<p>
-connected_devices_count: Out buffer.
-</p>
-</li>
-<li>
-<p>
-connected_devices: Out buffer.
-</p>
-</li>
 </ul></div>
 </dd>
 <dt class="hdlist1">
@@ -1313,16 +1303,6 @@ updates <code>status</code> with current status.
 </li>
 <li>
 <p>
-connected_devices: Number of actual entries in connected_devices. Note, that the list <strong>may</strong> contain paired devices that are not connected at the moment.
-</p>
-</li>
-<li>
-<p>
-connected_devices holds pointers to currently connected devices. Note, that the pairing table and their connection status may change after the return. The connected_devices may contain pointers into internal data, and is thus only valid until next invocation of a <code>mdg_*</code> method that may modify the pairings, e.g. <code>mdg_revoke_pairing</code>. Connection status of a device in the list may change at any time. Do not modify any data inside connected_devices!
-</p>
-</li>
-<li>
-<p>
 returns 0 on success.
 </p>
 </li>
@@ -1331,9 +1311,6 @@ returns 0 on success.
 </dl></div>
 <div class="paragraph"><p><code>connect_switch</code> tells whether the peer module is presently configured to be attempting to be connected to the grid. This flag is directly controlled by the "connect" and "disconnect" functions.</p></div>
 <div class="paragraph"><p><code>connected_to_mdg</code> tells whether the peer module is connected to the grid at this moment. The peer module will always attempt to make <code>connected_to_mdg</code> equal to <code>connect_switch</code>.</p></div>
-<div class="paragraph"><p><code>connected_devices</code> tells which devices are currently talking to this
-device; the sub-field <code>connection_status</code> tells whether the connection is direct
-("local") or via the grid ("grid") or not at all.</p></div>
 <div class="paragraph"><p><code>aggressive_ping_mode</code> tells whether the peer module is in aggressive
 ping mode (see the <code>aggressive-ping</code> function.)</p></div>
 <div class="paragraph"><p><code>remote_logging_enabled</code> tells whether remote logging is enabled</p></div>
@@ -1351,7 +1328,7 @@ wants to provide faster status feedback to a user.</p></div>
 specified duration.
 (This means that the mode can be turned off by specifying a duration of 0.)</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1399,7 +1376,7 @@ factory-preset.</p></div>
 <div class="paragraph"><p>Note: The strength of the key depends on <code>mdgstorage_load_random_base</code> doing a proper job of seeding the random.</p></div>
 <div class="paragraph"><p>Return 0 on success, and nonzero error code on error.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1419,7 +1396,7 @@ Fills the data pointed by <code>private_key</code> with MDG_PEER_ID_SIZE bytes d
 <h3 id="cmd-whoami">Function <code>whoami</code></h3>
 <div class="paragraph"><p>Get information about the device&#8217;s identity.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1447,7 +1424,7 @@ Sets device_id to point to internal string representing the device id for this d
 <h3 id="cmd-connect">Function <code>connect</code></h3>
 <div class="paragraph"><p>Set the connection toggle to "try to be connected" and register metadata to be sent to grid server.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1498,7 +1475,7 @@ Output
 <div class="paragraph"><p>Set the connection toggle to "be disconnected".</p></div>
 <div class="paragraph"><p>Return 0 on success.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1529,7 +1506,7 @@ subsequent pairing steps, as a zero-terminated string of ascii digits [0-9].</p>
 <div class="paragraph"><p>Note, when pairing is local, the first x digits in the otp
 (one-time-password) will be zeros. Refer to  <code>pairing_mode</code> field to tell if it&#8217;s local or remote or failed.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1558,7 +1535,7 @@ http://www.gnu.org/software/src-highlite -->
 <h3 id="cmd-enable-pairing-mode">Function <code>mdg_enable_pairing_mode</code></h3>
 <div class="paragraph"><p>Activate local or remote pairing mode.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1594,7 +1571,7 @@ return 0 on success.
 <h3 id="cmd-disable-pairing-mode">Function <code>mdg_disable_pairing_mode</code></h3>
 <div class="paragraph"><p>Deactivate local or remote pairing mode.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1604,7 +1581,7 @@ http://www.gnu.org/software/src-highlite -->
 <h3 id="cmd-revoke-pairing">Function <code>mdg_revoke_pairing</code></h3>
 <div class="paragraph"><p>Revoke a specific pairing.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1637,7 +1614,7 @@ None
 <h3 id="cmd-add-pairing">Function <code>mdg_add_pairing</code></h3>
 <div class="paragraph"><p>Add a (new) pairing, where the identity of the new peer has been proven by another peer.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1670,7 +1647,7 @@ None
 <h3 id="cmd-revoke-all-pairings">Function <code>mdg_revoke_all_pairings</code></h3>
 <div class="paragraph"><p>Security reset&#8201;&#8212;&#8201;revoke all pairings.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1699,7 +1676,7 @@ None
 <h3 id="cmd-pair-remote">Function <code>mdg_pair_remote</code></h3>
 <div class="paragraph"><p>Pair with a remote device given an OTP.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1731,11 +1708,11 @@ Returns 0 on success. Status is signalled by calls to <code>mdguser_pairing_stat
 <h3 id="cmd-pair-local">Function <code>mdg_pair_local</code></h3>
 <div class="paragraph"><p>Pair with a local device given an IP and an OTP.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_pair_local</span></span><span style="color: #990000">(</span><span style="color: #009900">char</span> <span style="color: #990000">*</span>otp<span style="color: #990000">,</span> <span style="color: #008080">mdg_ip_addr_t</span> peer_ip<span style="color: #990000">,</span> <span style="color: #008080">uint16_t</span> port<span style="color: #990000">);</span></tt></pre></div></div>
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_pair_local</span></span><span style="color: #990000">(</span><span style="color: #009900">char</span> <span style="color: #990000">*</span>otp<span style="color: #990000">,</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>peer_ip<span style="color: #990000">,</span> <span style="color: #008080">uint16_t</span> port<span style="color: #990000">);</span></tt></pre></div></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
 Inputs
@@ -1749,7 +1726,7 @@ Inputs
 </li>
 <li>
 <p>
-<code>peer_ip</code> which peer on local network to establish connection to. (mdg_ip_addr_t depends on OS)
+<code>peer_ip</code> which peer on local network to establish connection to.
 </p>
 </li>
 <li>
@@ -1768,12 +1745,16 @@ Returns 0 on success. Status is signalled by calls to <code>mdguser_pairing_stat
 </p>
 </dd>
 </dl></div>
+<div class="paragraph"><p><code>peer_ip</code> is a string representation of the IP address, such as
+"127.0.0.1" or "fe80::36e6:d7ff:fe78:5f5b". The address string must be
+resolvable on the local platform. It is typically obtained through
+mDNS or similar discover method on the local network.</p></div>
 <div class="paragraph"><p>The client is expected to use mDNS or similiar protocol to find network-local peers,
 then try them one at a time, until a pairing succeeds.</p></div>
 </div>
 <div class="paragraph"><p>Callback invoked by MDG on changes to state of control-server connections.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1790,7 +1771,7 @@ http://www.gnu.org/software/src-highlite -->
 <h3 id="cmd-routing">Function <code>mdguser_routing</code></h3>
 <div class="paragraph"><p>Callback invoked by MDG on changes to state of routing connections.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1811,7 +1792,7 @@ http://www.gnu.org/software/src-highlite -->
 <div class="paragraph"><p>To receive data, issue a receive request using <code>mdg_receive_from_peer</code> when connection succeeds.</p></div>
 <div class="paragraph"><p>To cancel connection, also while it is not yet completed, invoke <code>mdg_close_peer_connection</code>.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1862,13 +1843,17 @@ Returns
 <div class="sect2">
 <h3 id="cmd-place-call-local">Function <code>mdg_place_call_local</code></h3>
 <div class="paragraph"><p>Place a call to another peer over LAN.</p></div>
+<div class="paragraph"><p>Works mostly like <a href="#cmd-pair-remote">mdg_pair_remote</a> except you
+connect on the local network to a peer you happen to know the IP and
+port for, and can thus communicate directly with without cloud
+connectivity.</p></div>
 <div class="paragraph"><p>To receive data, issue a receive request using <code>mdg_receive_from_peer</code> when connection succeeds.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_place_call_local</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> device_id<span style="color: #990000">,</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>protocol<span style="color: #990000">,</span> <span style="color: #008080">mdg_ip_addr_t</span> peer_ip<span style="color: #990000">,</span> <span style="color: #008080">uint16_t</span> port<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> <span style="color: #990000">*</span>connection_id<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> timeout<span style="color: #990000">);</span></tt></pre></div></div>
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_place_call_local</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> device_id<span style="color: #990000">,</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>protocol<span style="color: #990000">,</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>peer_ip<span style="color: #990000">,</span> <span style="color: #008080">uint16_t</span> port<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> <span style="color: #990000">*</span>connection_id<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> timeout<span style="color: #990000">);</span></tt></pre></div></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
 Inputs
@@ -1921,6 +1906,10 @@ Returns
 </ul></div>
 </dd>
 </dl></div>
+<div class="paragraph"><p><code>peer_ip</code> is a string representation of the IP address, such as
+"127.0.0.1" or "fe80::36e6:d7ff:fe78:5f5b". The address string must be
+resolvable on the local platform. It is typically obtained through
+mDNS or similar discover method on the local network.</p></div>
 </div>
 <div class="sect2">
 <h3 id="mdg-receive-from-peer">Function <code>mdg_receive_from_peer</code></h3>
@@ -1932,7 +1921,7 @@ To receive further data, invoke this method again.</p></div>
 receive new packets before it is ready to process them. It is okay to
 invoke this function from within the callback it invokes.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1972,10 +1961,10 @@ None
 </dl></div>
 </div>
 <div class="sect2">
-<h3 id="mdg_send_to_peer">Function <code>mdg_send_to_peer</code></h3>
+<h3 id="cmd-send-to-peer">Function <code>mdg_send_to_peer</code></h3>
 <div class="paragraph"><p>Transmit (application) data to another peer through a connection.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -2018,9 +2007,20 @@ Returns
 1 if connection is invalid or no longer valid.
 </p>
 </li>
+<li>
+<p>
+2 if sending is currently not possible. Likely cause is lack of buffers.
+</p>
+</li>
 </ul></div>
 </dd>
 </dl></div>
+<div class="paragraph"><p>Buffering happens for each send. The number of buffers is set at
+compile time for the library.  On embedded platforms, the number of
+buffers is set fairly low (e.g. 10) and you should implement a
+wait-then-resend strategy when getting a return value of 2. Or you
+could ask for a compiled version with a larger number of buffers, if
+you have memory to spare for that.</p></div>
 </div>
 <div class="sect2">
 <h3 id="cmd-mdg-close-peer-connection">Function <code>mdg_close_peer_connection</code></h3>
@@ -2028,7 +2028,7 @@ Returns
 Makes the connection_id available for reuse.
 Closing a connection that is not open or partially open is okay.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -2070,7 +2070,7 @@ Returns
 <div class="paragraph"><p>Decide if a incoming call for a protocol should be rejected or accepted.</p></div>
 <div class="paragraph"><p>To be implemented by application using mdg lib.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -2113,14 +2113,74 @@ unless the client using the mdg lib rejects the connection by returning non-zero
 See also <a href="#cmd-routing">mdguser_routing</a>.</p></div>
 </div>
 <div class="sect2">
-<h3 id="cmd-mdg-get-connection-info">Function <code>mdg_get_connection_info</code></h3>
-<div class="paragraph"><p>Let the client lookup the other end of an incoming call that has been answered and connection established. Also works for connections initiated by this peer.</p></div>
+<h3 id="cmd-set-peer-verifying-cb">Function <code>mdg_set_peer_verifying_cb</code></h3>
+<div class="paragraph"><p>Set function to invoke to decide id peer is allowed to make incoming call.</p></div>
+<div class="paragraph"><p>Use mdg_set_peer_verifying_cb(cb) to set your own function, or
+mdg_set_peer_verifying_cb(0) to revert to the default MDG-lib version.</p></div>
+<div class="paragraph"><p>The default MDG-lib version uses the internal implementation. The
+intern implementation loads all pairings, one at a time, and checks if
+the peer is in the list.</p></div>
+<div class="paragraph"><p>By setting this callback you can implement a different policy, such as
+allowing any peer to connect using a specific protocol while your
+device is in AP-master mode or similar. Or you can implement an
+efficient version of the pairing check, if you have many pairings, and
+do not want to load one pairing at a time.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_get_connection_info</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> connection_id<span style="color: #990000">,</span> <span style="color: #008080">mdg_peer_id_t</span> sender_device_id<span style="color: #990000">);</span></tt></pre></div></div>
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #000000">int32_t</span></span> <span style="color: #990000">(*</span>mdg_peer_verifying_cb<span style="color: #990000">)(</span><span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>protocol<span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">mdg_peer_id_t</span> device_id<span style="color: #990000">);</span>
+_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdg_set_peer_verifying_cb</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_verifying_cb</span> cb<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="paragraph"><p>For the mdg_peer_verifying_cb:</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>protocol</code> = &lt;string&gt; sent by other peer requesting connection.
+</p>
+</li>
+<li>
+<p>
+<code>device_id</code> device placing the call.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 to accept the connection.
+</p>
+</li>
+<li>
+<p>
+non-zero to reject the connection.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-mdg-get-connection-info">Function <code>mdg_get_connection_info</code></h3>
+<div class="paragraph"><p>Let the client lookup the other end of an incoming call that has been answered and connection established. Also works for connections initiated by this peer.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_get_connection_info</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> connection_id<span style="color: #990000">,</span>
+                                          <span style="color: #008080">mdg_peer_id_t</span> sender_device_id<span style="color: #990000">,</span>
+                                          <span style="color: #009900">char</span> protocol<span style="color: #990000">[</span>MAX_PROTOCOL_BYTES<span style="color: #990000">]);</span></tt></pre></div></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
 Inputs
@@ -2157,7 +2217,7 @@ Returns
 <h3 id="cmd-enable-remote-logging">Function <code>mdg_enable_remote_logging</code></h3>
 <div class="paragraph"><p>Enable remote logging for a limited period of time.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -2201,7 +2261,7 @@ Returns
 <h3 id="cmd-set-debug-log-target">Function <code>mdg_set_debug_log_target</code></h3>
 <div class="paragraph"><p>If remote logging is enabled, set the target for the logs.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -2258,7 +2318,7 @@ Returns
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2015-10-12 11:46:29 CEST
+ 2015-11-26 15:11:12 CET
 </div>
 </div>
 </body>

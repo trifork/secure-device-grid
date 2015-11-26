@@ -818,7 +818,7 @@ MDG Peer Module to decide where to store data, that the MDG Peer Module needs af
 <h2 id="_common_types">Common types</h2>
 <div class="sectionbody">
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -859,7 +859,7 @@ later retrieval by the MDG peer library. The number of bytes to copy is MDG_PEER
 <div class="paragraph"><p>If the peer already exists, any associated stored data may be updated.</p></div>
 <div class="paragraph"><p>Return 0 on success, and nonzero error code on error. Adding an existing peer is not an error.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -887,7 +887,7 @@ peer_id: pointer to device_id, MDG_PEER_ID_SIZE bytes in total. Binary.
 pairings.</p></div>
 <div class="paragraph"><p>Return 0 on success, and nonzero error code on error. It is <em>not</em> an error if the peer was unknown.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -919,7 +919,7 @@ Not touch the memory pointed to by the peer_id parameter, then return 1.
 </dl></div>
 <div class="paragraph"><p>Return 0 on success, and 1 in case there are no more pairings. This signals that the pairing_index is beyond the total number of pairings.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -931,7 +931,7 @@ http://www.gnu.org/software/src-highlite -->
 <div class="paragraph"><p>The implementer must fill the factory-flashed private key into <code>private_key</code>. The number of bytes is <code>MDG_PRIVATE_KEY_DATA_SIZE</code>. The data is binary.</p></div>
 <div class="paragraph"><p>Return 0 on success, and nonzero error code on error.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -940,10 +940,13 @@ http://www.gnu.org/software/src-highlite -->
 <div class="sect2">
 <h3 id="cmd-load-license-key">Function <code>mdgstorage_load_license_key</code></h3>
 <div class="paragraph"><p>Invoked by MDG at init. The data required is the license key for the server.</p></div>
+<div class="paragraph"><p>The MDG servers will reject certain operations when a valid license
+key is not present. Expect not to be able to accept calls.</p></div>
 <div class="paragraph"><p>The implementer must fill the factory-flashed license key into <code>license_key</code>. The number of bytes is exactly <code>MDG_LICENSE_KEY_SIZE</code>. The data is binary.</p></div>
+<div class="paragraph"><p>If non-zero is returned, the internal copy of the license key is marked as invalid.</p></div>
 <div class="paragraph"><p>Return 0 on success, and nonzero error code on error.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -957,7 +960,7 @@ The number of bytes is exactly <code>length</code>. The data is binary.
 On platforms with access to random data, filling the buffer with random bytes is fine.</p></div>
 <div class="paragraph"><p>Return 0 on success, and nonzero error code on error.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -978,7 +981,7 @@ only the prefix up to the last 3 digits. The last 3 are keps for P2P PACE valida
 Optimal length is at least 8 digits, preferably 9-12.</p></div>
 <div class="paragraph"><p>Return 0 on success, and nonzero error code on error.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -990,7 +993,7 @@ http://www.gnu.org/software/src-highlite -->
 <div class="paragraph"><p>Typically as the result of memory overwrites, or inconsistent use of
 the API. Reboot device is likely to be the only action available.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -1003,7 +1006,7 @@ http://www.gnu.org/software/src-highlite -->
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2015-10-22 09:47:29 CEST
+ 2015-11-17 09:46:34 CET
 </div>
 </div>
 </body>

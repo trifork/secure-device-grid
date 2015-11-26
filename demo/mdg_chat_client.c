@@ -6,6 +6,7 @@
 #if __linux
 #include <unistd.h>
 #elif MDG_WINDOWS
+#include <WinSock2.h>
 #include <Windows.h>
 #elif defined(MDG_CC3200)
 #include <simplelink.h>
@@ -32,6 +33,7 @@ static int chat_pairings_count = 0;
 static int pcr_timeout = 10;
 static int incomingcall_testdelay = 0;
 static int hex_output_mode = 0;
+static int ap_mode = 0;
 
 struct cmd {
   char *short_name;
@@ -273,6 +275,30 @@ static void set_hex_output_mode_handler(char *args_buf, int len)
   }
 }
 
+static int32_t accept_all_peers(const char *protocol, const mdg_peer_id_t calling_device_id) {
+  return 0;
+}
+
+static void set_ap_mode_handler(char *args_buf, int len)
+{
+  char *flag_arg = args_buf;
+  long flag;
+  if (!arg_decode_gotonext(&args_buf, &len)) {
+    flag = strtol(flag_arg, 0, 10);
+    ap_mode = (flag != 0);
+  } else {
+    ap_mode ^= 1;
+  }
+
+  if (ap_mode != 0) {
+    mdg_set_peer_verifying_cb(accept_all_peers);
+    mdg_chat_output_fprintf("access point simulation mode enabled (Accept any peer)\n");
+  } else {
+    mdg_set_peer_verifying_cb(0);
+    mdg_chat_output_fprintf("access point simulation mode disabled (Accept only paired peers)\n");
+  }
+}
+
 static void aggressive_ping_handler(char *args_buf, int len)
 {
   char *duration_arg = args_buf;
@@ -415,17 +441,19 @@ static void conninfo_handler(char *args_buf, int len)
 {
   int conn_id, s;
   uint8_t sender_device_id[MDG_PEER_ID_SIZE];
+  char protocol[MAX_PROTOCOL_BYTES];
 
   if (!set_intparam_handler(&args_buf, &len, "connection_id",
                             &conn_id,
                             -1, 1000)) {
-    s = mdg_get_connection_info(conn_id, &sender_device_id);
+    s = mdg_get_connection_info(conn_id, sender_device_id, protocol);
     if (s != 0) {
       mdg_chat_output_fprintf("mdg_get_connection_info failed, returned %d\n", s);
     } else {
       char hexed[2* MDG_PEER_ID_SIZE + 1];
       hex_encode_bytes(sender_device_id, hexed, MDG_PEER_ID_SIZE);
       mdg_chat_output_fprintf("Peer for connection is %s\n", hexed);
+      mdg_chat_output_fprintf("Peer protocol is %s\n", protocol);
     }
   }
 }
@@ -619,78 +647,105 @@ static void place_call_remote_handler(char *args_buf, int len)
 
 static void pair_local_handler(char *args_buf, int len)
 {
-	int s;
-	char *otp_arg;
-	char* addresses[2] = {0, 0};
-	int port;
-	mdg_ip_addr_t peer_ip;
-	peer_ip.h_addr_list = addresses;
-	
-	otp_arg = args_buf;
-	if (arg_decode_gotonext(&args_buf, &len)) {
-		mdg_chat_output_fprintf("pair local: Missing required arg, OTP.\n");
-		return;
-	}
+  int s;
+  char *otp_arg;
+  char* peer_ip;
+  int port;
 
-	addresses[0] = args_buf;
-	if (arg_decode_gotonext(&args_buf, &len)) {
-		mdg_chat_output_fprintf("pair local: Missing required arg, host.\n");
-		return;
-	}
+  otp_arg = args_buf;
+  if (arg_decode_gotonext(&args_buf, &len)) {
+    mdg_chat_output_fprintf("pair local: Missing required arg, OTP.\n");
+    return;
+  }
 
-	if (set_intparam_handler(&args_buf, &len, "port", &port, 1, 0xffff) != 0) {
-		return;
-	}
+  peer_ip = args_buf;
+  if (arg_decode_gotonext(&args_buf, &len)) {
+    mdg_chat_output_fprintf("pair local: Missing required arg, host.\n");
+    return;
+  }
 
-	s = mdg_pair_local(otp_arg, peer_ip, (uint16_t) port);
-	if (s != 0) {
-		mdg_chat_output_fprintf("mdg_pair_local failed with %d\n", s);
-	}
+  if (set_intparam_handler(&args_buf, &len, "port", &port, 1, 0xffff) != 0) {
+    return;
+  }
+
+  s = mdg_pair_local(otp_arg, peer_ip, (uint16_t) port);
+  if (s != 0) {
+    mdg_chat_output_fprintf("mdg_pair_local failed with %d\n", s);
+  }
 }
 
 static void place_call_local_handler(char *args_buf, int len)
 {
-	int s;
-	char* addresses[2] = { 0, 0 };
-	char *protocol_arg;
-	uint8_t device_id[MDG_PEER_ID_SIZE];
-	uint32_t connection_id;
-	int port;
-	mdg_ip_addr_t peer_ip;
-	peer_ip.h_addr_list = addresses;
+  int s;
+  char* peer_ip;
+  char *protocol_arg;
+  uint8_t device_id[MDG_PEER_ID_SIZE];
+  uint32_t connection_id;
+  int port;
 
-	s = arg_parse_device_public_key(&args_buf, &len, device_id);
-	if (s != 0) {
-		return;
-	}
+  if (arg_parse_device_public_key(&args_buf, &len, device_id) != 0) {
+    return;
+  }
 
-	addresses[0] = args_buf;
-	if (arg_decode_gotonext(&args_buf, &len)) {
-		mdg_chat_output_fprintf("place call local: Missing required arg, host.\n");
-		return;
-	}
+  peer_ip = args_buf;
+  if (arg_decode_gotonext(&args_buf, &len)) {
+    mdg_chat_output_fprintf("place call local: Missing required arg, host.\n");
+    return;
+  }
 
-	if (set_intparam_handler(&args_buf, &len, "port", &port, 1, 0xffff) != 0) {
-		return;
-	}
+  if (set_intparam_handler(&args_buf, &len, "port", &port, 1, 0xffff) != 0) {
+    return;
+  }
 
-	if (len > 0) {
-		protocol_arg = args_buf;
-		if (arg_decode_gotonext(&args_buf, &len)) {
-			mdg_chat_output_fprintf("place call local: Could not parse optional arg, protocol.\n");
-			return;
-		}
-	} else {
-		protocol_arg = "chat-client";
-	}
+  if (len > 0) {
+    protocol_arg = args_buf;
+    if (arg_decode_gotonext(&args_buf, &len)) {
+      mdg_chat_output_fprintf("place call local: Could not parse optional arg, protocol.\n");
+      return;
+    }
+  } else {
+    protocol_arg = "chat-client";
+  }
 
-	s = mdg_place_call_local(device_id, protocol_arg, peer_ip, (uint16_t) port, &connection_id, pcr_timeout);
-	if (s == 0) {
-		mdg_chat_output_fprintf("Place call started, got connection_id=%d\n", connection_id);
-	} else {
-		mdg_chat_output_fprintf("Place call failed, got error=%d\n", s);
-	}
+  s = mdg_place_call_local(device_id, protocol_arg, peer_ip, (uint16_t) port,
+                           &connection_id, pcr_timeout);
+  if (s == 0) {
+    mdg_chat_output_fprintf("Place call started, got connection_id=%d\n", connection_id);
+  } else {
+    mdg_chat_output_fprintf("Place call failed, got error=%d\n", s);
+  }
 }
+
+
+
+static char PROTOCOL_BOOTSTRAP[] = "<wifibootstrap>";
+
+// Example bootstrap of wifi code.
+#define WIFI_BOOTSTRAP_MAX_SSID_BYTES 64
+#define WIFI_BOOTSTRAP_MAX_PASS_BYTES 64
+struct mdgdemo_wifi_bootstrap_info {
+  char ssid[WIFI_BOOTSTRAP_MAX_SSID_BYTES];
+  char pass[WIFI_BOOTSTRAP_MAX_PASS_BYTES];
+};
+
+static int bootstrap_server_got_data(const unsigned char *data,
+                                     unsigned int count)
+{
+  if (count == sizeof(struct mdgdemo_wifi_bootstrap_info)) {
+    struct mdgdemo_wifi_bootstrap_info *info =
+      (struct mdgdemo_wifi_bootstrap_info*)data;
+    mdg_chat_output_fprintf("Received ssid:%.*s\n",
+                            WIFI_BOOTSTRAP_MAX_SSID_BYTES, info->ssid);
+    mdg_chat_output_fprintf("Received pass:%.*s\n",
+                            WIFI_BOOTSTRAP_MAX_PASS_BYTES, info->ssid);
+
+  } else {
+    return 1;
+  }
+  return 0;
+}
+
+
 
 static void basic_help_handler(char *args_buf, int len);
 static void advanced_help_handler(char *args_buf, int len);
@@ -725,6 +780,9 @@ static const struct cmd advanced_commands[] = {
   {"/t_rand", "/test_random_func",
    "Invoke random func, for testing. Prints 32 bytes data as hex.",
    test_random_handler},
+  {"/apm", "/access-point-mode",
+   "Toggles access point simulation mode, 0/1 as optional arg",
+   set_ap_mode_handler},
   { 0, 0, 0, 0 }
 };
 
@@ -848,13 +906,16 @@ void mdg_chat_client_input(char *in_buf, int len)
   }
 }
 
-static void chatclient_data_received(const uint8_t *data, const uint32_t count, const uint32_t connection_id)
+static int chatclient_print_data_received(const uint8_t *data,
+                                           const uint32_t count,
+                                           const uint32_t connection_id)
 {
   if (hex_output_mode) {
     char buf[512];
     const int maxlen = (sizeof(buf) / 2) - 1;
     const int hexcount = count < maxlen ? count : maxlen;
-    mdg_chat_output_fprintf("Received data from peer on connection %d, count=%u, %u hexbytes follows:\n",
+    mdg_chat_output_fprintf("Received data from peer on connection %d, "
+                            "count=%u, %u hexbytes follows:\n",
                             connection_id, count, hexcount);
     if (hexcount > 0) {
       hex_encode_bytes(data, buf, hexcount);
@@ -864,8 +925,32 @@ static void chatclient_data_received(const uint8_t *data, const uint32_t count, 
     mdg_chat_output_fprintf("Received data from peer on connection %d: %.*s\n",
                             connection_id, count, data);
   }
-  if (mdg_receive_from_peer(connection_id, chatclient_data_received)) {
-    mdg_chat_output_fprintf("mdg_receive_from_peer failed\n");
+  return 0;
+}
+
+static void chatclient_data_received(const uint8_t *data, const uint32_t count, const uint32_t connection_id)
+{
+  uint8_t sender_device_id[MDG_PEER_ID_SIZE];
+  char protocol[MAX_PROTOCOL_BYTES];
+  int s;
+
+  s = mdg_get_connection_info(connection_id, sender_device_id, protocol);
+  if (s == 0) {
+    if (!memcmp(PROTOCOL_BOOTSTRAP, protocol, MAX_PROTOCOL_BYTES)) {
+      s = bootstrap_server_got_data(data, count);
+    } else {
+      s = chatclient_print_data_received(data, count, connection_id);
+    }
+  }
+  if (s == 0) {
+    s = mdg_receive_from_peer(connection_id, chatclient_data_received);
+    if (s != 0) {
+      mdg_chat_output_fprintf("mdg_receive_from_peer failed\n");
+    }
+  }
+
+  if (s != 0) {
+    mdg_close_peer_connection(connection_id);
   }
 }
 

@@ -31,11 +31,6 @@
 
 /* Holds internal type definitions for portability: */
 #include "mdg_internal_t.h"
-/* Such as:
-typedef struct {
-  Platform dependent way of having an IP address.
-} mdg_ip_addr_t;
-*/
 
 _MDG_API_ int32_t mdg_init(uint32_t flags);
 _MDG_API_ void mdg_run_main_loop();
@@ -95,7 +90,7 @@ _MDG_API_ int32_t mdg_revoke_pairing(mdg_peer_id_t device_id);
 _MDG_API_ int32_t mdg_add_pairing(mdg_peer_id_t device_id);
 _MDG_API_ int32_t mdg_revoke_all_pairings(void);
 _MDG_API_ int32_t mdg_pair_remote(char *otp);
-_MDG_API_ int32_t mdg_pair_local(char *otp, mdg_ip_addr_t peer_ip, uint16_t port);
+_MDG_API_ int32_t mdg_pair_local(char *otp, char *peer_ip, uint16_t port);
 typedef enum {
         mdg_control_not_desired = 0,
         mdg_control_connecting = 1,
@@ -116,7 +111,7 @@ typedef enum {
 /* Implement this callback: */
 void mdguser_routing(uint32_t connection_id, mdg_routing_status_t state);
 _MDG_API_ int32_t mdg_place_call_remote(mdg_peer_id_t device_id, char *protocol, uint32_t *connection_id, uint32_t timout);
-_MDG_API_ int32_t mdg_place_call_local(mdg_peer_id_t device_id, char *protocol, mdg_ip_addr_t peer_ip, uint16_t port, uint32_t *connection_id, uint32_t timeout);
+_MDG_API_ int32_t mdg_place_call_local(mdg_peer_id_t device_id, char *protocol, char *peer_ip, uint16_t port, uint32_t *connection_id, uint32_t timeout);
 typedef void (*mdg_receive_data)(const unsigned char *data, uint32_t count, uint32_t connection_id);
 /* Arguments sent when invoking mdg_receive_data:
  * `data` = memory buffer holding data received. Only valid during invocation of call.
@@ -127,7 +122,11 @@ _MDG_API_ int32_t mdg_receive_from_peer(uint32_t connection_id, mdg_receive_data
 _MDG_API_ int32_t mdg_send_to_peer(uint8_t *data, uint32_t count, uint32_t connection_id);
 _MDG_API_ int32_t mdg_close_peer_connection(uint32_t connection_id);
 extern int32_t mdguser_incoming_call(const char *protocol);
-_MDG_API_ int32_t mdg_get_connection_info(uint32_t connection_id, mdg_peer_id_t sender_device_id);
+typedef int32_t (*mdg_peer_verifying_cb)(const char *protocol, const mdg_peer_id_t device_id);
+_MDG_API_ void mdg_set_peer_verifying_cb(mdg_peer_verifying_cb cb);
+_MDG_API_ int32_t mdg_get_connection_info(uint32_t connection_id,
+                                          mdg_peer_id_t sender_device_id,
+                                          char protocol[MAX_PROTOCOL_BYTES]);
 _MDG_API_ int32_t mdg_enable_remote_logging(uint32_t duration);
 _MDG_API_ int32_t mdg_set_debug_log_target(int32_t target);
 #endif
