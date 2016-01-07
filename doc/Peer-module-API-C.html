@@ -815,7 +815,7 @@ software using a "C" calling interface.</p></div>
 <div class="sect1">
 <h2 id="_interface_form">Interface form</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>This API uses invocation of C functions. All function must retunr zero
+<div class="paragraph"><p>This API uses invocation of C functions. All function must return zero
 on success and non-zero on failure. Actual returned values are always
 handled as pointer arguments.</p></div>
 </div>
@@ -842,6 +842,11 @@ cellspacing="0" cellpadding="4">
 </thead>
 <tbody>
 <tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-set-configuration">mdg_set_configuration</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Configure server IPs, trusted keys, DNS, mDNS, &#8230;</p></td>
+</tr>
+<tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-init">mdg_init</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
 <td align="left" valign="top"><p class="table">Init at startup</p></td>
@@ -850,16 +855,6 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table"><a href="#cmd-status">mdg_status</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
 <td align="left" valign="top"><p class="table">Get connectivity and pairing-mode status</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"><a href="#cmd-aggressive-ping">mdg_aggressive_ping</a></p></td>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Put the peer in aggressive ping mode for a while</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"><a href="#cmd-make-private-key">mdg_make_private_key</a></p></td>
-<td align="left" valign="top"><p class="table">App</p></td>
-<td align="left" valign="top"><p class="table">Create fresh identity</p></td>
 </tr>
 <tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-whoami">mdg_whoami</a></p></td>
@@ -875,6 +870,16 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table"><a href="#cmd-disconnect">mdg_disconnect</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
 <td align="left" valign="top"><p class="table">Disconnect from grid</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-send-to-peer">mdg_send_to_peer</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Transmit a frame of data to a connected peer</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-receive-from-peer">mdg_receive_from_peer</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Issue a receive request for a frame of data from peer</p></td>
 </tr>
 <tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-enable-pairing-mode">mdg_enable_pairing_mode</a></p></td>
@@ -902,6 +907,11 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table">Security reset&#8201;&#8212;&#8201;revoke all pairings</p></td>
 </tr>
 <tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-make-private-key">mdg_make_private_key</a></p></td>
+<td align="left" valign="top"><p class="table">App</p></td>
+<td align="left" valign="top"><p class="table">Create fresh identity</p></td>
+</tr>
+<tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-pair-remote">mdg_pair_remote</a></p></td>
 <td align="left" valign="top"><p class="table">App</p></td>
 <td align="left" valign="top"><p class="table">Pair with a remote device given an OTP</p></td>
@@ -922,16 +932,6 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table"></p></td>
 </tr>
 <tr>
-<td align="left" valign="top"><p class="table"><a href="#cmd-send-to-peer">mdg_send_to_peer</a></p></td>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Transmit a frame of data to a connected peer</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"><a href="#cmd-receive-from-peer">mdg_receive_from_peer</a></p></td>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Issue a receive request for a frame of data from peer</p></td>
-</tr>
-<tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-enable-remote-logging">mdg_enable_remote_logging</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
 <td align="left" valign="top"><p class="table">Enable remote logging (UDP) for a limited period</p></td>
@@ -940,11 +940,6 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table"><a href="#cmd-set-debug-log-target">mdg_set_debug_log_target</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
 <td align="left" valign="top"><p class="table">make remote debugging go to local / remote target</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"><a href="#cmd-set-mdns-service-type">mdg_set_mdns_service_type</a></p></td>
-<td align="left" valign="top"><p class="table">Device</p></td>
-<td align="left" valign="top"><p class="table">Configure type part of mDNS name for local discovery.</p></td>
 </tr>
 <tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-mdg-close-peer-connection">mdg_close_peer_connection</a></p></td>
@@ -960,6 +955,11 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table"><a href="#cmd-set-peer-verifying-cb">mdg_set_peer_verifying_cb</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
 <td align="left" valign="top"><p class="table">Implement custom check for verifyin peer.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-aggressive-ping">mdg_aggressive_ping</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Put the peer in aggressive ping mode for a while</p></td>
 </tr>
 </tbody>
 </table>
@@ -1004,11 +1004,35 @@ cellspacing="0" cellpadding="4">
 </tbody>
 </table>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_workflows">Workflows</h2>
-<div class="sectionbody">
+<div class="paragraph"><p>Threads and locks</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>The MDG is built for multi-threading on platforms that support threads
+or tasks, and single-threaded for system without threads. On most
+systems, only the multi-threaded version is available.
+
+The MDG interface is internally protected using a mutex. The mutex is
+acquired when entering any method in the MDG-api, and is also held by
+the internal threads, when they execute callbacks towards the
+application code, such as mdguser_*. The mutex is also held when the
+callsbacks given through the API, such as mdg_receive_from_peer, are
+invoked. It is thus safe to invoke MDG-lib API functions from within
+these callbacks, as the mutex is already acquired at that point.
+
+Take care *not* to acquire any mutexes from within a function invoked
+by MDG.  Doing so easily leads to deadlocks, as it's easy to have code
+elsewhere, that invokes MDG functions while holding those mutexes. And
+since those threads acquire muxtes in differing order, they're likely
+to deadlock each other.
+
+On certain embedded platforms, notably the TI CC-3200, where it is
+possible to build your application without OS and without
+threads/tasks, it makes sense to have a single-threaded MDG
+library. In this case, the MDG-lib expects your application to invoke
+the `mdg_run_main_loop` function as part of your syste main loop.
+
+Workflows</code></pre>
+</div></div>
 <div class="sect2">
 <h3 id="_pairing">Pairing</h3>
 <div class="ulist"><ul>
@@ -1161,7 +1185,7 @@ http://www.gnu.org/software/src-highlite -->
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> MDG_PEER_ID_SIZE <span style="color: #993399">32</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> MDG_PEER_PUBLIC_KEY_SIZE <span style="color: #993399">32</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> MDG_LICENSEKEY_SIZE <span style="color: #993399">128</span>
-<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_ENDPOINT_BYTES <span style="color: #993399">64</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_ENDPOINT_BYTES <span style="color: #993399">48</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_PROTOCOL_BYTES <span style="color: #993399">40</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_TOKEN_BYTES <span style="color: #993399">40</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_TICKET_BYTES <span style="color: #993399">40</span>
@@ -1185,8 +1209,126 @@ http://www.gnu.org/software/src-highlite -->
 <h2 id="_function_details">Function details</h2>
 <div class="sectionbody">
 <div class="sect2">
+<h3 id="cmd-set-configuration">Function <code>mdg_set_configuration</code></h3>
+<div class="paragraph"><p>Configure the library with production settings. Omitting to invoke
+this with a proper configuration, the library default to test values,
+that cannot be used for production use. The defaults may also no
+longer be valid when you read this.</p></div>
+<div class="paragraph"><p>Note! The contents of the structure are <strong>not copied</strong>. The MDG library
+retains the pointers and uses the data directly. Make sure to use
+pointers to static location in memory as arguments. These are usually
+selected at compile time of your system, and should reside in "read
+only" data segment, by marking everything "const".</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #FF0000">{</span>
+  <span style="color: #009900">char</span> <span style="color: #990000">*</span>name<span style="color: #990000">;</span>
+  <span style="color: #008080">uint16_t</span> port<span style="color: #990000">;</span>
+<span style="color: #FF0000">}</span> mdg_control_server_endpoint<span style="color: #990000">;</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #FF0000">{</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">mdg_control_server_endpoint</span> <span style="color: #990000">**</span>servers<span style="color: #990000">;</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">uint8_t</span> <span style="color: #990000">**</span>trusted_server_keys<span style="color: #990000">;</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>mdns_name<span style="color: #990000">;</span>
+<span style="color: #FF0000">}</span> mdg_configuration<span style="color: #990000">;</span>
+
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_set_configuration</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">mdg_configuration</span> <span style="color: #990000">*</span>conf<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+conf.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Configuration fields
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+servers: An array of pointers to endpoints, zero terminated. Each
+  endpoint holds a string represenation of an IP address and a port
+  number. The IP address may be IPv4 or IPv6.
+</p>
+</li>
+<li>
+<p>
+trusted_server_keys: An array of pointers to public keys, zero terminated.
+</p>
+</li>
+<li>
+<p>
+mdns_name: Configure the <code>type</code> part of the mDNS responder name for local connections.
+  Only if compiled with <code>MDG_USE_MDNS</code>
+  Name part for mDNS local network. Max length is 14 bytes. Zero terminated string.
+  mdns_name cannot contain <code>.</code> nor <code>_</code>.
+  Must match the string in other clients that need to be able to discover this device.
+  Preferably use something like <code>BRANDNAME-mdg</code> or <code>BRANDNAME-PROTOCOLKIND-mdg</code>.
+  Example value: <code>unix-chat-mdg</code>.
+  The MDG lib appends the required "._tcp.local" suffix, and prepends <code>_</code>.
+  The MDG lib uses a subset of the public key as the instance name.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">#if</span></span> <span style="color: #993399">0</span>
+<span style="font-style: italic"><span style="color: #9A1900">// Example configuration for two servers:</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">static</span></span> <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">mdg_control_server_endpoint</span> dkhc01mdg03 <span style="color: #990000">=</span> <span style="color: #FF0000">{</span> <span style="color: #FF0000">"77.66.11.95"</span><span style="color: #990000">,</span> <span style="color: #993399">443</span> <span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+<span style="font-weight: bold"><span style="color: #0000FF">static</span></span> <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">mdg_control_server_endpoint</span> localhost <span style="color: #990000">=</span> <span style="color: #FF0000">{</span> <span style="color: #FF0000">"127.0.0.1"</span><span style="color: #990000">,</span> <span style="color: #993399">443</span> <span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+<span style="font-weight: bold"><span style="color: #0000FF">static</span></span> <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">mdg_control_server_endpoint</span> <span style="color: #990000">*</span>mdg_control_hosts_demo<span style="color: #990000">[]</span> <span style="color: #990000">=</span> <span style="color: #FF0000">{</span>
+  <span style="color: #990000">&amp;</span>dkhc01mdg03<span style="color: #990000">,</span>
+  <span style="color: #990000">&amp;</span>localhost<span style="color: #990000">,</span>
+  <span style="color: #993399">0</span>
+<span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// Test server public key.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">static</span></span> <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">uint8_t</span> test_ctrl_server_key<span style="color: #990000">[</span><span style="color: #993399">32</span><span style="color: #990000">]</span> <span style="color: #990000">=</span> <span style="color: #FF0000">{</span>
+  <span style="color: #993399">81</span><span style="color: #990000">,</span><span style="color: #993399">13</span><span style="color: #990000">,</span><span style="color: #993399">101</span><span style="color: #990000">,</span><span style="color: #993399">52</span><span style="color: #990000">,</span><span style="color: #993399">29</span><span style="color: #990000">,</span><span style="color: #993399">109</span><span style="color: #990000">,</span><span style="color: #993399">136</span><span style="color: #990000">,</span><span style="color: #993399">196</span><span style="color: #990000">,</span>
+  <span style="color: #993399">86</span><span style="color: #990000">,</span><span style="color: #993399">91</span><span style="color: #990000">,</span><span style="color: #993399">34</span><span style="color: #990000">,</span><span style="color: #993399">91</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">19</span><span style="color: #990000">,</span><span style="color: #993399">150</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span>
+  <span style="color: #993399">215</span><span style="color: #990000">,</span><span style="color: #993399">43</span><span style="color: #990000">,</span><span style="color: #993399">210</span><span style="color: #990000">,</span><span style="color: #993399">9</span><span style="color: #990000">,</span><span style="color: #993399">242</span><span style="color: #990000">,</span><span style="color: #993399">146</span><span style="color: #990000">,</span><span style="color: #993399">119</span><span style="color: #990000">,</span><span style="color: #993399">188</span><span style="color: #990000">,</span>
+  <span style="color: #993399">153</span><span style="color: #990000">,</span><span style="color: #993399">245</span><span style="color: #990000">,</span><span style="color: #993399">78</span><span style="color: #990000">,</span><span style="color: #993399">232</span><span style="color: #990000">,</span><span style="color: #993399">94</span><span style="color: #990000">,</span><span style="color: #993399">113</span><span style="color: #990000">,</span><span style="color: #993399">37</span><span style="color: #990000">,</span><span style="color: #993399">47</span>
+<span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+<span style="font-style: italic"><span style="color: #9A1900">// Example config for trust server. Lists only test server key.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">static</span></span> <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">uint8_t</span> <span style="color: #990000">*</span>trusted_server_keys_default<span style="color: #990000">[]</span> <span style="color: #990000">=</span> <span style="color: #FF0000">{</span>
+  test_ctrl_server_key<span style="color: #990000">,</span>
+  <span style="color: #993399">0</span>
+<span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">static</span></span> <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">mdg_configuration</span> demo_mdg_configuration <span style="color: #990000">=</span> <span style="color: #FF0000">{</span>
+  mdg_control_hosts_demo<span style="color: #990000">,</span>
+  trusted_server_keys_default<span style="color: #990000">,</span>
+  <span style="color: #993399">0</span> <span style="font-style: italic"><span style="color: #9A1900">//Use no mDNS name.</span></span>
+<span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// And then in main...:</span></span>
+<span style="color: #009900">int</span> <span style="font-weight: bold"><span style="color: #000000">main</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+  <span style="font-weight: bold"><span style="color: #000000">mdg_set_configuration</span></span><span style="color: #990000">(&amp;</span>demo_mdg_configuration<span style="color: #990000">);</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">((</span>s <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">mdg_init</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span> <span style="color: #990000">!=</span> <span style="color: #993399">0</span><span style="color: #990000">)</span> <span style="color: #FF0000">{</span>
+    <span style="font-weight: bold"><span style="color: #000000">fprintf</span></span><span style="color: #990000">(</span>stderr<span style="color: #990000">,</span> <span style="color: #FF0000">"mdg_init failed with %d</span><span style="color: #CC33CC">\n</span><span style="color: #FF0000">"</span><span style="color: #990000">,</span> s<span style="color: #990000">);</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> <span style="color: #990000">-</span><span style="color: #993399">1</span><span style="color: #990000">;</span>
+  <span style="color: #FF0000">}</span>
+<span style="color: #FF0000">}</span>
+<span style="font-weight: bold"><span style="color: #000080">#endif</span></span></tt></pre></div></div>
+</div>
+<div class="sect2">
 <h3 id="cmd-init">Function <code>init</code></h3>
-<div class="paragraph"><p>Bootstrap init. Invoke only once after booting. Must be invoked before any other method.</p></div>
+<div class="paragraph"><p>Bootstrap init. Invoke only once after booting. Must be invoked before any other method, except <code>mdg_set_configuration</code>.</p></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
 Inputs
@@ -1218,39 +1360,6 @@ http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
 <pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_init</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> flags<span style="color: #990000">);</span>
 _MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdg_run_main_loop</span></span><span style="color: #990000">();</span></tt></pre></div></div>
-</div>
-<div class="sect2">
-<h3 id="cmd-set-mdns-service-type">Function <code>mdg_set_mdns_service_type</code></h3>
-<div class="paragraph"><p>Configure the <code>type</code> part of the mDNS responder name for local connections.
-Only if compiled with <code>MDG_USE_MDNS</code></p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.8
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #000080">#if</span></span> MDG_USE_MDNS
-<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_set_mdns_service_type</span></span><span style="color: #990000">(</span><span style="color: #009900">char</span> <span style="color: #990000">*</span>name<span style="color: #990000">);</span>
-<span style="font-weight: bold"><span style="color: #000080">#endif</span></span></tt></pre></div></div>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-Inputs
-</dt>
-<dd>
-<div class="ulist"><ul>
-<li>
-<p>
-name: Name part. Max length is 14 bytes.
-</p>
-</li>
-</ul></div>
-</dd>
-</dl></div>
-<div class="paragraph"><p>Name cannot contain <code>.</code> nor <code>_</code>.
-Must match the string in other clients that need to be able to discover this device.
-Preferably use something like <code>BRANDNAME-tdg</code> or <code>BRANDNAME-PROTOCOLKIND-tdg</code>.
-Example value: <code>unix-chat-tdg</code>.
-The TDG lib appends the required "._tcp.local" suffix, and prepends <code>_</code>.
-The TDG lib uses a subset of the public key as the instance name.</p></div>
 </div>
 <div class="sect2">
 <h3 id="cmd-status">Function <code>status</code></h3>
@@ -1752,6 +1861,8 @@ mDNS or similar discover method on the local network.</p></div>
 <div class="paragraph"><p>The client is expected to use mDNS or similiar protocol to find network-local peers,
 then try them one at a time, until a pairing succeeds.</p></div>
 </div>
+<div class="sect2">
+<h3 id="cmd-control-status">Function <code>mdguser_control_status</code></h3>
 <div class="paragraph"><p>Callback invoked by MDG on changes to state of control-server connections.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
@@ -1767,6 +1878,7 @@ http://www.gnu.org/software/src-highlite -->
 
 <span style="font-style: italic"><span style="color: #9A1900">/* Implement this callback: */</span></span>
 <span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">mdguser_control_status</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_control_status_t</span> state<span style="color: #990000">);</span></tt></pre></div></div>
+</div>
 <div class="sect2">
 <h3 id="cmd-routing">Function <code>mdguser_routing</code></h3>
 <div class="paragraph"><p>Callback invoked by MDG on changes to state of routing connections.</p></div>
@@ -2146,7 +2258,7 @@ Inputs
 </li>
 <li>
 <p>
-<code>device_id</code> device placing the call.
+<code>device_id</code> = &lt;string&gt; device-id placing the call.
 </p>
 </li>
 </ul></div>
@@ -2197,8 +2309,16 @@ Inputs
 <code>sender_device_id</code> device that placed the call. Outbuffer.
 </p>
 </li>
+<li>
+<p>
+<code>protocol</code> string that identifies protocol for the call. Outbuffer.
+</p>
+</li>
 </ul></div>
 </dd>
+</dl></div>
+<div class="paragraph"><p>Both of sender_device_id and protocol may be 0, in which case they will not be used. You will only get the return code, that lets you know if the connection_id represents a valid connection.</p></div>
+<div class="dlist"><dl>
 <dt class="hdlist1">
 Returns
 </dt>
@@ -2207,6 +2327,11 @@ Returns
 <li>
 <p>
 0 on success
+</p>
+</li>
+<li>
+<p>
+non-zero on failure. Contents of outparams are not to be trusted.
 </p>
 </li>
 </ul></div>
@@ -2251,6 +2376,11 @@ Returns
 <li>
 <p>
 0 on success
+</p>
+</li>
+<li>
+<p>
+non-zero on failure
 </p>
 </li>
 </ul></div>
@@ -2307,6 +2437,67 @@ Returns
 0 on success
 </p>
 </li>
+<li>
+<p>
+non-zero on failure
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-start-local-listener">Function <code>mdg_start_local_listener</code></h3>
+<div class="paragraph"><p>Start (or restart if running) the local listener.
+Local socket listening for connections happen only after this is done.
+On some systems it may be necessary to restart the listener
+when IP configuration on the device changes.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_start_local_listener</span></span><span style="color: #990000">();</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success
+</p>
+</li>
+<li>
+<p>
+non-zero on failure
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-stop-local-listener">Function <code>mdg_stop_local_listener</code></h3>
+<div class="paragraph"><p>Stop the local listener. Normally there no need to do this.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_stop_local_listener</span></span><span style="color: #990000">();</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success
+</p>
+</li>
 </ul></div>
 </dd>
 </dl></div>
@@ -2318,7 +2509,7 @@ Returns
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2015-11-26 15:11:12 CET
+ 2015-12-23 10:35:49 CET
 </div>
 </div>
 </body>

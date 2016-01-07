@@ -14,7 +14,7 @@
 #define MDG_PEER_ID_SIZE 32
 #define MDG_PEER_PUBLIC_KEY_SIZE 32
 #define MDG_LICENSEKEY_SIZE 128
-#define MAX_ENDPOINT_BYTES 64
+#define MAX_ENDPOINT_BYTES 48
 #define MAX_PROTOCOL_BYTES 40
 #define MAX_TOKEN_BYTES 40
 #define MAX_TICKET_BYTES 40
@@ -32,11 +32,58 @@
 /* Holds internal type definitions for portability: */
 #include "mdg_internal_t.h"
 
+typedef struct {
+  char *name;
+  uint16_t port;
+} mdg_control_server_endpoint;
+
+typedef struct {
+  const mdg_control_server_endpoint **servers;
+  const uint8_t **trusted_server_keys;
+  const char *mdns_name;
+} mdg_configuration;
+
+_MDG_API_ int32_t mdg_set_configuration(const mdg_configuration *conf);
+#if 0
+// Example configuration for two servers:
+static const mdg_control_server_endpoint dkhc01mdg03 = { "77.66.11.95", 443 };
+static const mdg_control_server_endpoint localhost = { "127.0.0.1", 443 };
+static const mdg_control_server_endpoint *mdg_control_hosts_demo[] = {
+  &dkhc01mdg03,
+  &localhost,
+  0
+};
+
+// Test server public key.
+static const uint8_t test_ctrl_server_key[32] = {
+  81,13,101,52,29,109,136,196,
+  86,91,34,91,3,19,150,3,
+  215,43,210,9,242,146,119,188,
+  153,245,78,232,94,113,37,47
+};
+// Example config for trust server. Lists only test server key.
+static const uint8_t *trusted_server_keys_default[] = {
+  test_ctrl_server_key,
+  0
+};
+
+static const mdg_configuration demo_mdg_configuration = {
+  mdg_control_hosts_demo,
+  trusted_server_keys_default,
+  0 //Use no mDNS name.
+};
+
+// And then in main...:
+int main() {
+  mdg_set_configuration(&demo_mdg_configuration);
+  if ((s = mdg_init(0)) != 0) {
+    fprintf(stderr, "mdg_init failed with %d\n", s);
+    return -1;
+  }
+}
+#endif
 _MDG_API_ int32_t mdg_init(uint32_t flags);
 _MDG_API_ void mdg_run_main_loop();
-#if MDG_USE_MDNS
-_MDG_API_ int32_t mdg_set_mdns_service_type(char *name);
-#endif
 
 typedef void* mdg_peer_id_t;
 typedef enum {
@@ -129,4 +176,13 @@ _MDG_API_ int32_t mdg_get_connection_info(uint32_t connection_id,
                                           char protocol[MAX_PROTOCOL_BYTES]);
 _MDG_API_ int32_t mdg_enable_remote_logging(uint32_t duration);
 _MDG_API_ int32_t mdg_set_debug_log_target(int32_t target);
+_MDG_API_ int32_t mdg_start_local_listener();
+_MDG_API_ int32_t mdg_stop_local_listener();
+typedef struct {
+  char *name;
+  int64_t value;
+} mdg_metric_t;
+
+_MDG_API_ int32_t mdg_send_client_metrics(mdg_property_t *properties,
+                                          mdg_metric_t *metrics);
 #endif

@@ -618,6 +618,22 @@ static void add_test_pairing_handler(char *args_buf, int len)
   }
 }
 
+static void start_local_listener_handler(char *args_buf, int len)
+{
+  int s = mdg_start_local_listener();
+  if (s != 0) {
+    mdg_chat_output_fprintf("mdg_start_local_listener failed with %d\n", s);
+  }
+}
+
+static void kill_local_listener_handler(char *args_buf, int len)
+{
+  int s = mdg_stop_local_listener();
+  if (s != 0) {
+    mdg_chat_output_fprintf("mdg_stop_local_listener failed with %d\n", s);
+  }
+}
+
 static void place_call_remote_handler(char *args_buf, int len)
 {
   uint8_t device_id[MDG_PEER_ID_SIZE];
@@ -783,6 +799,12 @@ static const struct cmd advanced_commands[] = {
   {"/apm", "/access-point-mode",
    "Toggles access point simulation mode, 0/1 as optional arg",
    set_ap_mode_handler},
+  {"/sll", "/start-local-listener",
+   "Start (or restart) local connection listener",
+   start_local_listener_handler},
+  {"/kll", "/kill-local-listener",
+   "Kill local connection listener",
+   kill_local_listener_handler},
   { 0, 0, 0, 0 }
 };
 
@@ -1128,7 +1150,7 @@ static void chatclient_load_or_create_private_key(uint8_t *pk)
   }
   if (s != MDG_PEER_ID_SIZE) {
     mdg_make_private_key(pk);
-    FILE *f = fopen("chat_demo_private.key", "wb");
+    f = fopen("chat_demo_private.key", "wb");
     if (f != NULL) {
       s = fwrite(pk, 1, MDG_PEER_ID_SIZE, f);
       fclose(f);
