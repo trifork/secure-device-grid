@@ -17,8 +17,16 @@
 #include "mdg_peer_api.h"
 #include "mdg_peer_storage.h"
 
-extern void hex_encode_bytes(const uint8_t *input, char *dst, int input_size);
-extern int hex_decode_bytes(char *input, uint8_t *dst, int output_size);
+// Include demo of file downloading - links mdgext_filedown into the binary too.
+#define DEMO_FILE_DOWNLOAD
+
+#ifdef MDG_DYNAMIC_LIBRARY
+// Hex encode / decode:
+#include "mdg_util.c"
+#else
+#include "mdg_util.h"
+#endif
+
 extern void mdg_chat_output_fprintf(const char *fmt, ...);
 extern void mdg_chat_client_exit();
 
@@ -263,15 +271,15 @@ static void set_hex_output_mode_handler(char *args_buf, int len)
   long flag;
   if (!arg_decode_gotonext(&args_buf, &len)) {
     flag = strtol(flag_arg, 0, 10);
-    hex_output_mode = (flag != 0);
+    hex_output_mode = (int)flag;
   } else {
-    hex_output_mode ^= 1;
+    hex_output_mode = !hex_output_mode;
   }
 
-  if (hex_output_mode != 0) {
-    mdg_chat_output_fprintf("outputting data from peers as hex\n");
-  } else {
-    mdg_chat_output_fprintf("outputting data from peers as text\n");
+  switch (hex_output_mode) {
+  case 0: mdg_chat_output_fprintf("outputting data from peers as text\n"); break;
+  case 1: mdg_chat_output_fprintf("outputting data from peers as one-line hex\n"); break;
+  case 2: mdg_chat_output_fprintf("outputting data from peers as hex\n"); break;
   }
 }
 
@@ -452,8 +460,8 @@ static void conninfo_handler(char *args_buf, int len)
     } else {
       char hexed[2* MDG_PEER_ID_SIZE + 1];
       hex_encode_bytes(sender_device_id, hexed, MDG_PEER_ID_SIZE);
-      mdg_chat_output_fprintf("Peer for connection is %s\n", hexed);
-      mdg_chat_output_fprintf("Peer protocol is %s\n", protocol);
+      mdg_chat_output_fprintf("Peer for connection #%d is %s\n", conn_id, hexed);
+      mdg_chat_output_fprintf("Peer protocol for connection #%d is %s\n", conn_id, protocol);
     }
   }
 }
@@ -485,9 +493,32 @@ static void send_handler(char *args_buf, int len)
                             &conn_id,
                             -1, MDG_MAX_CONNECTION_COUNT + 1)) {
     message = args_buf;
-    s = mdg_send_to_peer((uint8_t*) message, len, conn_id);
+    s = mdg_send_to_peer((uint8_t*)message, len, conn_id);
     if (s) {
       mdg_chat_output_fprintf("send-data-to-peer failed with %d\n", s);
+    }
+  }
+}
+
+static void send_append_handler(char *args_buf, int len)
+{
+  int conn_id, flush_now, s;
+  char *message;
+
+  if (!set_intparam_handler(&args_buf, &len, "connection_id",
+                            &conn_id,
+                            -1, MDG_MAX_CONNECTION_COUNT + 1)) {
+    if (!set_intparam_handler(&args_buf, &len, "flush_now",
+                              &flush_now, 0, 1)) {
+      message = args_buf;
+      if (len == 0) {
+        message = 0;
+        mdg_chat_output_fprintf("invoking mdg_send_to_peer_append with data=count=0\n");
+      }
+      s = mdg_send_to_peer_append((uint8_t*)message, len, conn_id, flush_now);
+      if (s) {
+        mdg_chat_output_fprintf("mdg_send_to_peer_append failed with %d\n", s);
+      }
     }
   }
 }
@@ -511,6 +542,32 @@ static void send_hex_handler(char *args_buf, int len)
     s = mdg_send_to_peer(data, len / 2, conn_id);
     if (s) {
       mdg_chat_output_fprintf("mdg_send_data_to_peer failed with %d\n", s);
+    }
+  }
+}
+
+static void send_hex_append_handler(char *args_buf, int len)
+{
+  int conn_id, flush_now, s;
+  uint8_t data[512]; // Be carefull with large chunks on stack.
+
+  if (!set_intparam_handler(&args_buf, &len, "connection_id",
+                            &conn_id,
+                            -1, MDG_MAX_CONNECTION_COUNT + 1)) {
+    if (!set_intparam_handler(&args_buf, &len, "flush_now",
+                              &flush_now, 0, 1)) {
+      if (len < 2
+          || (len & 1) != 0
+          || (len / 2) > sizeof(data)
+          || hex_decode_bytes(args_buf, data, len / 2) != 0) {
+        mdg_chat_output_fprintf("data argument must be hex encoded, even number of chars, max %d bytes.\n",
+                                (int)sizeof(data));
+        return;
+      }
+      s = mdg_send_to_peer_append(data, len / 2, conn_id, flush_now);
+      if (s) {
+        mdg_chat_output_fprintf("mdg_send_data_to_peer_append failed with %d\n", s);
+      }
     }
   }
 }
@@ -591,7 +648,7 @@ static void cancel_pairing_mode_handler(char *args_buf, int len)
 static void list_pairings_handler(char *args_buf, int len)
 {
   int i;
-  char hexed[129];
+  char hexed[2 * MDG_PEER_ID_SIZE + 1];
   load_all_pairings_from_file();
   mdg_chat_output_fprintf("Listing pairings. Count=%d\n", chat_pairings_count);
   for (i = 0; i < chat_pairings_count; i++) {
@@ -607,6 +664,12 @@ static void remove_pairing_handler(char *args_buf, int len)
     int s = mdg_revoke_pairing(peer_id);
     mdg_chat_output_fprintf("mdg_revoke_pairing returned %d\n", s);
   }
+}
+
+static void remove_all_pairings_handler(char *args_buf, int len)
+{
+  int s = mdg_revoke_all_pairings();
+  mdg_chat_output_fprintf("mdg_revoke_all_pairings returned %d\n", s);
 }
 
 static void add_test_pairing_handler(char *args_buf, int len)
@@ -625,6 +688,106 @@ static void start_local_listener_handler(char *args_buf, int len)
     mdg_chat_output_fprintf("mdg_start_local_listener failed with %d\n", s);
   }
 }
+
+#ifdef DEMO_FILE_DOWNLOAD
+#include "mdgext_filedownload.h"
+static uint32_t filedownload_cb(const unsigned char *data, uint32_t count,
+                                mdgext_filedownload_status status)
+{
+  switch (status) {
+  case mdgext_filedownload_completed_success:
+    mdg_chat_output_fprintf("filedownload_cb invoked with status=completed_success\n");
+    break;
+  case mdgext_filedownload_size_known:
+    mdg_chat_output_fprintf("filedownload_cb invoked with status=size_known, total size=%d\n", count);
+    break;
+  case mdgext_filedownload_datablock_included:
+    mdg_chat_output_fprintf("filedownload_cb invoked with status=datablock_included of size %d\n", count);
+    break;
+  case mdgext_filedownload_checksum_valid:
+    mdg_chat_output_fprintf("filedownload_cb invoked with status=checksum_valid of size %d\n", count);
+    break;
+  case mdgext_filedownload_no_update_available:
+    mdg_chat_output_fprintf("filedownload_cb invoked with status=no_update_available\n");
+    break;
+  case mdgext_filedownload_failed:
+    mdg_chat_output_fprintf("filedownload_cb invoked with status=failed (generic)\n");
+    break;
+  case mdgext_filedownload_checksum_failed:
+    mdg_chat_output_fprintf("filedownload_cb invoked with status=checksum_failed\n");
+    break;
+  case mdgext_filedownload_connection_failed:
+    mdg_chat_output_fprintf("filedownload_cb invoked with status=connection_failed\n");
+    break;
+  case mdgext_filedownload_starting_check:
+    mdg_chat_output_fprintf("filedownload_cb invoked with status=starting_check\n");
+    break;
+  default:
+    mdg_chat_output_fprintf("filedownload_cb invoked with other status=%d\n", status);
+  }
+  return 0;
+}
+
+mdg_property_t ota_props[] = {
+  // Example properties. Make up your own for your application.
+  {"domain_key", "chat-serial" },
+  {"domain", "chat client" },
+  {"sw", "0.0.0" },
+  {0, 0 },
+};
+
+static uint8_t ota_signing_public[32] = {
+97, 226, 31, 152, 143, 243, 80, 22,
+79, 87, 91, 108, 128, 223, 9, 197,
+177, 26, 4, 33, 105, 19, 30, 159,
+226, 7, 149, 128, 66, 83, 162, 104
+/* Signing secret: For REAL projects, DO NOT publish this secret key!
+(Same secret hexed: feb1821f3aea327ceceab56106208e573fc96ed2bcd34c8f99d9787c4752a453)
+254, 177, 130, 31, 58, 234, 50, 124,
+236, 234, 181, 97, 6, 32, 142, 87,
+63, 201, 110, 210, 188, 211, 76, 143,
+153, 217, 120, 124, 71, 82, 164, 83
+ */
+};
+
+extern const mdg_configuration mdg_configuration_tmdg82;
+extern const mdg_configuration mdg_configuration_test;
+extern const mdg_configuration mdg_configuration_prod01;
+
+static void ota_demo_handler(char *args_buf, int len)
+{
+  static uint8_t init = 0;
+  uint32_t s;
+  if (!init) {
+    init = 1;
+    s = mdgext_filedownload_init();
+    if (s != 0) {
+      mdg_chat_output_fprintf("mdgext_filedownload_init failed with %d\n", s);
+      return;
+    }
+  }
+
+  if (init == 1) {
+    init = 2;
+    s = mdgext_filedownload_start(filedownload_cb,
+                                  &mdg_configuration_test,
+                                  ota_props,
+                                  ota_signing_public,
+                                  10);
+    if (s != 0) {
+      mdg_chat_output_fprintf("mdgext_filedownload_start failed with %d\n", s);
+      return;
+    }
+  } else if (init == 2) {
+    init = 1;
+    s = mdgext_filedownload_cancel(filedownload_cb);
+    if (s != 0) {
+      mdg_chat_output_fprintf("mdgext_filedownload_cancel failed with %d\n", s);
+      return;
+    }
+  }
+}
+#endif
 
 static void kill_local_listener_handler(char *args_buf, int len)
 {
@@ -772,11 +935,17 @@ static const struct cmd advanced_commands[] = {
   {"/d", "/disconnect",
    "set connection-wanted flag to false",
    disconnect_handler },
+  {"/s-a", "/send-to-peer-append",
+   "Send a text message. Args: connection-id, flush_now, rest of line is message.",
+   send_append_handler},
+  {"/sx-a", "/send-hex-to-peer-append",
+   "Send a binary message. Arg: connection-id, flush_now, rest of line is message.",
+   send_hex_append_handler},
   {"/atp", "/add-test-pairing",
    "Add (fake) pairing, provide device-id as arg",
    add_test_pairing_handler },
   {"/hexm", "/hex-mode",
-   "Set whether input from peer should output in hex, 0/1 as optional arg",
+   "Set whether input from peer should output in hex, 0/1/2 as optional arg",
    set_hex_output_mode_handler },
   {"/agp", "/agressive_ping",
    "Invokes mdg_aggressive_ping, provide duration as optional arg, 0 to cancel",
@@ -805,6 +974,11 @@ static const struct cmd advanced_commands[] = {
   {"/kll", "/kill-local-listener",
    "Kill local connection listener",
    kill_local_listener_handler},
+#ifdef DEMO_FILE_DOWNLOAD
+  {"/ota", "/ota-demo",
+   "Download a file and verify checksum/signature",
+   ota_demo_handler},
+#endif
   { 0, 0, 0, 0 }
 };
 
@@ -850,6 +1024,9 @@ static const struct cmd basic_commands[] = {
   {"/rmp", "/remove-pairing",
    "Remove pairing, provide device-id as arg",
    remove_pairing_handler },
+  {"/rmall", "/remove-all-pairings",
+   "Remove all pairings - security reset",
+   remove_all_pairings_handler },
   {"/h", "/help-basic",
    "Display this help",
    basic_help_handler },
@@ -928,24 +1105,48 @@ void mdg_chat_client_input(char *in_buf, int len)
   }
 }
 
+#define MIN(a,b) ((a)<(b) ? (a) : (b))
 static int chatclient_print_data_received(const uint8_t *data,
                                            const uint32_t count,
                                            const uint32_t connection_id)
 {
-  if (hex_output_mode) {
+  switch (hex_output_mode) {
+  case 2: {
     char buf[512];
-    const int maxlen = (sizeof(buf) / 2) - 1;
-    const int hexcount = count < maxlen ? count : maxlen;
     mdg_chat_output_fprintf("Received data from peer on connection %d, "
-                            "count=%u, %u hexbytes follows:\n",
-                            connection_id, count, hexcount);
-    if (hexcount > 0) {
-      hex_encode_bytes(data, buf, hexcount);
-      mdg_chat_output_fprintf("%.*s\n", hexcount * 2, buf);
+                            "count=%u hexbytes follow:\n",
+                            connection_id, count);
+    int bytes_left;
+    for (bytes_left = count; bytes_left > 0; ) {
+      int bytes_now = MIN(bytes_left, 4);
+      hex_encode_bytes(data, buf, bytes_now);
+      mdg_chat_output_fprintf("  %.*s\n", bytes_now * 2, buf);
+      bytes_left -= bytes_now;
+      data += bytes_now;
     }
-  } else {
+  } break;
+
+  case 1: {
+    char buf[512];
+    mdg_chat_output_fprintf("Received data from peer on connection %d, "
+                            "count=%u, hexbytes: ",
+                            connection_id, count);
+    int bytes_left;
+    for (bytes_left = count; bytes_left > 0; ) {
+      int bytes_now = MIN(bytes_left, 512/2);
+      hex_encode_bytes(data, buf, bytes_now);
+      mdg_chat_output_fprintf("%.*s", bytes_now * 2, buf);
+      bytes_left -= bytes_now;
+      data += bytes_now;
+    }
+    mdg_chat_output_fprintf("\n");
+  } break;
+
+  case 0:
+  default: {
     mdg_chat_output_fprintf("Received data from peer on connection %d: %.*s\n",
                             connection_id, count, data);
+  } break;
   }
   return 0;
 }
@@ -985,8 +1186,8 @@ void mdguser_routing(uint32_t connection_id, mdg_routing_status_t state)
     mdg_chat_output_fprintf("Callback: mdguser_routing connection_id=%d, state=disconnected\n", connection_id);
     break;
   case mdg_routing_connected:
-    mdg_chat_output_fprintf("Callback: mdguser_routing connection_id=%d, state=connected\n", connection_id);
-    break;
+      mdg_chat_output_fprintf("Callback: mdguser_routing connection_id=%d, state=connected\n", connection_id);
+      break;
   case mdg_routing_failed:
     mdg_chat_output_fprintf("Callback: mdguser_routing connection_id=%d, state=failed\n", connection_id);
     break;

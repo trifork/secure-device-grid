@@ -136,6 +136,7 @@ _MDG_API_ void mdg_disable_pairing_mode(void);
 _MDG_API_ int32_t mdg_revoke_pairing(mdg_peer_id_t device_id);
 _MDG_API_ int32_t mdg_add_pairing(mdg_peer_id_t device_id);
 _MDG_API_ int32_t mdg_revoke_all_pairings(void);
+_MDG_API_ void mdg_notify_pairings_changed();
 _MDG_API_ int32_t mdg_pair_remote(char *otp);
 _MDG_API_ int32_t mdg_pair_local(char *otp, char *peer_ip, uint16_t port);
 typedef enum {
@@ -167,6 +168,8 @@ typedef void (*mdg_receive_data)(const unsigned char *data, uint32_t count, uint
  */
 _MDG_API_ int32_t mdg_receive_from_peer(uint32_t connection_id, mdg_receive_data cb);
 _MDG_API_ int32_t mdg_send_to_peer(uint8_t *data, uint32_t count, uint32_t connection_id);
+_MDG_API_ int32_t mdg_send_to_peer_append(uint8_t *data, uint32_t count,
+                                          uint32_t connection_id, uint32_t flush_now);
 _MDG_API_ int32_t mdg_close_peer_connection(uint32_t connection_id);
 extern int32_t mdguser_incoming_call(const char *protocol);
 typedef int32_t (*mdg_peer_verifying_cb)(const char *protocol, const mdg_peer_id_t device_id);
@@ -185,4 +188,34 @@ typedef struct {
 
 _MDG_API_ int32_t mdg_send_client_metrics(mdg_property_t *properties,
                                           mdg_metric_t *metrics);
+typedef enum {
+        mdg_service_failed = -1,
+        mdg_service_completed = 0,
+} mdg_service_status_t;
+
+typedef enum {
+        mdg_test_internal = 0,
+        mdg_push_json_android = 1,
+        mdg_push_json_ios = 2
+} mdg_service_id;
+
+typedef void (*mdg_service_state)(void *user_data, mdg_service_status_t state);
+/* Arguments set when invoking mdg_service_data:
+ * `user_data` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).
+ * `state` indicates the state change. (Not all state changes occur for all services.)
+ */
+
+typedef void (*mdg_service_data)(const unsigned char *data, uint32_t count, void *user_data);
+/* Arguments set when invoking mdg_service_data:
+ * `data` = memory buffer holding data received. Only valid during invocation of call.
+ * `count` = number of bytes in buffer
+ * `user_data` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).
+ */
+
+_MDG_API_ int32_t mdgext_invoke_service(mdg_service_id service_id,
+                                        mdg_property_t *properties,
+                                        uint8_t *data, uint32_t count,
+                                        void *user_data,
+                                        mdg_service_state state_cb,
+                                        mdg_service_data response_cb);
 #endif

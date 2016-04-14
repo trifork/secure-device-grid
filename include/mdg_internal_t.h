@@ -1,11 +1,18 @@
 #ifndef MDG_INTERNAL_T
 #define MDG_INTERNAL_T
-
-#ifdef MDG_WINDOWS
+#if defined(WINAPI_FAMILY) || defined(MDG_WINDOWS)
 #ifdef EXPORT
-#define _MDG_API_  __declspec(dllexport) extern
+#ifdef __cplusplus
+#define _MDG_API_  __declspec(dllexport) extern "C"
 #else
-#define _MDG_API_ __declspec(dllimport)
+#define _MDG_API_  __declspec(dllexport) extern
+#endif
+#else
+#ifdef __cplusplus
+#define _MDG_API_  __declspec(dllimport) extern "C"
+#else
+#define _MDG_API_  __declspec(dllimport) extern
+#endif
 #endif
 #elif __GNUC__ >= 4
 #define _MDG_API_ extern __attribute__ ((visibility ("default")))
