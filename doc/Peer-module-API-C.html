@@ -907,6 +907,11 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table">Security reset&#8201;&#8212;&#8201;revoke all pairings</p></td>
 </tr>
 <tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-notify-pairings_changed">mdg_notify_pairings_changed</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Notify library that mdg_storage has updated pairings</p></td>
+</tr>
+<tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-make-private-key">mdg_make_private_key</a></p></td>
 <td align="left" valign="top"><p class="table">App</p></td>
 <td align="left" valign="top"><p class="table">Create fresh identity</p></td>
@@ -960,6 +965,11 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table"><a href="#cmd-aggressive-ping">mdg_aggressive_ping</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
 <td align="left" valign="top"><p class="table">Put the peer in aggressive ping mode for a while</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-invoke-service">mdgext_invoke_service</a></p></td>
+<td align="left" valign="top"><p class="table">Device</p></td>
+<td align="left" valign="top"><p class="table">Invoke a remote service through cloud</p></td>
 </tr>
 </tbody>
 </table>
@@ -1148,7 +1158,7 @@ This token can now be utilised in another App instance to gain access.
 </div>
 <div class="sect2">
 <h3 id="_roles_and_access_control">Roles and access control</h3>
-<div class="paragraph"><p>The MDG library does not impose any access restrictions other that the
+<div class="paragraph"><p>The MDG library does not impose any access restrictions other than the
 "pairing" concept: Only paired devices can establish connections to
 paired devices.</p></div>
 <div class="paragraph"><p>An application in a device can implement any kind of access
@@ -1157,6 +1167,23 @@ the peer. The local application can then decide if the request is
 valid coming from that particular peer. See
 <a href="#cmd-mdg-get-connection-info">mdg_get_connection_info</a> and
 <a href="#cmd-routing">mdguser_routing</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_placing_and_receiving_calls">Placing and receiving calls</h3>
+<div class="paragraph"><p>Calls may be placed either locally or remote (Through the cloud).</p></div>
+<div class="paragraph"><p>Local connections requires the client to locate the peer ip and port,
+usually done using mDNS or similar discovery. Locating the peer is out
+of scope for this library. The library allows client to keep local
+connections idle for as long as the underlying OS and networking stack
+lets the idle TCP connections live.</p></div>
+<div class="paragraph"><p>A device may accept calls from an un-paired peer using
+place-call-local. This allows a device to act as a Access point (AP)
+and allows performing bootstrap configuration with a locally present
+device. See <a href="#cmd-set-peer-verifying-cb">mdg_set_peer_verifying_cb</a></p></div>
+<div class="paragraph"><p>Remote connection requires the peers to be paired, but allows calling
+knowing only the peer_id of the peer. The Cloud service finds the
+device and routes the connection. Remote connections to peers are
+closed if they are left idle for more than 60 seconds.</p></div>
 </div>
 </div>
 </div>
@@ -1562,12 +1589,11 @@ Output
 </dt>
 <dd>
 <p>
-0 for succes, non-zero for failure. Note, that this method connects asynchronously, and returns immediately. Failure to connect to the grid is <strong>not</strong> signalled as a failure here. See <code>mdg_status</code> for connectivity status.
+0 for succes, non-zero for failure. Note, that this method connects asynchronously, and returns immediately. Failure to connect to the grid is <strong>not</strong> signalled as a failure here. See <code>mdg_status</code> for connectivity status, or rely on <code>mdguser_control_status</code> callbacks to know he current cloud connection state.
 </p>
 </dd>
 </dl></div>
-<div class="paragraph"><p>Properties are formatted as a byte array. | key1 | 0 | value1 | 0 | key2 | value2 | 0 | &#8230;</p></div>
-<div class="paragraph"><p>Property names starting with "<code>mdg_</code>" are reserved and will be ignored.</p></div>
+<div class="paragraph"><p>Property names starting with "<code>mdg_</code>" are reserved for internal use.</p></div>
 <div class="paragraph"><p>The following property names have special meaning:</p></div>
 <div class="ulist"><ul>
 <li>
@@ -1576,12 +1602,17 @@ Output
 </p>
 </li>
 </ul></div>
-<div class="paragraph"><p>Note: Properties are sent to grid server only when connecting. Invoking <code>mdg_connect</code> while connected does not ship changes to properties.</p></div>
-<div class="paragraph"><p>Note: Properties need to fit in the initial handshake, thus keep th number of properties low and the keys and values short.</p></div>
+<div class="paragraph"><p>Note: Properties are sent to grid server only when
+connecting. Invoking <code>mdg_connect</code> while connected does not ship
+changes to properties.</p></div>
+<div class="paragraph"><p>Note: Properties need to fit in the initial handshake, thus keep the
+number of properties low and the keys and values short.</p></div>
 </div>
 <div class="sect2">
 <h3 id="cmd-disconnect">Function <code>mdg_disconnect</code></h3>
 <div class="paragraph"><p>Set the connection toggle to "be disconnected".</p></div>
+<div class="paragraph"><p>Note that this does not disconnect any active peer connection to other
+peers. close any individual peer connection using <a href="#cmd-mdg-close-peer-connection">mdg_close_peer_connection</a>.</p></div>
 <div class="paragraph"><p>Return 0 on success.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
@@ -1614,6 +1645,7 @@ None.
 subsequent pairing steps, as a zero-terminated string of ascii digits [0-9].</p></div>
 <div class="paragraph"><p>Note, when pairing is local, the first x digits in the otp
 (one-time-password) will be zeros. Refer to  <code>pairing_mode</code> field to tell if it&#8217;s local or remote or failed.</p></div>
+<div class="paragraph"><p>start_timestamp and end_timestamp are in seconds since some internal epoch. Start is "now" when the state is mdg_pairing_starting</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
@@ -1688,7 +1720,8 @@ http://www.gnu.org/software/src-highlite -->
 </div>
 <div class="sect2">
 <h3 id="cmd-revoke-pairing">Function <code>mdg_revoke_pairing</code></h3>
-<div class="paragraph"><p>Revoke a specific pairing.</p></div>
+<div class="paragraph"><p>Revoke a specific pairing. If the specified device has any active
+routing connections with this peer, they&#8217;re dropped.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
@@ -1780,6 +1813,37 @@ None
 </dd>
 </dl></div>
 <div class="paragraph"><p>Returns 0 on success.</p></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-notify-pairings_changed">Function <code>mdg_notify_pairings_changed</code></h3>
+<div class="paragraph"><p>Notify the mdg library that the set of pairings, maintained by
+mdg_storage, has been changed by other sources than through
+mdg_add_pairing, mdg_revoke_pairing, mdg_revoke_all_pairings,
+mdg_enable_pairing_mode, mdg_pair_remote, mdg_pair_local.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdg_notify_pairings_changed</span></span><span style="color: #990000">();</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<p>
+None
+</p>
+</dd>
+<dt class="hdlist1">
+Outputs
+</dt>
+<dd>
+<p>
+None
+</p>
+</dd>
+</dl></div>
 </div>
 <div class="sect2">
 <h3 id="cmd-pair-remote">Function <code>mdg_pair_remote</code></h3>
@@ -1902,7 +1966,7 @@ http://www.gnu.org/software/src-highlite -->
 <h3 id="cmd-place-call">Function <code>mdg_place_call_remote</code></h3>
 <div class="paragraph"><p>Place a call to another (paired) peer, through the grid.</p></div>
 <div class="paragraph"><p>To receive data, issue a receive request using <code>mdg_receive_from_peer</code> when connection succeeds.</p></div>
-<div class="paragraph"><p>To cancel connection, also while it is not yet completed, invoke <code>mdg_close_peer_connection</code>.</p></div>
+<div class="paragraph"><p>To cancel connection, also while it is not yet completed, invoke <a href="#cmd-mdg-close-peer-connection">mdg_close_peer_connection</a>.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
@@ -1974,7 +2038,7 @@ Inputs
 <div class="ulist"><ul>
 <li>
 <p>
-<code>device_id</code> = &lt;string&gt;
+<code>device_id</code> = &lt;string&gt; or 0 if not known
 </p>
 </li>
 <li>
@@ -2022,6 +2086,10 @@ Returns
 "127.0.0.1" or "fe80::36e6:d7ff:fe78:5f5b". The address string must be
 resolvable on the local platform. It is typically obtained through
 mDNS or similar discover method on the local network.</p></div>
+<div class="paragraph"><p>Invoking with <code>device_id</code> = 0 is allowed to support placing a call to
+yet-unknown device. You should then use <code>mdg_get_connection_info</code> once
+the call is established to get the identity of the device. This
+scenario is particularly useful for devices in AP-mode.</p></div>
 </div>
 <div class="sect2">
 <h3 id="mdg-receive-from-peer">Function <code>mdg_receive_from_peer</code></h3>
@@ -2135,10 +2203,86 @@ could ask for a compiled version with a larger number of buffers, if
 you have memory to spare for that.</p></div>
 </div>
 <div class="sect2">
+<h3 id="cmd-send-to-peer-append">Function <code>mdg_send_to_peer_append</code></h3>
+<div class="paragraph"><p>Transmit (application) data to another peer through a connection, possibly combining into one send.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_send_to_peer_append</span></span><span style="color: #990000">(</span><span style="color: #008080">uint8_t</span> <span style="color: #990000">*</span>data<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> count<span style="color: #990000">,</span>
+                                          <span style="color: #008080">uint32_t</span> connection_id<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> flush_now<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>data</code> = memory buffer holding data received. Only valid during invocation of call.
+</p>
+</li>
+<li>
+<p>
+<code>count</code> = number of bytes in buffer
+</p>
+</li>
+<li>
+<p>
+<code>connection_id</code> which connection to send data to. (Returned by a <code>place-call</code>)
+</p>
+</li>
+<li>
+<p>
+<code>flush_now</code> when nonzero, try to flush for sending.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success
+</p>
+</li>
+<li>
+<p>
+1 if connection is invalid or no longer valid.
+</p>
+</li>
+<li>
+<p>
+2 if sending is currently not possible. Likely cause is lack of buffers.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Buffering happens for each send, in that data is copied on success.
+When specifying flush_now=0, the data is appended to an existing
+outgoing data buffer as far as possible. Actual sending is then
+triggered by a call with flush_now=1. It is okay to invoke with
+data=count=0 and flush_now=1 to just flush without adding additional
+payload.</p></div>
+<div class="paragraph"><p>On embedded platforms, the number of buffers is set fairly low
+(e.g. 10) and you should implement a flush-then-wait-then-resend
+strategy when getting a return value of 2. Or you could ask for a
+compiled version with a larger number of buffers, if you have memory
+to spare for that.</p></div>
+</div>
+<div class="sect2">
 <h3 id="cmd-mdg-close-peer-connection">Function <code>mdg_close_peer_connection</code></h3>
 <div class="paragraph"><p>Release / close tunnel to a peer.
 Makes the connection_id available for reuse.
 Closing a connection that is not open or partially open is okay.</p></div>
+<div class="paragraph"><p><a href="#cmd-routing">mdguser_routing</a> is invoked with
+<code>mdg_routing_disconnected</code> as new state unless the connection was closed
+already, in which case nothing happens.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
@@ -2502,6 +2646,67 @@ Returns
 </dd>
 </dl></div>
 </div>
+<div class="sect2">
+<h3 id="cmd-send-client-metrics">Function <code>mdg_send_client_metrics</code></h3>
+<div class="paragraph"><p>Send metrics for statistics to the cloud servers.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #FF0000">{</span>
+  <span style="color: #009900">char</span> <span style="color: #990000">*</span>name<span style="color: #990000">;</span>
+  <span style="color: #008080">int64_t</span> value<span style="color: #990000">;</span>
+<span style="color: #FF0000">}</span> mdg_metric_t<span style="color: #990000">;</span>
+
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_send_client_metrics</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_property_t</span> <span style="color: #990000">*</span>properties<span style="color: #990000">,</span>
+                                          <span style="color: #008080">mdg_metric_t</span> <span style="color: #990000">*</span>metrics<span style="color: #990000">);</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-invoke-service">Function <code>mdgext_invoke_service</code></h3>
+<div class="paragraph"><p>Invoke a registrered remote service through the MDG server, passing
+arguments and data payload through the existing connection to the
+cloud. Requests started through this interface are handled as "fire
+and forget" requests.</p></div>
+<div class="paragraph"><p>Some services implement responses. For those, if the MDG server
+reports anything, messages will be delivered to the response_cb and
+the state will go to the state_cb.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+        mdg_service_failed <span style="color: #990000">=</span> <span style="color: #990000">-</span><span style="color: #993399">1</span><span style="color: #990000">,</span>
+        mdg_service_completed <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+<span style="color: #FF0000">}</span> mdg_service_status_t<span style="color: #990000">;</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+        mdg_test_internal <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+        mdg_push_json_android <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
+        mdg_push_json_ios <span style="color: #990000">=</span> <span style="color: #993399">2</span>
+<span style="color: #FF0000">}</span> mdg_service_id<span style="color: #990000">;</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="color: #009900">void</span> <span style="color: #990000">(*</span>mdg_service_state<span style="color: #990000">)(</span><span style="color: #009900">void</span> <span style="color: #990000">*</span>user_data<span style="color: #990000">,</span> <span style="color: #008080">mdg_service_status_t</span> state<span style="color: #990000">);</span>
+<span style="font-style: italic"><span style="color: #9A1900">/* Arguments set when invoking mdg_service_data:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `user_data` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `state` indicates the state change. (Not all state changes occur for all services.)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> */</span></span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="color: #009900">void</span> <span style="color: #990000">(*</span>mdg_service_data<span style="color: #990000">)(</span><span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #009900">unsigned</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>data<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> count<span style="color: #990000">,</span> <span style="color: #009900">void</span> <span style="color: #990000">*</span>user_data<span style="color: #990000">);</span>
+<span style="font-style: italic"><span style="color: #9A1900">/* Arguments set when invoking mdg_service_data:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `data` = memory buffer holding data received. Only valid during invocation of call.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `count` = number of bytes in buffer</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `user_data` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> */</span></span>
+
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_invoke_service</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_service_id</span> service_id<span style="color: #990000">,</span>
+                                        <span style="color: #008080">mdg_property_t</span> <span style="color: #990000">*</span>properties<span style="color: #990000">,</span>
+                                        <span style="color: #008080">uint8_t</span> <span style="color: #990000">*</span>data<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> count<span style="color: #990000">,</span>
+                                        <span style="color: #009900">void</span> <span style="color: #990000">*</span>user_data<span style="color: #990000">,</span>
+                                        <span style="color: #008080">mdg_service_state</span> state_cb<span style="color: #990000">,</span>
+                                        <span style="color: #008080">mdg_service_data</span> response_cb<span style="color: #990000">);</span></tt></pre></div></div>
+</div>
 </div>
 </div>
 </div>
@@ -2509,7 +2714,7 @@ Returns
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2015-12-23 10:35:49 CET
+ 2016-04-13 08:45:16 CEST
 </div>
 </div>
 </body>
