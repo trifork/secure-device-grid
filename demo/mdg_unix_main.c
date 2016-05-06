@@ -31,7 +31,7 @@ extern void mdg_chat_client_input(char *stdin_buf, int len);
 
 void mdg_chat_output_fprintf(const char *fmt, ...);
 
-#define BUFFER_LENGTH 1024
+#define BUFFER_LENGTH (1024+30) // A bit extra added to make room for both a 512-byte bytestring in hex plus the rest of a command.
 static char stdin_buf[BUFFER_LENGTH], *rp = stdin_buf;
 int io_port = -1;
 int io_socket = -1;

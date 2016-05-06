@@ -967,9 +967,29 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table">Put the peer in aggressive ping mode for a while</p></td>
 </tr>
 <tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-mutex-take">mdg_mutex_take</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Takes the mdg mutex.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-mutex-release">mdg_mutex_release</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Releases the mdg mutex.</p></td>
+</tr>
+<tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-invoke-service">mdgext_invoke_service</a></p></td>
 <td align="left" valign="top"><p class="table">Device</p></td>
 <td align="left" valign="top"><p class="table">Invoke a remote service through cloud</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-register-peer-push">mdgext_register_peer_token</a></p></td>
+<td align="left" valign="top"><p class="table">Device</p></td>
+<td align="left" valign="top"><p class="table">Register a token for pushes to a peer.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-secure-debug-log">mdgext_secure_log_line</a></p></td>
+<td align="left" valign="top"><p class="table">Device</p></td>
+<td align="left" valign="top"><p class="table">Send/buffer a logline for remote log.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2663,6 +2683,47 @@ http://www.gnu.org/software/src-highlite -->
                                           <span style="color: #008080">mdg_metric_t</span> <span style="color: #990000">*</span>metrics<span style="color: #990000">);</span></tt></pre></div></div>
 </div>
 <div class="sect2">
+<h3 id="cmd-mutex-take">Function <code>mdg_mutex_take</code></h3>
+<div class="paragraph"><p>Takes the mdg mutex (only relevant on threaded platforms).
+This should be avoided if possible as it can lead to deadlocks if the developer
+is not careful.
+Always call mdg_mutex_release when done using the mutex, and strive to
+release it as quickly as possible.
+Useful in certain scenarios, such as to avoid sending data to
+the wrong peer when calling mdg_send_to_peer from outside of an mdg callback.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_mutex_take</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-mutex-release">Function <code>mdg_mutex_release</code></h3>
+<div class="paragraph"><p>Releases the mdg mutex (only relevant on threaded platforms).
+Used in conjunction with mdg_mutex_take.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdg_mutex_release</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span><span style="color: #990000">);</span></tt></pre></div></div>
+</div>
+<div class="sect2">
 <h3 id="cmd-invoke-service">Function <code>mdgext_invoke_service</code></h3>
 <div class="paragraph"><p>Invoke a registrered remote service through the MDG server, passing
 arguments and data payload through the existing connection to the
@@ -2707,6 +2768,91 @@ http://www.gnu.org/software/src-highlite -->
                                         <span style="color: #008080">mdg_service_state</span> state_cb<span style="color: #990000">,</span>
                                         <span style="color: #008080">mdg_service_data</span> response_cb<span style="color: #990000">);</span></tt></pre></div></div>
 </div>
+<div class="sect2">
+<h3 id="cmd-secure-debug-log">Function <code>mdgext_secure_log_line</code></h3>
+<div class="paragraph"><p>Ship (compacted) loglines to the servers for debugging purposes.
+Each file needs to be assgined a unique number for SECURE_LOG_MODULE_NO. This avoids sending/keeping the filenames as strings.
+The mapping from SECURE_LOG_MODULE_NO to actual file name is done out of band.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Macros
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+SECURE_LOG_LOC() logs the module and linenumber without further parameters.
+</p>
+</li>
+<li>
+<p>
+SECURE_LOG_PRINTF(fmt, &#8230;) logs as SECURE_LOG_LOC but adds a vsnprintf-formatted string+ varargs too.
+</p>
+</li>
+<li>
+<p>
+SECURE_LOG_HEXBLOB(data, count) logs as SECURE_LOG_LOC but adds a single hex-dumped output of a memory location. Ensure count &lt; buffer_size.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">#if</span></span> <span style="font-weight: bold"><span style="color: #000000">defined</span></span><span style="color: #990000">(</span>MDG_CC3200<span style="color: #990000">)</span> <span style="color: #990000">||</span> <span style="font-weight: bold"><span style="color: #000000">defined</span></span><span style="color: #990000">(</span>MDG_UCOS<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_LOC</span></span><span style="color: #990000">()</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_PRINTF</span></span><span style="color: #990000">(</span>a<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_printf</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>a<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_PRINTF</span></span><span style="color: #990000">(</span>a<span style="color: #990000">,</span>b<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_printf</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>a<span style="color: #990000">,</span>b<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_PRINTF</span></span><span style="color: #990000">(</span>a<span style="color: #990000">,</span>b<span style="color: #990000">,</span>c<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_printf</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>a<span style="color: #990000">,</span>b<span style="color: #990000">,</span>c<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_HEXBLOB</span></span><span style="color: #990000">(</span>data<span style="color: #990000">,</span>count<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_hexblob</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>data<span style="color: #990000">,</span>count<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#elif</span></span> __STDC_VERSION__ <span style="color: #990000">&gt;=</span> <span style="color: #993399">199901L</span> <span style="color: #990000">||</span> MDG_WINDOWS
+<span style="font-style: italic"><span style="color: #9A1900">/* C99 version: */</span></span>
+<span style="font-weight: bold"><span style="color: #000080">#include</span></span> <span style="color: #FF0000">&lt;stdio.h&gt;</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_LOC</span></span><span style="color: #990000">()</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_PRINTF</span></span><span style="color: #990000">(...)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_printf</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>__VA_ARGS__<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_HEXBLOB</span></span><span style="color: #990000">(</span>data<span style="color: #990000">,</span>count<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_hexblob</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>data<span style="color: #990000">,</span>count<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#else</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">/* GCC version: */</span></span>
+<span style="font-weight: bold"><span style="color: #000080">#include</span></span> <span style="color: #FF0000">&lt;stdio.h&gt;</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_LOC</span></span><span style="color: #990000">()</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_PRINTF</span></span><span style="color: #990000">(</span>args<span style="color: #990000">...)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_printf</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>args<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_HEXBLOB</span></span><span style="color: #990000">(</span>data<span style="color: #990000">,</span>count<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_hexblob</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>data<span style="color: #990000">,</span>count<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000080">#endif</span></span>
+
+
+_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> module<span style="color: #990000">,</span><span style="color: #008080">uint32_t</span> lineno<span style="color: #990000">);</span>
+_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_printf</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> module<span style="color: #990000">,</span><span style="color: #008080">uint32_t</span> lineno<span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>fmt<span style="color: #990000">,...);</span>
+_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_hexblob</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> module<span style="color: #990000">,</span><span style="color: #008080">uint32_t</span> lineno<span style="color: #990000">,</span><span style="color: #009900">void</span> <span style="color: #990000">*</span>data<span style="color: #990000">,</span><span style="color: #008080">uint32_t</span> count<span style="color: #990000">);</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-register-peer-push">Function <code>mdgext_register_peer_token</code></h3>
+<div class="paragraph"><p>Register a token with the MDG servers related to a peer, to allow the
+MDG servers to push message to the peers when this device goes
+offline.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+  mdgext_peer_kind_android <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+  mdgext_peer_kind_ios <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
+  mdgext_peer_kind_web <span style="color: #990000">=</span> <span style="color: #993399">2</span><span style="color: #990000">,</span>
+<span style="color: #FF0000">}</span> mdgext_peer_kind_t<span style="color: #990000">;</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+  mdgext_push_on_connection_lost_default <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+<span style="color: #FF0000">}</span> mdgext_push_subscription_kind<span style="color: #990000">;</span>
+
+_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_register_peer_token</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> peer<span style="color: #990000">,</span>
+                                          <span style="color: #009900">void</span> <span style="color: #990000">*</span>token<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> token_len<span style="color: #990000">,</span>
+                                          <span style="color: #008080">mdgext_peer_kind_t</span> peer_kind<span style="color: #990000">,</span>
+                                          <span style="color: #009900">char</span> <span style="color: #990000">*</span>locale_code<span style="color: #990000">,</span>
+                                          <span style="color: #008080">mdgext_push_subscription_kind</span> sub_kind<span style="color: #990000">);</span></tt></pre></div></div>
+</div>
 </div>
 </div>
 </div>
@@ -2714,7 +2860,7 @@ http://www.gnu.org/software/src-highlite -->
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2016-04-13 08:45:16 CEST
+ 2016-04-26 15:42:43 CEST
 </div>
 </div>
 </body>

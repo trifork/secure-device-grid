@@ -188,9 +188,14 @@ typedef struct {
 
 _MDG_API_ int32_t mdg_send_client_metrics(mdg_property_t *properties,
                                           mdg_metric_t *metrics);
+_MDG_API_ int32_t mdg_mutex_lock(void);
+_MDG_API_ void mdg_mutex_unlock(void);
+_MDG_API_ int32_t mdg_mutex_init(void);
 typedef enum {
+        mdg_service_running = 0,
+        mdg_service_release = 1,
+        mdg_service_completed = 2,
         mdg_service_failed = -1,
-        mdg_service_completed = 0,
 } mdg_service_status_t;
 
 typedef enum {
@@ -199,23 +204,73 @@ typedef enum {
         mdg_push_json_ios = 2
 } mdg_service_id;
 
-typedef void (*mdg_service_state)(void *user_data, mdg_service_status_t state);
-/* Arguments set when invoking mdg_service_data:
- * `user_data` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).
- * `state` indicates the state change. (Not all state changes occur for all services.)
- */
+typedef struct mdgext_service_invocation mdgext_service_invocation;
 
-typedef void (*mdg_service_data)(const unsigned char *data, uint32_t count, void *user_data);
+typedef void (*mdg_service_cb)(mdgext_service_invocation * invocation,
+                               mdg_service_status_t state,
+                               const unsigned char *data,
+                               const uint32_t count);
+
+struct mdgext_service_invocation {
+        uint32_t internal_id;
+        uint32_t internal_state;
+        mdg_service_id service_id;
+        mdg_property_t *properties;
+        void *req_data;
+        uint32_t req_data_count;
+        mdg_service_cb cb;
+};
+
 /* Arguments set when invoking mdg_service_data:
+ * `internal_*` are internal to the library - do not modify these.
+ * `invocation` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).
+ * `state` indicates the state change. (Not all state changes occur for all services.)
  * `data` = memory buffer holding data received. Only valid during invocation of call.
  * `count` = number of bytes in buffer
- * `user_data` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).
+ * `data` and `count` are both zero when no data is relevant, such as for status=mdg_service_failed.
  */
 
-_MDG_API_ int32_t mdgext_invoke_service(mdg_service_id service_id,
-                                        mdg_property_t *properties,
-                                        uint8_t *data, uint32_t count,
-                                        void *user_data,
-                                        mdg_service_state state_cb,
-                                        mdg_service_data response_cb);
+_MDG_API_ int32_t mdgext_invoke_service(mdgext_service_invocation *invocation);
+_MDG_API_ int32_t mdgext_abort_service(mdgext_service_invocation *invocation);
+_MDG_API_ void mdg_secure_log_flush();
+#if defined(MDG_CC3200)
+#define SECURE_LOG_LOC() mdgext_secure_log_line(SECURE_LOG_MODULE_NO,__LINE__)
+#define SECURE_LOG_PRINTF(a) mdgext_secure_log_line_printf(SECURE_LOG_MODULE_NO,__LINE__,a)
+#define SECURE_LOG_PRINTF(a,b) mdgext_secure_log_line_printf(SECURE_LOG_MODULE_NO,__LINE__,a,b)
+#define SECURE_LOG_PRINTF(a,b,c) mdgext_secure_log_line_printf(SECURE_LOG_MODULE_NO,__LINE__,a,b,c)
+#define SECURE_LOG_HEXBLOB(data,count) mdgext_secure_log_line_hexblob(SECURE_LOG_MODULE_NO,__LINE__,data,count)
+#elif __STDC_VERSION__ >= 199901L || defined(MDG_WINDOWS) || defined(MDG_UCOS)
+/* C99 version: */
+#include <stdio.h>
+#define SECURE_LOG_LOC() mdgext_secure_log_line(SECURE_LOG_MODULE_NO,__LINE__)
+#define SECURE_LOG_PRINTF(...) mdgext_secure_log_line_printf(SECURE_LOG_MODULE_NO,__LINE__,__VA_ARGS__)
+#define SECURE_LOG_HEXBLOB(data,count) mdgext_secure_log_line_hexblob(SECURE_LOG_MODULE_NO,__LINE__,data,count)
+#else
+/* GCC version: */
+#include <stdio.h>
+#define SECURE_LOG_LOC() mdgext_secure_log_line(SECURE_LOG_MODULE_NO,__LINE__)
+#define SECURE_LOG_PRINTF(args...) mdgext_secure_log_line_printf(SECURE_LOG_MODULE_NO,__LINE__,args)
+#define SECURE_LOG_HEXBLOB(data,count) mdgext_secure_log_line_hexblob(SECURE_LOG_MODULE_NO,__LINE__,data,count)
+#endif
+
+
+_MDG_API_ void mdgext_secure_log_line(uint32_t module,uint32_t lineno);
+_MDG_API_ void mdgext_secure_log_line_printf(uint32_t module,uint32_t lineno, const char *fmt,...);
+_MDG_API_ void mdgext_secure_log_line_hexblob(uint32_t module,uint32_t lineno,void *data,uint32_t count);
+typedef enum {
+  mdgext_peer_kind_android = 0,
+  mdgext_peer_kind_ios = 1,
+  mdgext_peer_kind_web = 2,
+} mdgext_peer_kind_t;
+
+typedef enum {
+  mdgext_push_on_connection_lost_default = 0,
+} mdgext_push_subscription_kind;
+
+_MDG_API_ int32_t mdgext_register_peer_token(mdg_peer_id_t peer,
+                                             void *token, uint32_t token_len,
+                                             mdgext_peer_kind_t peer_kind,
+                                             char *locale_code,
+                                             mdgext_push_subscription_kind sub_kind,
+                                             uint32_t flags);
 #endif

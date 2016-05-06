@@ -17,6 +17,8 @@
 #include "mdg_peer_api.h"
 #include "mdg_peer_storage.h"
 
+#define SECURE_LOG_MODULE_NO 117
+
 // Include demo of file downloading - links mdgext_filedown into the binary too.
 #define DEMO_FILE_DOWNLOAD
 
@@ -47,7 +49,7 @@ struct cmd {
   char *short_name;
   char *long_name;
   char *help_text;
-  void (*handler)(char *args_buf, int len);
+  void (*handler)(char *args_buf, unsigned int len);
 };
 
 static void save_all_pairings_to_file()
@@ -123,7 +125,7 @@ mdg_property_t chatclient_client_props[] = {
   {0, 0 },
 };
 
-static int arg_decode_gotonext(char **args_buf, int *lenp)
+static int arg_decode_gotonext(char **args_buf, unsigned int *lenp)
 {
   int i, len = *lenp;
   char *p = *args_buf;
@@ -149,7 +151,7 @@ static int arg_decode_gotonext(char **args_buf, int *lenp)
   return 0;
 }
 
-static int arg_decode_device_id_hex(char **args_buf, int *len, uint8_t *target)
+static int arg_decode_device_id_hex(char **args_buf, unsigned int *len, uint8_t *target)
 {
   char *dev_id_arg = *args_buf;
   char *first_space = strstr(dev_id_arg, " ");
@@ -175,13 +177,13 @@ static int arg_decode_device_id_hex(char **args_buf, int *len, uint8_t *target)
   return 0;
 }
 
-static void quit_handler(char *args_buf, int len)
+static void quit_handler(char *args_buf, unsigned int len)
 {
   mdg_chat_output_fprintf("got quit command, exit(0)\n");
   mdg_chat_client_exit();
 }
 
-static void whoami_handler(char *args_buf, int len)
+static void whoami_handler(char *args_buf, unsigned int len)
 {
   mdg_peer_id_t device_id;
   char hexed[128];
@@ -196,7 +198,7 @@ static void whoami_handler(char *args_buf, int len)
 
 
 
-static void status_handler(char *args_buf, int len)
+static void status_handler(char *args_buf, unsigned int len)
 {
   int s;
   mdg_status_t status;
@@ -214,7 +216,7 @@ static void status_handler(char *args_buf, int len)
   mdg_chat_output_fprintf("remote_logging:   %d\n", (int)status.remote_logging_enabled);
 }
 
-static void connect_handler(char *args_buf, int len)
+static void connect_handler(char *args_buf, unsigned int len)
 {
   if (mdg_connect(chatclient_client_props) != 0) {
     mdg_chat_output_fprintf("mdg_chat_client: connect failed\n");
@@ -226,14 +228,14 @@ void mdg_chat_init()
   connect_handler(0, 0);
 }
 
-static void disconnect_handler(char *args_buf, int len)
+static void disconnect_handler(char *args_buf, unsigned int len)
 {
   if (mdg_disconnect() != 0) {
     mdg_chat_output_fprintf("mdg_chat_client: disconnect failed\n");
   }
 }
 
-static int arg_parse_device_public_key(char **args_buf, int *len, uint8_t *device_id)
+static int arg_parse_device_public_key(char **args_buf, unsigned int *len, uint8_t *device_id)
 {
   if (*len < 1) {
     mdg_chat_output_fprintf("could not parse arg as public key\n");
@@ -251,7 +253,7 @@ static int arg_parse_device_public_key(char **args_buf, int *len, uint8_t *devic
   return 0;
 }
 
-static void pair_remote_handler(char *args_buf, int len)
+static void pair_remote_handler(char *args_buf, unsigned int len)
 {
   char *otp_arg = args_buf;
   int s;
@@ -265,7 +267,7 @@ static void pair_remote_handler(char *args_buf, int len)
   }
 }
 
-static void set_hex_output_mode_handler(char *args_buf, int len)
+static void set_hex_output_mode_handler(char *args_buf, unsigned int len)
 {
   char *flag_arg = args_buf;
   long flag;
@@ -287,7 +289,7 @@ static int32_t accept_all_peers(const char *protocol, const mdg_peer_id_t callin
   return 0;
 }
 
-static void set_ap_mode_handler(char *args_buf, int len)
+static void set_ap_mode_handler(char *args_buf, unsigned int len)
 {
   char *flag_arg = args_buf;
   long flag;
@@ -307,7 +309,7 @@ static void set_ap_mode_handler(char *args_buf, int len)
   }
 }
 
-static void aggressive_ping_handler(char *args_buf, int len)
+static void aggressive_ping_handler(char *args_buf, unsigned int len)
 {
   char *duration_arg = args_buf;
   long duration;
@@ -330,7 +332,7 @@ static void aggressive_ping_handler(char *args_buf, int len)
 }
 
 static char preset_otp_buffer[MDG_PRESET_PAIR_ID_SIZE];
-static void open_for_pairing_handler(char *args_buf, int len)
+static void open_for_pairing_handler(char *args_buf, unsigned int len)
 {
   char *duration_arg = args_buf;
   long duration;
@@ -352,7 +354,7 @@ static void open_for_pairing_handler(char *args_buf, int len)
   }
 }
 
-static void open_for_pairing_handler_preset_otp(char *args_buf, int len)
+static void open_for_pairing_handler_preset_otp(char *args_buf, unsigned int len)
 {
   char *otp_arg = args_buf;
   long duration = 120;
@@ -382,7 +384,7 @@ static void open_for_pairing_handler_preset_otp(char *args_buf, int len)
 }
 
 
-static int set_intparam_handler(char **args_buf, int *len,
+static int set_intparam_handler(char **args_buf, unsigned int *len,
                                  char *param_name,
                                  int *target, int min, int max)
 {
@@ -403,7 +405,7 @@ static int set_intparam_handler(char **args_buf, int *len,
   }
 }
 
-static void set_pc_timeout_handler(char *args_buf, int len)
+static void set_pc_timeout_handler(char *args_buf, unsigned int len)
 {
   if (!set_intparam_handler(&args_buf, &len, "timeout",
                             &pcr_timeout, 1, 600)) {
@@ -412,7 +414,7 @@ static void set_pc_timeout_handler(char *args_buf, int len)
   }
 }
 
-static void test_random_handler(char *args_buf, int len)
+static void test_random_handler(char *args_buf, unsigned int len)
 {
   uint8_t buffer[MDG_PEER_ID_SIZE];
   char hexed[2*MDG_PEER_ID_SIZE + 1];
@@ -422,7 +424,80 @@ static void test_random_handler(char *args_buf, int len)
   mdg_chat_output_fprintf("%s\n", hexed);
 }
 
-static void set_incomingcall_testdelay_handler(char *args_buf, int len)
+#ifndef MDGEXT_NO_CLIENT_DEBUG
+static void demo_secure_log_loc_handler(char *args_buf, unsigned int len)
+{
+  SECURE_LOG_LOC();
+  SECURE_LOG_PRINTF("printf-demo-line %d %d", -1, 2);
+  mdg_secure_log_flush();
+}
+#endif /* MDGEXT_NO_CLIENT_DEBUG */
+
+#ifndef MDGEXT_NO_SERVER_PUSH
+static void demo_mdgext_register_peer_token(char *args_buf, unsigned int len)
+{
+  uint8_t device_id[MDG_PEER_ID_SIZE];
+  void* token;
+  uint32_t token_len;
+  char* locale_code;
+  int s;
+
+  if (arg_parse_device_public_key(&args_buf, &len, device_id)) {
+    return;
+  }
+
+  token = args_buf;
+  if (arg_decode_gotonext(&args_buf, &len)) {
+    mdg_chat_output_fprintf("Missing required arg, token.\n");
+    return;
+  }
+  token_len = strlen(token); // token is a byte-array, but just a string in this demo.
+
+  locale_code = args_buf;
+  if (arg_decode_gotonext(&args_buf, &len)) {
+    mdg_chat_output_fprintf("Missing required arg, locale_code.\n");
+    return;
+  }
+
+  s = mdgext_register_peer_token(device_id,
+                                 token, token_len,
+                                 mdgext_peer_kind_android,
+                                 locale_code,
+                                 mdgext_push_on_connection_lost_default,
+                                 1);
+  if (s) {
+    mdg_chat_output_fprintf("mdgext_register_peer_token failed with %d\n", s);
+  }
+}
+#endif /* MDGEXT_NO_SERVER_PUSH */
+
+#ifndef MDGEXT_NO_INVOKE_SERVICE
+static void demo_mdgext_invoke_test_service_cb(mdgext_service_invocation * invocation,
+                                               mdg_service_status_t state,
+                                               const unsigned char *data,
+                                               const uint32_t count)
+{
+}
+
+static mdgext_service_invocation test_service;
+static void demo_mdgext_invoke_test_service(char *args_buf, unsigned int len)
+{
+  int s;
+
+  test_service.service_id = mdg_test_internal;
+  test_service.properties = 0;
+  test_service.req_data = 0;
+  test_service.req_data_count = 0;
+  test_service.cb = demo_mdgext_invoke_test_service_cb;
+
+  s = mdgext_invoke_service(&test_service);
+  if (s) {
+    mdg_chat_output_fprintf("mdgext_invoke_service failed with %d\n", s);
+  }
+}
+#endif /* MDGEXT_NO_INVOKE_SERVICE */
+
+static void set_incomingcall_testdelay_handler(char *args_buf, unsigned int len)
 {
   if (!set_intparam_handler(&args_buf, &len, "incomingcall_testdelay",
                             &incomingcall_testdelay, 0, 6000)) {
@@ -431,7 +506,7 @@ static void set_incomingcall_testdelay_handler(char *args_buf, int len)
   }
 }
 
-static void close_conn_handler(char *args_buf, int len)
+static void close_conn_handler(char *args_buf, unsigned int len)
 {
   int conn_id, s;
   if (!set_intparam_handler(&args_buf, &len, "connection_id",
@@ -445,7 +520,7 @@ static void close_conn_handler(char *args_buf, int len)
 }
 
 
-static void conninfo_handler(char *args_buf, int len)
+static void conninfo_handler(char *args_buf, unsigned int len)
 {
   int conn_id, s;
   uint8_t sender_device_id[MDG_PEER_ID_SIZE];
@@ -468,7 +543,7 @@ static void conninfo_handler(char *args_buf, int len)
 
 extern void save_demo_email();
 
-static void email_handler(char *args_buf, int len)
+static void email_handler(char *args_buf, unsigned int len)
 {
   char *a1 = args_buf;
   a1[len] = 0;
@@ -484,7 +559,7 @@ static void email_handler(char *args_buf, int len)
   save_demo_email();
 }
 
-static void send_handler(char *args_buf, int len)
+static void send_handler(char *args_buf, unsigned int len)
 {
   int conn_id, s;
   char *message;
@@ -500,7 +575,7 @@ static void send_handler(char *args_buf, int len)
   }
 }
 
-static void send_append_handler(char *args_buf, int len)
+static void send_append_handler(char *args_buf, unsigned int len)
 {
   int conn_id, flush_now, s;
   char *message;
@@ -523,7 +598,7 @@ static void send_append_handler(char *args_buf, int len)
   }
 }
 
-static void send_hex_handler(char *args_buf, int len)
+static void send_hex_handler(char *args_buf, unsigned int len)
 {
   int conn_id, s;
   uint8_t data[512]; // Be carefull with large chunks on stack.
@@ -546,7 +621,7 @@ static void send_hex_handler(char *args_buf, int len)
   }
 }
 
-static void send_hex_append_handler(char *args_buf, int len)
+static void send_hex_append_handler(char *args_buf, unsigned int len)
 {
   int conn_id, flush_now, s;
   uint8_t data[512]; // Be carefull with large chunks on stack.
@@ -640,12 +715,12 @@ void mdguser_pairing_state(mdg_pairing_mode_state_t* state, mdg_pairing_status s
   }
 }
 
-static void cancel_pairing_mode_handler(char *args_buf, int len)
+static void cancel_pairing_mode_handler(char *args_buf, unsigned int len)
 {
   mdg_disable_pairing_mode();
 }
 
-static void list_pairings_handler(char *args_buf, int len)
+static void list_pairings_handler(char *args_buf, unsigned int len)
 {
   int i;
   char hexed[2 * MDG_PEER_ID_SIZE + 1];
@@ -657,22 +732,26 @@ static void list_pairings_handler(char *args_buf, int len)
   }
 }
 
-static void remove_pairing_handler(char *args_buf, int len)
+static void remove_pairing_handler(char *args_buf, unsigned int len)
 {
   unsigned char peer_id[MDG_PEER_ID_SIZE];
   if (!arg_parse_device_public_key(&args_buf, &len, peer_id)) {
     int s = mdg_revoke_pairing(peer_id);
-    mdg_chat_output_fprintf("mdg_revoke_pairing returned %d\n", s);
+    {
+      char hexed[2 * MDG_PEER_ID_SIZE + 1];
+      hex_encode_bytes(peer_id, hexed, MDG_PEER_ID_SIZE);
+      mdg_chat_output_fprintf("mdg_revoke_pairing: returned=%d Peer=\"%s\"\n", s, hexed);
+    }
   }
 }
 
-static void remove_all_pairings_handler(char *args_buf, int len)
+static void remove_all_pairings_handler(char *args_buf, unsigned int len)
 {
   int s = mdg_revoke_all_pairings();
   mdg_chat_output_fprintf("mdg_revoke_all_pairings returned %d\n", s);
 }
 
-static void add_test_pairing_handler(char *args_buf, int len)
+static void add_test_pairing_handler(char *args_buf, unsigned int len)
 {
   uint8_t peer_id[MDG_PEER_ID_SIZE];
   if (!arg_parse_device_public_key(&args_buf, &len, peer_id)) {
@@ -681,7 +760,7 @@ static void add_test_pairing_handler(char *args_buf, int len)
   }
 }
 
-static void start_local_listener_handler(char *args_buf, int len)
+static void start_local_listener_handler(char *args_buf, unsigned int len)
 {
   int s = mdg_start_local_listener();
   if (s != 0) {
@@ -754,7 +833,7 @@ extern const mdg_configuration mdg_configuration_tmdg82;
 extern const mdg_configuration mdg_configuration_test;
 extern const mdg_configuration mdg_configuration_prod01;
 
-static void ota_demo_handler(char *args_buf, int len)
+static void ota_demo_handler(char *args_buf, unsigned int len)
 {
   static uint8_t init = 0;
   uint32_t s;
@@ -789,7 +868,7 @@ static void ota_demo_handler(char *args_buf, int len)
 }
 #endif
 
-static void kill_local_listener_handler(char *args_buf, int len)
+static void kill_local_listener_handler(char *args_buf, unsigned int len)
 {
   int s = mdg_stop_local_listener();
   if (s != 0) {
@@ -797,7 +876,7 @@ static void kill_local_listener_handler(char *args_buf, int len)
   }
 }
 
-static void place_call_remote_handler(char *args_buf, int len)
+static void place_call_remote_handler(char *args_buf, unsigned int len)
 {
   uint8_t device_id[MDG_PEER_ID_SIZE];
   char *protocol_arg;
@@ -824,7 +903,7 @@ static void place_call_remote_handler(char *args_buf, int len)
   }
 }
 
-static void pair_local_handler(char *args_buf, int len)
+static void pair_local_handler(char *args_buf, unsigned int len)
 {
   int s;
   char *otp_arg;
@@ -853,7 +932,7 @@ static void pair_local_handler(char *args_buf, int len)
   }
 }
 
-static void place_call_local_handler(char *args_buf, int len)
+static void place_call_local_handler(char *args_buf, unsigned int len)
 {
   int s;
   char* peer_ip;
@@ -926,8 +1005,8 @@ static int bootstrap_server_got_data(const unsigned char *data,
 
 
 
-static void basic_help_handler(char *args_buf, int len);
-static void advanced_help_handler(char *args_buf, int len);
+static void basic_help_handler(char *args_buf, unsigned int len);
+static void advanced_help_handler(char *args_buf, unsigned int len);
 static const struct cmd advanced_commands[] = {
   {"/c", "/connect",
    "Set connection-wanted flag to true",
@@ -965,6 +1044,21 @@ static const struct cmd advanced_commands[] = {
   {"/t_rand", "/test_random_func",
    "Invoke random func, for testing. Prints 32 bytes data as hex.",
    test_random_handler},
+#ifndef MDGEXT_NO_CLIENT_DEBUG
+  {"/x_loc", "/x_test_log_loc",
+   "Invoke single line remote log of file/lineno.",
+   demo_secure_log_loc_handler},
+#endif
+#ifndef MDGEXT_NO_SERVER_PUSH
+  {"/x_rpt", "/x_reg_push",
+   "Register push token at server. Args: pubkey, token, locale.",
+   demo_mdgext_register_peer_token},
+#endif
+#ifndef MDGEXT_NO_INVOKE_SERVICE
+  {"/x_tsrv", "/x_test_service",
+   "Test remote service api.",
+   demo_mdgext_invoke_test_service},
+#endif
   {"/apm", "/access-point-mode",
    "Toggles access point simulation mode, 0/1 as optional arg",
    set_ap_mode_handler},
@@ -1051,11 +1145,11 @@ static void do_help_handler(const struct cmd *cmd)
   }
 }
 
-static void basic_help_handler(char *args_buf, int len)
+static void basic_help_handler(char *args_buf, unsigned int len)
 {
   do_help_handler(basic_commands);
 }
-static void advanced_help_handler(char *args_buf, int len)
+static void advanced_help_handler(char *args_buf, unsigned int len)
 {
   do_help_handler(advanced_commands);
 }
@@ -1073,10 +1167,10 @@ static const struct cmd* find_command(const struct cmd *cmd, char *input)
   return 0;
 }
 
-void mdg_chat_client_input(char *in_buf, int len)
+void mdg_chat_client_input(char *in_buf, unsigned int len)
 {
   const struct cmd *cmd;
-  int i, args_len;
+  unsigned int i, args_len;
   char *args;
   for (i = 0; i < len; i++) {
     if (in_buf[i] == ' ') {
@@ -1084,16 +1178,20 @@ void mdg_chat_client_input(char *in_buf, int len)
     }
   }
   in_buf[i] = 0; // make cmd a string of it's own.
-  i++;
-  for ( ; i < len; i++) {
-    if (in_buf[i] != ' ') {
-      break;
+  if (i == len) {
+    args = "";
+    args_len = 0;
+  } else {
+    i++;
+    for ( ; i < len; i++) {
+      if (in_buf[i] != ' ') {
+        break;
+      }
     }
+    args = &in_buf[i];
+    args_len = len - i;
+    args[args_len] = 0; // Teminate args string as well.
   }
-  args = &in_buf[i];
-  args_len = len - i;
-  args[args_len] = 0; // Teminate args string as well.
-
   cmd = find_command(basic_commands, in_buf);
   if (cmd == 0) {
     cmd = find_command(advanced_commands, in_buf);
