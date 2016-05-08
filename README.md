@@ -1,10 +1,10 @@
-# Secure Device Grid(TM)
+# Secure Device Grid<sup>TM</sup>
 
 [A secure and powerfull platform for IoT connectivity, software update, device management & realtime data analysis.](http://securedevicegrid.com)
 
 ## Demo chat clients
 
-These clients are for handout at the Trifork booth at the conference.
+These clients can pair, connect and send messages.
 
 *   [Linux 64 bit (Build on Ubuntu 15.04)](./binaries/sandbox/ubuntu/sandbox-demo)
 *   [OSX for Mac](./binaries/sandbox/macosx/Sandbox-demo)
