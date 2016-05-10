@@ -967,14 +967,19 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table">Put the peer in aggressive ping mode for a while</p></td>
 </tr>
 <tr>
-<td align="left" valign="top"><p class="table"><a href="#cmd-mutex-take">mdg_mutex_take</a></p></td>
+<td align="left" valign="top"><p class="table"><a href="#cmd-mutex-init">mdg_mutex_init</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Takes the mdg mutex.</p></td>
+<td align="left" valign="top"><p class="table">Initialize the mdg mutex.</p></td>
 </tr>
 <tr>
-<td align="left" valign="top"><p class="table"><a href="#cmd-mutex-release">mdg_mutex_release</a></p></td>
+<td align="left" valign="top"><p class="table"><a href="#cmd-mutex-lock">mdg_mutex_lock</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Releases the mdg mutex.</p></td>
+<td align="left" valign="top"><p class="table">Lock the mdg mutex.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><a href="#cmd-mutex-unlock">mdg_mutex_unlock</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">Unlock the mdg mutex.</p></td>
 </tr>
 <tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-invoke-service">mdgext_invoke_service</a></p></td>
@@ -2615,14 +2620,30 @@ non-zero on failure
 <div class="paragraph"><p>Start (or restart if running) the local listener.
 Local socket listening for connections happen only after this is done.
 On some systems it may be necessary to restart the listener
-when IP configuration on the device changes.</p></div>
+when local IP configuration on the device changes.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_start_local_listener</span></span><span style="color: #990000">();</span></tt></pre></div></div>
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_start_local_listener</span></span><span style="color: #990000">(</span><span style="color: #008080">uint16_t</span> <span style="color: #990000">*</span>port<span style="color: #990000">);</span></tt></pre></div></div>
 <div class="dlist"><dl>
+<dt class="hdlist1">
+Inputs
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>port</code> = Required in/out parameter for port, as reference to 16 bit port number.
+           Set to (pointer to) zero to let OS select port,
+           or set to specific port number to select your own.
+           Upon success, the port is set to the selected port.
+           (Suggested port: 14641 on single-process devices, 0 on multi-process devices)
+</p>
+</li>
+</ul></div>
+</dd>
 <dt class="hdlist1">
 Returns
 </dt>
@@ -2683,12 +2704,12 @@ http://www.gnu.org/software/src-highlite -->
                                           <span style="color: #008080">mdg_metric_t</span> <span style="color: #990000">*</span>metrics<span style="color: #990000">);</span></tt></pre></div></div>
 </div>
 <div class="sect2">
-<h3 id="cmd-mutex-take">Function <code>mdg_mutex_take</code></h3>
-<div class="paragraph"><p>Takes the mdg mutex (only relevant on threaded platforms).
+<h3 id="cmd-mutex-lock">Function <code>mdg_mutex_lock</code></h3>
+<div class="paragraph"><p>Lock the mdg mutex (only relevant on threaded platforms).
 This should be avoided if possible as it can lead to deadlocks if the developer
 is not careful.
-Always call mdg_mutex_release when done using the mutex, and strive to
-release it as quickly as possible.
+Always call mdg_mutex_unlock when done using the mutex, and strive to
+unlock it as quickly as possible.
 Useful in certain scenarios, such as to avoid sending data to
 the wrong peer when calling mdg_send_to_peer from outside of an mdg callback.</p></div>
 <div class="listingblock">
@@ -2696,7 +2717,7 @@ the wrong peer when calling mdg_send_to_peer from outside of an mdg callback.</p
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_mutex_take</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span><span style="color: #990000">);</span></tt></pre></div></div>
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_mutex_lock</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span><span style="color: #990000">);</span></tt></pre></div></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
 Returns
@@ -2713,15 +2734,40 @@ Returns
 </dl></div>
 </div>
 <div class="sect2">
-<h3 id="cmd-mutex-release">Function <code>mdg_mutex_release</code></h3>
-<div class="paragraph"><p>Releases the mdg mutex (only relevant on threaded platforms).
-Used in conjunction with mdg_mutex_take.</p></div>
+<h3 id="cmd-mutex-unlock">Function <code>mdg_mutex_unlock</code></h3>
+<div class="paragraph"><p>Unlock the mdg mutex (only relevant on threaded platforms).
+Used in conjunction with mdg_mutex_lock.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt>_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdg_mutex_release</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span><span style="color: #990000">);</span></tt></pre></div></div>
+<pre><tt>_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdg_mutex_unlock</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span><span style="color: #990000">);</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="cmd-mutex-init">Function <code>mdg_mutex_init</code></h3>
+<div class="paragraph"><p>Initialize the mdg mutex (only relevant on threaded platforms).
+Must be invoked before mdg_mutex_lock / mdg_mutex_unlock and before mdg_init.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_mutex_init</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
 </div>
 <div class="sect2">
 <h3 id="cmd-invoke-service">Function <code>mdgext_invoke_service</code></h3>
@@ -2738,8 +2784,10 @@ by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
 <pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+        mdg_service_running <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+        mdg_service_release <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
+        mdg_service_completed <span style="color: #990000">=</span> <span style="color: #993399">2</span><span style="color: #990000">,</span>
         mdg_service_failed <span style="color: #990000">=</span> <span style="color: #990000">-</span><span style="color: #993399">1</span><span style="color: #990000">,</span>
-        mdg_service_completed <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
 <span style="color: #FF0000">}</span> mdg_service_status_t<span style="color: #990000">;</span>
 
 <span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
@@ -2748,25 +2796,60 @@ http://www.gnu.org/software/src-highlite -->
         mdg_push_json_ios <span style="color: #990000">=</span> <span style="color: #993399">2</span>
 <span style="color: #FF0000">}</span> mdg_service_id<span style="color: #990000">;</span>
 
-<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="color: #009900">void</span> <span style="color: #990000">(*</span>mdg_service_state<span style="color: #990000">)(</span><span style="color: #009900">void</span> <span style="color: #990000">*</span>user_data<span style="color: #990000">,</span> <span style="color: #008080">mdg_service_status_t</span> state<span style="color: #990000">);</span>
-<span style="font-style: italic"><span style="color: #9A1900">/* Arguments set when invoking mdg_service_data:</span></span>
-<span style="font-style: italic"><span style="color: #9A1900"> * `user_data` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).</span></span>
-<span style="font-style: italic"><span style="color: #9A1900"> * `state` indicates the state change. (Not all state changes occur for all services.)</span></span>
-<span style="font-style: italic"><span style="color: #9A1900"> */</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">mdgext_service_invocation</span> mdgext_service_invocation<span style="color: #990000">;</span>
 
-<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="color: #009900">void</span> <span style="color: #990000">(*</span>mdg_service_data<span style="color: #990000">)(</span><span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #009900">unsigned</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>data<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> count<span style="color: #990000">,</span> <span style="color: #009900">void</span> <span style="color: #990000">*</span>user_data<span style="color: #990000">);</span>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="color: #009900">void</span> <span style="color: #990000">(*</span>mdg_service_cb<span style="color: #990000">)(</span>mdgext_service_invocation <span style="color: #990000">*</span> invocation<span style="color: #990000">,</span>
+                               <span style="color: #008080">mdg_service_status_t</span> state<span style="color: #990000">,</span>
+                               <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #009900">unsigned</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>data<span style="color: #990000">,</span>
+                               <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">uint32_t</span> count<span style="color: #990000">);</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">mdgext_service_invocation</span> <span style="color: #FF0000">{</span>
+        <span style="color: #008080">uint32_t</span> internal_id<span style="color: #990000">;</span>
+        <span style="color: #008080">uint32_t</span> internal_state<span style="color: #990000">;</span>
+        <span style="color: #008080">mdg_service_id</span> service_id<span style="color: #990000">;</span>
+        <span style="color: #008080">mdg_property_t</span> <span style="color: #990000">*</span>properties<span style="color: #990000">;</span>
+        <span style="color: #009900">void</span> <span style="color: #990000">*</span>req_data<span style="color: #990000">;</span>
+        <span style="color: #008080">uint32_t</span> req_data_count<span style="color: #990000">;</span>
+        <span style="color: #008080">mdg_service_cb</span> cb<span style="color: #990000">;</span>
+<span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+
 <span style="font-style: italic"><span style="color: #9A1900">/* Arguments set when invoking mdg_service_data:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `internal_*` are internal to the library - do not modify these.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `invocation` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `state` indicates the state change. (Not all state changes occur for all services.)</span></span>
 <span style="font-style: italic"><span style="color: #9A1900"> * `data` = memory buffer holding data received. Only valid during invocation of call.</span></span>
 <span style="font-style: italic"><span style="color: #9A1900"> * `count` = number of bytes in buffer</span></span>
-<span style="font-style: italic"><span style="color: #9A1900"> * `user_data` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `data` and `count` are both zero when no data is relevant, such as for status=mdg_service_failed.</span></span>
 <span style="font-style: italic"><span style="color: #9A1900"> */</span></span>
 
-<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_invoke_service</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_service_id</span> service_id<span style="color: #990000">,</span>
-                                        <span style="color: #008080">mdg_property_t</span> <span style="color: #990000">*</span>properties<span style="color: #990000">,</span>
-                                        <span style="color: #008080">uint8_t</span> <span style="color: #990000">*</span>data<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> count<span style="color: #990000">,</span>
-                                        <span style="color: #009900">void</span> <span style="color: #990000">*</span>user_data<span style="color: #990000">,</span>
-                                        <span style="color: #008080">mdg_service_state</span> state_cb<span style="color: #990000">,</span>
-                                        <span style="color: #008080">mdg_service_data</span> response_cb<span style="color: #990000">);</span></tt></pre></div></div>
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_invoke_service</span></span><span style="color: #990000">(</span><span style="color: #008080">mdgext_service_invocation</span> <span style="color: #990000">*</span>invocation<span style="color: #990000">);</span>
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_abort_service</span></span><span style="color: #990000">(</span><span style="color: #008080">mdgext_service_invocation</span> <span style="color: #990000">*</span>invocation<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Returns
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+0 on success.
+</p>
+</li>
+<li>
+<p>
+non-zero on failure
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="paragraph"><p>The library holds on to the pointer to the invocation until it invkodes the cb with state=mdg_service_release.
+Do not reuse the memory for other purposes before that.
+It is okay to alter the <code>cb</code> from within the invocation of the cb only.
+This allows using the cb to keep track of current state when parsing the response.</p></div>
+<div class="paragraph"><p><code>mdgext_abort_service</code> may be invoked at any time on an active
+invocation. It makes the requires cleanup in the library and invokes
+the cb with stat=mdg_service_release.</p></div>
 </div>
 <div class="sect2">
 <h3 id="cmd-secure-debug-log">Function <code>mdgext_secure_log_line</code></h3>
@@ -2802,13 +2885,15 @@ SECURE_LOG_HEXBLOB(data, count) logs as SECURE_LOG_LOC but adds a single hex-dum
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #000080">#if</span></span> <span style="font-weight: bold"><span style="color: #000000">defined</span></span><span style="color: #990000">(</span>MDG_CC3200<span style="color: #990000">)</span> <span style="color: #990000">||</span> <span style="font-weight: bold"><span style="color: #000000">defined</span></span><span style="color: #990000">(</span>MDG_UCOS<span style="color: #990000">)</span>
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">/* DRAFT API for logging - Macros in public API is perhaps not so great... */</span></span>
+_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdg_secure_log_flush</span></span><span style="color: #990000">();</span>
+<span style="font-weight: bold"><span style="color: #000080">#if</span></span> <span style="font-weight: bold"><span style="color: #000000">defined</span></span><span style="color: #990000">(</span>MDG_CC3200<span style="color: #990000">)</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_LOC</span></span><span style="color: #990000">()</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">)</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_PRINTF</span></span><span style="color: #990000">(</span>a<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_printf</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>a<span style="color: #990000">)</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_PRINTF</span></span><span style="color: #990000">(</span>a<span style="color: #990000">,</span>b<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_printf</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>a<span style="color: #990000">,</span>b<span style="color: #990000">)</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_PRINTF</span></span><span style="color: #990000">(</span>a<span style="color: #990000">,</span>b<span style="color: #990000">,</span>c<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_printf</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>a<span style="color: #990000">,</span>b<span style="color: #990000">,</span>c<span style="color: #990000">)</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_HEXBLOB</span></span><span style="color: #990000">(</span>data<span style="color: #990000">,</span>count<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line_hexblob</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">,</span>data<span style="color: #990000">,</span>count<span style="color: #990000">)</span>
-<span style="font-weight: bold"><span style="color: #000080">#elif</span></span> __STDC_VERSION__ <span style="color: #990000">&gt;=</span> <span style="color: #993399">199901L</span> <span style="color: #990000">||</span> MDG_WINDOWS
+<span style="font-weight: bold"><span style="color: #000080">#elif</span></span> __STDC_VERSION__ <span style="color: #990000">&gt;=</span> <span style="color: #993399">199901L</span> <span style="color: #990000">||</span> <span style="font-weight: bold"><span style="color: #000000">defined</span></span><span style="color: #990000">(</span>MDG_WINDOWS<span style="color: #990000">)</span> <span style="color: #990000">||</span> <span style="font-weight: bold"><span style="color: #000000">defined</span></span><span style="color: #990000">(</span>MDG_UCOS<span style="color: #990000">)</span>
 <span style="font-style: italic"><span style="color: #9A1900">/* C99 version: */</span></span>
 <span style="font-weight: bold"><span style="color: #000080">#include</span></span> <span style="color: #FF0000">&lt;stdio.h&gt;</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> <span style="font-weight: bold"><span style="color: #000000">SECURE_LOG_LOC</span></span><span style="color: #990000">()</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_secure_log_line</span></span><span style="color: #990000">(</span>SECURE_LOG_MODULE_NO<span style="color: #990000">,</span>__LINE__<span style="color: #990000">)</span>
@@ -2830,8 +2915,7 @@ _MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bol
 <div class="sect2">
 <h3 id="cmd-register-peer-push">Function <code>mdgext_register_peer_token</code></h3>
 <div class="paragraph"><p>Register a token with the MDG servers related to a peer, to allow the
-MDG servers to push message to the peers when this device goes
-offline.</p></div>
+MDG servers to push message to the peers when the specified event kind occurs for this device.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
@@ -2847,11 +2931,31 @@ http://www.gnu.org/software/src-highlite -->
   mdgext_push_on_connection_lost_default <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
 <span style="color: #FF0000">}</span> mdgext_push_subscription_kind<span style="color: #990000">;</span>
 
-_MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_register_peer_token</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> peer<span style="color: #990000">,</span>
-                                          <span style="color: #009900">void</span> <span style="color: #990000">*</span>token<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> token_len<span style="color: #990000">,</span>
-                                          <span style="color: #008080">mdgext_peer_kind_t</span> peer_kind<span style="color: #990000">,</span>
-                                          <span style="color: #009900">char</span> <span style="color: #990000">*</span>locale_code<span style="color: #990000">,</span>
-                                          <span style="color: #008080">mdgext_push_subscription_kind</span> sub_kind<span style="color: #990000">);</span></tt></pre></div></div>
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_register_peer_token</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> peer<span style="color: #990000">,</span>
+                                             <span style="color: #009900">void</span> <span style="color: #990000">*</span>token<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> token_len<span style="color: #990000">,</span>
+                                             <span style="color: #008080">mdgext_peer_kind_t</span> peer_kind<span style="color: #990000">,</span>
+                                             <span style="color: #009900">char</span> <span style="color: #990000">*</span>locale_code<span style="color: #990000">,</span>
+                                             <span style="color: #008080">mdgext_push_subscription_kind</span> sub_kind<span style="color: #990000">,</span>
+                                             <span style="color: #008080">uint32_t</span> flags<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<code>flags</code> are a bit-field send along to the server-side. Known flags include
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+Bit 0 (value 1) activate instant test upon registration. Intended to be set once, when the subscription is initially requested by the end user, to allow the end user to experience how such a notification appears. The test sent might indicate that it is a test though.
+</p>
+</li>
+<li>
+<p>
+Bit 1 (value 2) N/A
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
 </div>
 </div>
 </div>
@@ -2860,7 +2964,7 @@ _MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bol
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2016-04-26 15:42:43 CEST
+ 2016-05-09 13:33:50 CEST
 </div>
 </div>
 </body>
