@@ -2,17 +2,18 @@
 [logo]: http://securedevicegrid.com/wp-content/uploads/2016/05/logo_mark@2x.png "SecureDeviceGrid"
 [A secure and powerfull IoT platform for connectivity, software update, device management & realtime data analysis.](http://securedevicegrid.com)
 
-## Demo chat clients
+## Sandbox chat clients
 
-AThese clients can pair, connect and send messages.
+These clients can pair, connect, and send messages.
 
+Desktop clients
 *   [Linux 64 bit (Build on Ubuntu 15.04)](./binaries/sandbox/ubuntu/sandbox-demo)
 *   [OSX for Mac](./binaries/sandbox/macosx/Sandbox-demo)
 *   [Windows](./binaries/sandbox/windows/win32-sandbox.zip)
 *   [Android 4+](./binaries/sandbox/android/sandbox-demo.apk)
 *   [iOS 8+ (source code)](./binaries/release_ios.zip)
 
-The "desktop" clients are ready-to-run executables. They store their
+The desktop clients are ready-to-run executables. They store their
 local state in the filesystem in the directory where they are
 launched. You can run multiple copies on one machine, provided you
 keep those directories distinct.
@@ -32,10 +33,12 @@ for the platform.
 
 *   [Broadcom WICED on NetX Duo (Using WICED-SDK v3.1.2)](./binaries/release_wiced.zip)
 *   [TI CC3200 Simplelink SDK (Using CC3200SDK v1.1.0)](./binaries/release_cc3200.zip)
+*   Raspberry Pi
+*   Intel Edison
 
 ## Quick start guide
 
-Here are the steps to get started ussing the example clients.
+Here are the steps to get started using the client libraries.
 
 *   Run two clients. If you run them on the same machine, start them in each their directory.
 *   In either client (or both) execute "/email youremail@example.org Your Name" to register your client for the conference price-draw. This is optional.
