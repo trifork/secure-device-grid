@@ -1,10 +1,10 @@
-# Secure Device Grid<sup>TM</sup>
-
-[A secure and powerfull platform for IoT connectivity, software update, device management & realtime data analysis.](http://securedevicegrid.com)
+# SecureDeviceGrid<sup>TM</sup>
+[logo]: http://securedevicegrid.com/wp-content/uploads/2016/05/logo_mark@2x.png "SecureDeviceGrid"
+[A secure and powerfull IoT platform for connectivity, software update, device management & realtime data analysis.](http://securedevicegrid.com)
 
 ## Demo chat clients
 
-These clients can pair, connect and send messages.
+AThese clients can pair, connect and send messages.
 
 *   [Linux 64 bit (Build on Ubuntu 15.04)](./binaries/sandbox/ubuntu/sandbox-demo)
 *   [OSX for Mac](./binaries/sandbox/macosx/Sandbox-demo)
@@ -48,5 +48,5 @@ Here are the steps to get started ussing the example clients.
 ## Licensing
 
 You may use these examples and demos for evaluation purposes only.
-Using Trifork Secure Device Grid in your product requires a
+Using SecureDeviceGrid<sup>TM</sup> in your product requires a
 license. [Please contact us.](http://trifork.com)
