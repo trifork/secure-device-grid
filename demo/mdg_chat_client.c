@@ -762,9 +762,19 @@ static void add_test_pairing_handler(char *args_buf, unsigned int len)
 
 static void start_local_listener_handler(char *args_buf, unsigned int len)
 {
-  int s = mdg_start_local_listener();
+  char *port_arg = args_buf;
+  uint16_t port;
+  if (!arg_decode_gotonext(&args_buf, &len)) {
+    port = (uint16_t)strtol(port_arg, 0, 10);
+  } else {
+    port = 0;
+  }
+
+  int s = mdg_start_local_listener(&port);
   if (s != 0) {
     mdg_chat_output_fprintf("mdg_start_local_listener failed with %d\n", s);
+  } else {
+    mdg_chat_output_fprintf("mdg_start_local_listener success on port %d\n", port);
   }
 }
 
@@ -1015,10 +1025,10 @@ static const struct cmd advanced_commands[] = {
    "set connection-wanted flag to false",
    disconnect_handler },
   {"/s-a", "/send-to-peer-append",
-   "Send a text message. Args: connection-id, flush_now, rest of line is message.",
+   "Send a text message. Args: conn.-id, flush_now, rest of line is msg.",
    send_append_handler},
   {"/sx-a", "/send-hex-to-peer-append",
-   "Send a binary message. Arg: connection-id, flush_now, rest of line is message.",
+   "Send a binary message. Arg: conn-id, flush_now, rest of line is msg.",
    send_hex_append_handler},
   {"/atp", "/add-test-pairing",
    "Add (fake) pairing, provide device-id as arg",
@@ -1063,7 +1073,7 @@ static const struct cmd advanced_commands[] = {
    "Toggles access point simulation mode, 0/1 as optional arg",
    set_ap_mode_handler},
   {"/sll", "/start-local-listener",
-   "Start (or restart) local connection listener",
+   "Start (or restart) local connection listener. Port as optional arg",
    start_local_listener_handler},
   {"/kll", "/kill-local-listener",
    "Kill local connection listener",

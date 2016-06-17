@@ -179,7 +179,7 @@ _MDG_API_ int32_t mdg_get_connection_info(uint32_t connection_id,
                                           char protocol[MAX_PROTOCOL_BYTES]);
 _MDG_API_ int32_t mdg_enable_remote_logging(uint32_t duration);
 _MDG_API_ int32_t mdg_set_debug_log_target(int32_t target);
-_MDG_API_ int32_t mdg_start_local_listener();
+_MDG_API_ int32_t mdg_start_local_listener(uint16_t *port);
 _MDG_API_ int32_t mdg_stop_local_listener();
 typedef struct {
   char *name;
@@ -232,6 +232,7 @@ struct mdgext_service_invocation {
 
 _MDG_API_ int32_t mdgext_invoke_service(mdgext_service_invocation *invocation);
 _MDG_API_ int32_t mdgext_abort_service(mdgext_service_invocation *invocation);
+/* DRAFT API for logging - Macros in public API is perhaps not so great... */
 _MDG_API_ void mdg_secure_log_flush();
 #if defined(MDG_CC3200)
 #define SECURE_LOG_LOC() mdgext_secure_log_line(SECURE_LOG_MODULE_NO,__LINE__)
