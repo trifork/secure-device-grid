@@ -1,0 +1,11 @@
+platform :ios, '8.0'
+
+inhibit_all_warnings!
+use_frameworks!
+
+target 'MDGChat' do
+    pod 'SlackTextViewController', '~> 1.9'
+    pod 'Valet', '~> 2.0'
+    pod 'IQKeyboardManagerSwift', '~> 3.3.4'
+    pod 'CocoaLumberjack/Swift', '~> 2.2.0'
+end
