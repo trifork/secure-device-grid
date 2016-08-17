@@ -1,6 +1,6 @@
 # Secure Device Grid iOS Chat App
 
-This project demonstrates the basic use of MDG (Mobile Device Grid) on iOS.
+This project demonstrates the basic use of SDG (Secure Device Grid) on iOS using the *MDG.framework*.
 
 ## Instructions
 

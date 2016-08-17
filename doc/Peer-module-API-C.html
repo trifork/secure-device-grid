@@ -823,7 +823,7 @@ handled as pointer arguments.</p></div>
 <div class="sect1">
 <h2 id="_function_overview">Function overview</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Most parts of the API are meant for all peers. A few are mostly usefull for "App" (user interface end) or "Device" (non-user interface end) as indicated by the "Profile" column.</p></div>
+<div class="paragraph"><p>Most parts of the API are meant for all peers. A few are mostly useful for "App" (user interface end) or "Device" (non-user interface end) as indicated by the "Profile" column.</p></div>
 <div class="paragraph"><p>The following functions are provided:</p></div>
 <div class="tableblock">
 <table rules="all"
@@ -947,19 +947,19 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table">make remote debugging go to local / remote target</p></td>
 </tr>
 <tr>
-<td align="left" valign="top"><p class="table"><a href="#cmd-mdg-close-peer-connection">mdg_close_peer_connection</a></p></td>
+<td align="left" valign="top"><p class="table"><a href="#cmd-close-peer-connection">mdg_close_peer_connection</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
 <td align="left" valign="top"><p class="table">Release / close tunnel to a peer.</p></td>
 </tr>
 <tr>
-<td align="left" valign="top"><p class="table"><a href="#cmd-mdg-get-connection-info">mdg_get_connection_info</a></p></td>
+<td align="left" valign="top"><p class="table"><a href="#cmd-get-connection-info">mdg_get_connection_info</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
 <td align="left" valign="top"><p class="table">Lookup the other end of an established connection.</p></td>
 </tr>
 <tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-set-peer-verifying-cb">mdg_set_peer_verifying_cb</a></p></td>
 <td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Implement custom check for verifyin peer.</p></td>
+<td align="left" valign="top"><p class="table">Implement custom check for verifying peer.</p></td>
 </tr>
 <tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-aggressive-ping">mdg_aggressive_ping</a></p></td>
@@ -994,7 +994,7 @@ cellspacing="0" cellpadding="4">
 <tr>
 <td align="left" valign="top"><p class="table"><a href="#cmd-secure-debug-log">mdgext_secure_log_line</a></p></td>
 <td align="left" valign="top"><p class="table">Device</p></td>
-<td align="left" valign="top"><p class="table">Send/buffer a logline for remote log.</p></td>
+<td align="left" valign="top"><p class="table">Send/buffer a log line for remote log.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1039,35 +1039,36 @@ cellspacing="0" cellpadding="4">
 </tbody>
 </table>
 </div>
-<div class="paragraph"><p>Threads and locks</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>The MDG is built for multi-threading on platforms that support threads
+</div>
+</div>
+<div class="sect1">
+<h2 id="_threads_and_locks">Threads and locks</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The MDG is built for multi-threading on platforms that support threads
 or tasks, and single-threaded for system without threads. On most
-systems, only the multi-threaded version is available.
-
-The MDG interface is internally protected using a mutex. The mutex is
+systems, only the multi-threaded version is available.</p></div>
+<div class="paragraph"><p>The MDG interface is internally protected using a mutex. The mutex is
 acquired when entering any method in the MDG-api, and is also held by
 the internal threads, when they execute callbacks towards the
 application code, such as mdguser_*. The mutex is also held when the
-callsbacks given through the API, such as mdg_receive_from_peer, are
+callbacks given through the API, such as mdg_receive_from_peer, are
 invoked. It is thus safe to invoke MDG-lib API functions from within
-these callbacks, as the mutex is already acquired at that point.
-
-Take care *not* to acquire any mutexes from within a function invoked
-by MDG.  Doing so easily leads to deadlocks, as it's easy to have code
+these callbacks, as the mutex is already acquired at that point.</p></div>
+<div class="paragraph"><p>Take care <strong>not</strong> to acquire any mutexes from within a function invoked
+by MDG. Doing so easily leads to deadlocks, as it&#8217;s easy to have code
 elsewhere, that invokes MDG functions while holding those mutexes. And
-since those threads acquire muxtes in differing order, they're likely
-to deadlock each other.
-
-On certain embedded platforms, notably the TI CC-3200, where it is
+since those threads acquire mutexes in differing order, they&#8217;re likely
+to deadlock each other.</p></div>
+<div class="paragraph"><p>On certain embedded platforms, notably the TI CC-3200, where it is
 possible to build your application without OS and without
 threads/tasks, it makes sense to have a single-threaded MDG
 library. In this case, the MDG-lib expects your application to invoke
-the `mdg_run_main_loop` function as part of your syste main loop.
-
-Workflows</code></pre>
-</div></div>
+the <code>mdg_run_main_loop</code> function as part of your syste main loop.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_workflows">Workflows</h2>
+<div class="sectionbody">
 <div class="sect2">
 <h3 id="_pairing">Pairing</h3>
 <div class="ulist"><ul>
@@ -1190,7 +1191,7 @@ paired devices.</p></div>
 control. Incoming data from a peer is accompanied by the peer-id of
 the peer. The local application can then decide if the request is
 valid coming from that particular peer. See
-<a href="#cmd-mdg-get-connection-info">mdg_get_connection_info</a> and
+<a href="#cmd-get-connection-info">mdg_get_connection_info</a> and
 <a href="#cmd-routing">mdguser_routing</a></p></div>
 </div>
 <div class="sect2">
@@ -1215,7 +1216,7 @@ closed if they are left idle for more than 60 seconds.</p></div>
 <div class="sect1">
 <h2 id="_common_defines">Common defines</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>These set the sizes that are ued for buffer reservations inside the
+<div class="paragraph"><p>These set the sizes that are used for buffer reservations inside the
 library. Do not increase these in your build without getting a library
 build using the same values.</p></div>
 <div class="listingblock">
@@ -1243,7 +1244,7 @@ http://www.gnu.org/software/src-highlite -->
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_TICKET_BYTES <span style="color: #993399">40</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_ENDPOINT_ROUTES <span style="color: #993399">4</span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> MAX_OTP_BYTES <span style="color: #993399">32</span>
-<span style="font-style: italic"><span style="color: #9A1900">/* Lenght of part of otp, that is never sent to server: */</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">/* Length of OTP part, that is never sent to server: */</span></span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> LOCAL_PART_OTP_LEN <span style="color: #993399">3</span>
 <span style="font-style: italic"><span style="color: #9A1900">/* Rest of OTP is for server (when remote) and at least this many bytes: */</span></span>
 <span style="font-weight: bold"><span style="color: #000080">#define</span></span> SERVER_PART_OTP_MIN_LEN <span style="color: #993399">4</span>
@@ -1309,7 +1310,7 @@ Configuration fields
 <li>
 <p>
 servers: An array of pointers to endpoints, zero terminated. Each
-  endpoint holds a string represenation of an IP address and a port
+  endpoint holds a string representation of an IP address and a port
   number. The IP address may be IPv4 or IPv6.
 </p>
 </li>
@@ -1365,7 +1366,7 @@ http://www.gnu.org/software/src-highlite -->
 <span style="font-weight: bold"><span style="color: #0000FF">static</span></span> <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">mdg_configuration</span> demo_mdg_configuration <span style="color: #990000">=</span> <span style="color: #FF0000">{</span>
   mdg_control_hosts_demo<span style="color: #990000">,</span>
   trusted_server_keys_default<span style="color: #990000">,</span>
-  <span style="color: #993399">0</span> <span style="font-style: italic"><span style="color: #9A1900">//Use no mDNS name.</span></span>
+  <span style="color: #993399">0</span> <span style="font-style: italic"><span style="color: #9A1900">// Use no mDNS name.</span></span>
 <span style="color: #FF0000">}</span><span style="color: #990000">;</span>
 
 <span style="font-style: italic"><span style="color: #9A1900">// And then in main...:</span></span>
@@ -1379,7 +1380,7 @@ http://www.gnu.org/software/src-highlite -->
 <span style="font-weight: bold"><span style="color: #000080">#endif</span></span></tt></pre></div></div>
 </div>
 <div class="sect2">
-<h3 id="cmd-init">Function <code>init</code></h3>
+<h3 id="cmd-init">Function <code>mdg_init</code></h3>
 <div class="paragraph"><p>Bootstrap init. Invoke only once after booting. Must be invoked before any other method, except <code>mdg_set_configuration</code>.</p></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
@@ -1414,7 +1415,7 @@ http://www.gnu.org/software/src-highlite -->
 _MDG_API_ <span style="color: #008080">void</span> <span style="font-weight: bold"><span style="color: #000000">mdg_run_main_loop</span></span><span style="color: #990000">();</span></tt></pre></div></div>
 </div>
 <div class="sect2">
-<h3 id="cmd-status">Function <code>status</code></h3>
+<h3 id="cmd-status">Function <code>mdg_status</code></h3>
 <div class="paragraph"><p>Get connectivity, pairing-mode, and general status.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
@@ -1430,11 +1431,11 @@ http://www.gnu.org/software/src-highlite -->
 <span style="color: #FF0000">}</span> mdg_pairing_mode<span style="color: #990000">;</span>
 
 <span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #FF0000">{</span>
-  <span style="color: #008080">uint32_t</span> unixtime_utc<span style="color: #990000">;</span>    <span style="font-style: italic"><span style="color: #9A1900">/* Zero when not known, otherwise "UTC seconds since epoch=1970". */</span></span>
-  <span style="color: #008080">uint8_t</span> connect_switch<span style="color: #990000">;</span>   <span style="font-style: italic"><span style="color: #9A1900">/* 0/1 does client desire a mdg grid connection */</span></span>
-  <span style="color: #008080">uint8_t</span> connected_to_mdg<span style="color: #990000">;</span> <span style="font-style: italic"><span style="color: #9A1900">/* 0/1 does mdg consider this device to be connected to mdg grid? */</span></span>
-  <span style="color: #008080">mdg_pairing_mode</span> pairing_mode<span style="color: #990000">;</span>     <span style="font-style: italic"><span style="color: #9A1900">/* State of pairing state machine */</span></span>
-  <span style="color: #008080">uint8_t</span> aggressive_ping<span style="color: #990000">;</span>  <span style="font-style: italic"><span style="color: #9A1900">/* 0/1 is aggressive ping enabled? */</span></span>
+  <span style="color: #008080">uint32_t</span> unixtime_utc<span style="color: #990000">;</span>          <span style="font-style: italic"><span style="color: #9A1900">/* Zero when not known, otherwise "UTC seconds since epoch=1970". */</span></span>
+  <span style="color: #008080">uint8_t</span> connect_switch<span style="color: #990000">;</span>         <span style="font-style: italic"><span style="color: #9A1900">/* 0/1 does client desire a mdg grid connection */</span></span>
+  <span style="color: #008080">uint8_t</span> connected_to_mdg<span style="color: #990000">;</span>       <span style="font-style: italic"><span style="color: #9A1900">/* 0/1 does mdg consider this device to be connected to mdg grid? */</span></span>
+  <span style="color: #008080">mdg_pairing_mode</span> pairing_mode<span style="color: #990000">;</span>  <span style="font-style: italic"><span style="color: #9A1900">/* State of pairing state machine */</span></span>
+  <span style="color: #008080">uint8_t</span> aggressive_ping<span style="color: #990000">;</span>        <span style="font-style: italic"><span style="color: #9A1900">/* 0/1 is aggressive ping enabled? */</span></span>
   <span style="color: #008080">uint8_t</span> remote_logging_enabled<span style="color: #990000">;</span> <span style="font-style: italic"><span style="color: #9A1900">/* Is remote logging enabled at the moment? */</span></span>
 <span style="color: #FF0000">}</span> mdg_status_t<span style="color: #990000">;</span>
 
@@ -1453,7 +1454,7 @@ status: Out buffer.
 </ul></div>
 </dd>
 <dt class="hdlist1">
-Output
+Outputs
 </dt>
 <dd>
 <div class="ulist"><ul>
@@ -1487,7 +1488,7 @@ to the MDG infrastructure every 10 seconds.  This is useful when a peer
 wants to provide faster status feedback to a user.</p></div>
 <div class="paragraph"><p>Every time aggressive-ping is called, the duration is reset to the
 specified duration.
-(This means that the mode can be turned off by specifying a duration of 0.)</p></div>
+This means that the mode can be turned off by specifying a duration of 0.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
@@ -1502,7 +1503,7 @@ Inputs
 <div class="ulist"><ul>
 <li>
 <p>
-<code>duration</code> = &lt;integer&gt;    // Seconds. Maximum is 600. Recommended value is 60.
+<code>duration</code> in seconds. Maximum is 600. Recommended value is 60.
 </p>
 </li>
 </ul></div>
@@ -1544,7 +1545,7 @@ http://www.gnu.org/software/src-highlite -->
 <pre><tt><span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdg_make_private_key</span></span><span style="color: #990000">(</span><span style="color: #009900">void</span> <span style="color: #990000">*</span>private_key<span style="color: #990000">);</span></tt></pre></div></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-Output
+Outputs
 </dt>
 <dd>
 <p>
@@ -1554,7 +1555,7 @@ Fills the data pointed by <code>private_key</code> with MDG_PEER_ID_SIZE bytes d
 </dl></div>
 </div>
 <div class="sect2">
-<h3 id="cmd-whoami">Function <code>whoami</code></h3>
+<h3 id="cmd-whoami">Function <code>mdg_whoami</code></h3>
 <div class="paragraph"><p>Get information about the device&#8217;s identity.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
@@ -1572,7 +1573,7 @@ None
 </p>
 </dd>
 <dt class="hdlist1">
-Output
+Outputs
 </dt>
 <dd>
 <p>
@@ -1582,7 +1583,7 @@ Sets device_id to point to internal string representing the device id for this d
 </dl></div>
 </div>
 <div class="sect2">
-<h3 id="cmd-connect">Function <code>connect</code></h3>
+<h3 id="cmd-connect">Function <code>mdg_connect</code></h3>
 <div class="paragraph"><p>Set the connection toggle to "try to be connected" and register metadata to be sent to grid server.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
@@ -1610,11 +1611,11 @@ properties: array of mdg_property.
 </ul></div>
 </dd>
 <dt class="hdlist1">
-Output
+Outputs
 </dt>
 <dd>
 <p>
-0 for succes, non-zero for failure. Note, that this method connects asynchronously, and returns immediately. Failure to connect to the grid is <strong>not</strong> signalled as a failure here. See <code>mdg_status</code> for connectivity status, or rely on <code>mdguser_control_status</code> callbacks to know he current cloud connection state.
+0 for success, non-zero for failure. Note, that this method connects asynchronously, and returns immediately. Failure to connect to the grid is <strong>not</strong> signaled as a failure here. See <code>mdg_status</code> for connectivity status, or rely on <code>mdguser_control_status</code> callbacks to know he current cloud connection state.
 </p>
 </dd>
 </dl></div>
@@ -1637,7 +1638,7 @@ number of properties low and the keys and values short.</p></div>
 <h3 id="cmd-disconnect">Function <code>mdg_disconnect</code></h3>
 <div class="paragraph"><p>Set the connection toggle to "be disconnected".</p></div>
 <div class="paragraph"><p>Note that this does not disconnect any active peer connection to other
-peers. close any individual peer connection using <a href="#cmd-mdg-close-peer-connection">mdg_close_peer_connection</a>.</p></div>
+peers. close any individual peer connection using <a href="#cmd-close-peer-connection">mdg_close_peer_connection</a>.</p></div>
 <div class="paragraph"><p>Return 0 on success.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
@@ -1651,15 +1652,15 @@ Inputs
 </dt>
 <dd>
 <p>
-None.
+None
 </p>
 </dd>
 <dt class="hdlist1">
-Output
+Outputs
 </dt>
 <dd>
 <p>
-None.
+None
 </p>
 </dd>
 </dl></div>
@@ -1718,7 +1719,7 @@ Inputs
 <div class="ulist"><ul>
 <li>
 <p>
-<code>duration</code> = &lt;integer&gt;    // Pairing window, in seconds. Maximum is 120.
+<code>duration</code> for pairing window in seconds. Maximum is 120.
 </p>
 </li>
 </ul></div>
@@ -1897,7 +1898,7 @@ Outputs
 </dt>
 <dd>
 <p>
-Returns 0 on success. Status is signalled by calls to <code>mdguser_pairing_state</code>.
+Returns 0 on success. Status is signaled by calls to <code>mdguser_pairing_state</code>.
 </p>
 </dd>
 </dl></div>
@@ -1939,7 +1940,7 @@ Outputs
 </dt>
 <dd>
 <p>
-Returns 0 on success. Status is signalled by calls to <code>mdguser_pairing_state</code>.
+Returns 0 on success. Status is signaled by calls to <code>mdguser_pairing_state</code>.
 </p>
 </dd>
 </dl></div>
@@ -1947,7 +1948,7 @@ Returns 0 on success. Status is signalled by calls to <code>mdguser_pairing_stat
 "127.0.0.1" or "fe80::36e6:d7ff:fe78:5f5b". The address string must be
 resolvable on the local platform. It is typically obtained through
 mDNS or similar discover method on the local network.</p></div>
-<div class="paragraph"><p>The client is expected to use mDNS or similiar protocol to find network-local peers,
+<div class="paragraph"><p>The client is expected to use mDNS or similar protocol to find network-local peers,
 then try them one at a time, until a pairing succeeds.</p></div>
 </div>
 <div class="sect2">
@@ -1991,7 +1992,7 @@ http://www.gnu.org/software/src-highlite -->
 <h3 id="cmd-place-call">Function <code>mdg_place_call_remote</code></h3>
 <div class="paragraph"><p>Place a call to another (paired) peer, through the grid.</p></div>
 <div class="paragraph"><p>To receive data, issue a receive request using <code>mdg_receive_from_peer</code> when connection succeeds.</p></div>
-<div class="paragraph"><p>To cancel connection, also while it is not yet completed, invoke <a href="#cmd-mdg-close-peer-connection">mdg_close_peer_connection</a>.</p></div>
+<div class="paragraph"><p>To cancel connection, also while it is not yet completed, invoke <a href="#cmd-close-peer-connection">mdg_close_peer_connection</a>.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
@@ -2117,7 +2118,7 @@ the call is established to get the identity of the device. This
 scenario is particularly useful for devices in AP-mode.</p></div>
 </div>
 <div class="sect2">
-<h3 id="mdg-receive-from-peer">Function <code>mdg_receive_from_peer</code></h3>
+<h3 id="cmd-receive-from-peer">Function <code>mdg_receive_from_peer</code></h3>
 <div class="paragraph"><p>Handle (application) data received through mdg from another peer.</p></div>
 <div class="paragraph"><p>Invoke this method, giving a callback function, to receive data.
 Once invoked, a single packet of data may be received.
@@ -2301,7 +2302,7 @@ compiled version with a larger number of buffers, if you have memory
 to spare for that.</p></div>
 </div>
 <div class="sect2">
-<h3 id="cmd-mdg-close-peer-connection">Function <code>mdg_close_peer_connection</code></h3>
+<h3 id="cmd-close-peer-connection">Function <code>mdg_close_peer_connection</code></h3>
 <div class="paragraph"><p>Release / close tunnel to a peer.
 Makes the connection_id available for reuse.
 Closing a connection that is not open or partially open is okay.</p></div>
@@ -2452,7 +2453,7 @@ non-zero to reject the connection.
 </dl></div>
 </div>
 <div class="sect2">
-<h3 id="cmd-mdg-get-connection-info">Function <code>mdg_get_connection_info</code></h3>
+<h3 id="cmd-get-connection-info">Function <code>mdg_get_connection_info</code></h3>
 <div class="paragraph"><p>Let the client lookup the other end of an incoming call that has been answered and connection established. Also works for connections initiated by this peer.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
@@ -2500,7 +2501,7 @@ Returns
 </li>
 <li>
 <p>
-non-zero on failure. Contents of outparams are not to be trusted.
+non-zero on failure. Contents of outbuffer parameters are not to be trusted.
 </p>
 </li>
 </ul></div>
@@ -2524,17 +2525,17 @@ Inputs
 <div class="ulist"><ul>
 <li>
 <p>
-<code>duration</code> = &lt;integer&gt;    // Seconds. Maximum is 24*3600. Recommended value is 300.
+<code>duration</code> in seconds. Maximum is 24*3600. Recommended value is 300.
 </p>
 </li>
 </ul></div>
 </dd>
 <dt class="hdlist1">
-Output
+Outputs
 </dt>
 <dd>
 <p>
-None.
+None
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2578,22 +2579,22 @@ Inputs
 </li>
 <li>
 <p>
-0=print to stderr, whatever that is locally on the platform.
+0 = print to stderr, whatever that is locally on the platform.
 </p>
 </li>
 <li>
 <p>
-1=print as UDP packets to Trifork debug service, prefixing with my device_id.
+1 = print as UDP packets to Trifork debug service, prefixing with my device_id.
 </p>
 </li>
 </ul></div>
 </dd>
 <dt class="hdlist1">
-Output
+Outputs
 </dt>
 <dd>
 <p>
-None.
+None
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2771,7 +2772,7 @@ Returns
 </div>
 <div class="sect2">
 <h3 id="cmd-invoke-service">Function <code>mdgext_invoke_service</code></h3>
-<div class="paragraph"><p>Invoke a registrered remote service through the MDG server, passing
+<div class="paragraph"><p>Invoke a registered remote service through the MDG server, passing
 arguments and data payload through the existing connection to the
 cloud. Requests started through this interface are handled as "fire
 and forget" requests.</p></div>
@@ -2783,47 +2784,53 @@ the state will go to the state_cb.</p></div>
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
-        mdg_service_running <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
-        mdg_service_release <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">#ifndef</span></span> MDGEXT_NO_INVOKE_SERVICE
+<span style="font-weight: bold"><span style="color: #000080">#ifndef</span></span> MDGEXT_INVOKE_SERVICE_MAX
+<span style="font-weight: bold"><span style="color: #000080"># define</span></span> MDGEXT_INVOKE_SERVICE_MAX <span style="color: #993399">16</span>
+<span style="font-weight: bold"><span style="color: #000080">#endif</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+        mdg_service_release <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+        mdg_service_running <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
         mdg_service_completed <span style="color: #990000">=</span> <span style="color: #993399">2</span><span style="color: #990000">,</span>
         mdg_service_failed <span style="color: #990000">=</span> <span style="color: #990000">-</span><span style="color: #993399">1</span><span style="color: #990000">,</span>
 <span style="color: #FF0000">}</span> mdg_service_status_t<span style="color: #990000">;</span>
 
 <span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
         mdg_test_internal <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
-        mdg_push_json_android <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
-        mdg_push_json_ios <span style="color: #990000">=</span> <span style="color: #993399">2</span>
+        mdg_push_dominion_specific <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
+        mdg_generic_push_json_mobile_app <span style="color: #990000">=</span> <span style="color: #993399">2</span>
 <span style="color: #FF0000">}</span> mdg_service_id<span style="color: #990000">;</span>
 
-<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">mdgext_service_invocation</span> mdgext_service_invocation<span style="color: #990000">;</span>
 
-<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="color: #009900">void</span> <span style="color: #990000">(*</span>mdg_service_cb<span style="color: #990000">)(</span>mdgext_service_invocation <span style="color: #990000">*</span> invocation<span style="color: #990000">,</span>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="color: #009900">void</span> <span style="color: #990000">(*</span>mdg_service_cb<span style="color: #990000">)(</span><span style="color: #008080">uint32_t</span> request_id<span style="color: #990000">,</span>
                                <span style="color: #008080">mdg_service_status_t</span> state<span style="color: #990000">,</span>
                                <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #009900">unsigned</span> <span style="color: #009900">char</span> <span style="color: #990000">*</span>data<span style="color: #990000">,</span>
                                <span style="font-weight: bold"><span style="color: #0000FF">const</span></span> <span style="color: #008080">uint32_t</span> count<span style="color: #990000">);</span>
 
-<span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">mdgext_service_invocation</span> <span style="color: #FF0000">{</span>
-        <span style="color: #008080">uint32_t</span> internal_id<span style="color: #990000">;</span>
-        <span style="color: #008080">uint32_t</span> internal_state<span style="color: #990000">;</span>
-        <span style="color: #008080">mdg_service_id</span> service_id<span style="color: #990000">;</span>
-        <span style="color: #008080">mdg_property_t</span> <span style="color: #990000">*</span>properties<span style="color: #990000">;</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #FF0000">{</span>
         <span style="color: #009900">void</span> <span style="color: #990000">*</span>req_data<span style="color: #990000">;</span>
         <span style="color: #008080">uint32_t</span> req_data_count<span style="color: #990000">;</span>
-        <span style="color: #008080">mdg_service_cb</span> cb<span style="color: #990000">;</span>
-<span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+<span style="color: #FF0000">}</span> mdgext_service_request_arg<span style="color: #990000">;</span>
 
-<span style="font-style: italic"><span style="color: #9A1900">/* Arguments set when invoking mdg_service_data:</span></span>
-<span style="font-style: italic"><span style="color: #9A1900"> * `internal_*` are internal to the library - do not modify these.</span></span>
-<span style="font-style: italic"><span style="color: #9A1900"> * `invocation` that identifies this connection to the caller. (The pointer given to `mdg_invoke_service`).</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #FF0000">{</span>
+        <span style="color: #008080">mdg_service_cb</span> cb<span style="color: #990000">;</span>
+        <span style="color: #008080">mdgext_service_request_arg</span> data_arg<span style="color: #990000">[</span><span style="color: #993399">10</span><span style="color: #990000">];</span>
+<span style="color: #FF0000">}</span> mdgext_service_request<span style="color: #990000">;</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">/* Arguments set when invoking mdg_service_cb:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `request_id` the id of the request, assigned when the service started.</span></span>
 <span style="font-style: italic"><span style="color: #9A1900"> * `state` indicates the state change. (Not all state changes occur for all services.)</span></span>
-<span style="font-style: italic"><span style="color: #9A1900"> * `data` = memory buffer holding data received. Only valid during invocation of call.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> * `data` = memory buffer holding data received, if any, or zero. Only valid during invocation of call.</span></span>
 <span style="font-style: italic"><span style="color: #9A1900"> * `count` = number of bytes in buffer</span></span>
 <span style="font-style: italic"><span style="color: #9A1900"> * `data` and `count` are both zero when no data is relevant, such as for status=mdg_service_failed.</span></span>
 <span style="font-style: italic"><span style="color: #9A1900"> */</span></span>
 
-<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_invoke_service</span></span><span style="color: #990000">(</span><span style="color: #008080">mdgext_service_invocation</span> <span style="color: #990000">*</span>invocation<span style="color: #990000">);</span>
-<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_abort_service</span></span><span style="color: #990000">(</span><span style="color: #008080">mdgext_service_invocation</span> <span style="color: #990000">*</span>invocation<span style="color: #990000">);</span></tt></pre></div></div>
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_invoke_service</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_service_id</span> service_id<span style="color: #990000">,</span>
+                                        <span style="color: #008080">mdgext_service_request</span> <span style="color: #990000">*</span>request<span style="color: #990000">,</span>
+                                        <span style="color: #008080">uint32_t</span> <span style="color: #990000">*</span>request_id<span style="color: #990000">);</span>
+<span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_abort_service</span></span><span style="color: #990000">(</span><span style="color: #008080">uint32_t</span> request_id<span style="color: #990000">);</span>
+<span style="font-weight: bold"><span style="color: #000080">#endif</span></span> <span style="font-style: italic"><span style="color: #9A1900">/* MDGEXT_NO_INVOKE_SERVICE */</span></span></tt></pre></div></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
 Returns
@@ -2843,18 +2850,16 @@ non-zero on failure
 </ul></div>
 </dd>
 </dl></div>
-<div class="paragraph"><p>The library holds on to the pointer to the invocation until it invkodes the cb with state=mdg_service_release.
-Do not reuse the memory for other purposes before that.
-It is okay to alter the <code>cb</code> from within the invocation of the cb only.
-This allows using the cb to keep track of current state when parsing the response.</p></div>
-<div class="paragraph"><p><code>mdgext_abort_service</code> may be invoked at any time on an active
-invocation. It makes the requires cleanup in the library and invokes
-the cb with stat=mdg_service_release.</p></div>
+<div class="paragraph"><p>The library may issue callbacks to the cb while the service is running.
+If any callbacks happen, the last one will have state=mdg_service_release.</p></div>
+<div class="paragraph"><p><code>mdgext_abort_service</code> may be invoked at any time on an active request_id.
+It does any internal cleanup in the library and invokes the cb with status=mdg_service_release,
+if the cb has not been unset earlier by a previous abort or internal abort.</p></div>
 </div>
 <div class="sect2">
 <h3 id="cmd-secure-debug-log">Function <code>mdgext_secure_log_line</code></h3>
-<div class="paragraph"><p>Ship (compacted) loglines to the servers for debugging purposes.
-Each file needs to be assgined a unique number for SECURE_LOG_MODULE_NO. This avoids sending/keeping the filenames as strings.
+<div class="paragraph"><p>Ship (compacted) log lines to the servers for debugging purposes.
+Each file needs to be assigned a unique number for SECURE_LOG_MODULE_NO. This avoids sending/keeping the filenames as strings.
 The mapping from SECURE_LOG_MODULE_NO to actual file name is done out of band.</p></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
@@ -2864,7 +2869,7 @@ Macros
 <div class="ulist"><ul>
 <li>
 <p>
-SECURE_LOG_LOC() logs the module and linenumber without further parameters.
+SECURE_LOG_LOC() logs the module and line number without further parameters.
 </p>
 </li>
 <li>
@@ -2921,23 +2926,48 @@ MDG servers to push message to the peers when the specified event kind occurs fo
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
-  mdgext_peer_kind_android <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
-  mdgext_peer_kind_ios <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
-  mdgext_peer_kind_web <span style="color: #990000">=</span> <span style="color: #993399">2</span><span style="color: #990000">,</span>
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">#ifndef</span></span> MDGEXT_NO_SERVER_PUSH
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
+  mdgext_peer_kind_unknown <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+  mdgext_peer_kind_android <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
+  mdgext_peer_kind_ios <span style="color: #990000">=</span> <span style="color: #993399">2</span><span style="color: #990000">,</span>
+  mdgext_peer_kind_web <span style="color: #990000">=</span> <span style="color: #993399">3</span><span style="color: #990000">,</span>
+  mdgext_peer_kind_mdg <span style="color: #990000">=</span> <span style="color: #993399">4</span>
 <span style="color: #FF0000">}</span> mdgext_peer_kind_t<span style="color: #990000">;</span>
 
 <span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">enum</span></span> <span style="color: #FF0000">{</span>
-  mdgext_push_on_connection_lost_default <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">,</span>
+  mdgext_push_on_connection_lost_default <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span>
 <span style="color: #FF0000">}</span> mdgext_push_subscription_kind<span style="color: #990000">;</span>
 
 <span style="color: #008080">_MDG_API_</span> <span style="color: #008080">int32_t</span> <span style="font-weight: bold"><span style="color: #000000">mdgext_register_peer_token</span></span><span style="color: #990000">(</span><span style="color: #008080">mdg_peer_id_t</span> peer<span style="color: #990000">,</span>
                                              <span style="color: #009900">void</span> <span style="color: #990000">*</span>token<span style="color: #990000">,</span> <span style="color: #008080">uint32_t</span> token_len<span style="color: #990000">,</span>
                                              <span style="color: #008080">mdgext_peer_kind_t</span> peer_kind<span style="color: #990000">,</span>
                                              <span style="color: #009900">char</span> <span style="color: #990000">*</span>locale_code<span style="color: #990000">,</span>
+                                             <span style="color: #009900">char</span> <span style="color: #990000">**</span>arguments<span style="color: #990000">,</span>
                                              <span style="color: #008080">mdgext_push_subscription_kind</span> sub_kind<span style="color: #990000">,</span>
-                                             <span style="color: #008080">uint32_t</span> flags<span style="color: #990000">);</span></tt></pre></div></div>
+                                             <span style="color: #008080">uint32_t</span> flags<span style="color: #990000">);</span>
+<span style="font-weight: bold"><span style="color: #000080">#endif</span></span> <span style="font-style: italic"><span style="color: #9A1900">/* MDGEXT_NO_SERVER_PUSH */</span></span></tt></pre></div></div>
+<div class="paragraph"><p><code>locale_code</code> is optional and intended for notifications through
+e.g. e-mail/sms where the text should be in the language expected by
+the end-user.</p></div>
 <div class="dlist"><dl>
+<dt class="hdlist1">
+<code>arguments</code> is a null-terminated array of pointers to zero-terminated strings. These are sent along to the notification service as-is, for use in strings displayed for the user. Expected contents
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+index 0: context such as house or location or system name
+</p>
+</li>
+<li>
+<p>
+index 1: device / room / sub-context.
+</p>
+</li>
+</ul></div>
+</dd>
 <dt class="hdlist1">
 <code>flags</code> are a bit-field send along to the server-side. Known flags include
 </dt>
@@ -2963,8 +2993,7 @@ Bit 1 (value 2) N/A
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated
- 2016-05-09 13:33:50 CEST
+Last updated 2016-08-03 09:40:15 CEST
 </div>
 </div>
 </body>
