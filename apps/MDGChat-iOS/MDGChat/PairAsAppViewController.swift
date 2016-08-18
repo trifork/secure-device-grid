@@ -32,6 +32,8 @@ class PairAsAppViewController: UIViewController {
             logView.addLine("Pairing failed")
         }
         self.otpTextField.text = ""
+        self.otpTextField.resignFirstResponder()
+        self.peerNameTextField.resignFirstResponder()
     }
 
     func otpTextFieldChanged(textField: UITextField) {

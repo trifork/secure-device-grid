@@ -22,9 +22,15 @@ class PeerSelectionViewController: UIViewController {
 
         self.tableView.dataSource = self
         self.tableView.delegate = self
+        self.view.addSubview(self.logView)
+    }
+
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+
         client.connectionDelegate = self
         client.receiveDataDelegate = self
-        self.view.addSubview(self.logView)
+        self.logView.update()
     }
 }
 

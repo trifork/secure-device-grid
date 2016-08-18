@@ -11,10 +11,15 @@ import SlackTextViewController
 import MDG
 
 class ChatWithPeerViewController: SLKTextViewController {
+    @IBOutlet weak var stateButton: UIBarButtonItem!
+
     var connection: MDGPeerConnection!
     var messageStorage: MessageStorage!
+    let client = MDGClient.sharedClient
+    let logView = LogView()
 
     var messages = [Message]()
+    var waitingMessageData: NSData?
 
     let maxCharCount: UInt = 256
     let messageCellIdentifier: String = "MessageCell"
@@ -32,6 +37,7 @@ class ChatWithPeerViewController: SLKTextViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.stateButton.enabled = false
         self.bounces = true
         self.shakeToClearEnabled = true
         self.keyboardPanningEnabled = true
@@ -61,12 +67,19 @@ class ChatWithPeerViewController: SLKTextViewController {
         super.viewWillAppear(animated)
 
         messageStorage.delegate = self
+        client.connectionDelegate = self
+
         if let peerId = self.connection.peerId {
             self.messages = self.messageStorage.messages.filter { $0.peerId == peerId }.reverse()
         } else {
             self.messages = []
         }
         self.tableView.reloadData()
+    }
+
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.waitingMessageData = nil
     }
 
     func addMessage(message: Message) {
@@ -79,6 +92,21 @@ class ChatWithPeerViewController: SLKTextViewController {
         self.tableView.endUpdates()
 
         self.tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: scrollPosition, animated: true)
+    }
+
+    func sendData(data: NSData) throws {
+        do {
+            try self.connection.sendData(data)
+        } catch {
+            // Try to reconnect and send data again
+            self.waitingMessageData = data
+            do {
+                self.connection = try client.connectToPeer(connection.peerId ?? "")
+            } catch {
+                return
+            }
+        }
+        self.messageStorage.addData(data, forConnection: self.connection, sender: .Me)
     }
 }
 
@@ -105,13 +133,16 @@ extension ChatWithPeerViewController {
 extension ChatWithPeerViewController {
     override func didPressRightButton(sender: AnyObject!) {
         self.textView.refreshFirstResponder()
-
-        let data = self.textView.text.dataUsingEncoding(NSUTF8StringEncoding)!
-        self.messageStorage.addData(data, forConnection: self.connection, sender: .Me)
-
-        _ = try? self.connection.sendData(data)
+        let data = self.textView.text.dataUsingEncoding(NSUTF8StringEncoding) ?? NSData()
+        _ = try? sendData(data)
 
         super.didPressRightButton(sender)
+    }
+
+    @IBAction func stateButtonPressed(sender: AnyObject) {
+        do {
+            self.connection = try client.connectToPeer(self.connection.peerId ?? "")
+        } catch {}
     }
 }
 
@@ -120,6 +151,31 @@ extension ChatWithPeerViewController: MessageStorageDelegate {
         if let peerId = self.connection.peerId where message.peerId == peerId {
             dispatch_async(dispatch_get_main_queue()) { [weak self] in
                 self?.addMessage(message)
+            }
+        }
+    }
+}
+
+extension ChatWithPeerViewController: ConnectionDelegate {
+    func routingStatusChanged(connection: MDGPeerConnection, status: MDGRoutingStatus) {
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            if self?.connection.peerId == connection.peerId {
+                switch status {
+                case .Connected:
+                    if let messageData = self?.waitingMessageData {
+                        _ = try? self?.sendData(messageData)
+                        self?.waitingMessageData = nil
+                    }
+                    self?.stateButton.enabled = false
+                case .Disconnected:
+                    self?.stateButton.enabled = true
+                case .PeerNotAvailable:
+                    dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                        self?.logView.addLine("Peer not available on conn_id \(connection.connectionId)")
+                        self?.navigationController?.popViewControllerAnimated(true)
+                    }
+                default: break
+                }
             }
         }
     }

@@ -475,8 +475,17 @@ More information is available at https://github.com/trifork/secure-device-grid</
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Chat with Peer" id="UyZ-sw-y3U"/>
+                    <navigationItem key="navigationItem" title="Chat with Peer" id="UyZ-sw-y3U">
+                        <barButtonItem key="rightBarButtonItem" title="⃝" id="a4J-VP-D9q" userLabel="Connection State">
+                            <connections>
+                                <action selector="stateButtonPressed:" destination="Uy3-Bp-Tnq" id="kJa-Ns-lKj"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="stateButton" destination="a4J-VP-D9q" id="cV5-eI-hNw"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Bqh-6E-OpM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

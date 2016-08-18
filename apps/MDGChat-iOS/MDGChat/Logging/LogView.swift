@@ -76,6 +76,18 @@ public class LogView: UIView {
 
     func addLine(text: String) {
         textView.text = logStore.addLine(text)
+        scrollToTop()
+    }
+
+    func update() {
+        let log = logStore.getLog()
+        if log != textView.text {
+            textView.text = log
+        }
+        scrollToTop()
+    }
+
+    private func scrollToTop() {
         textView.scrollRangeToVisible(NSRange(location: 0, length: 0))
     }
 

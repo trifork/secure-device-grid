@@ -36,6 +36,7 @@ class PairAsDeviceViewController: UIViewController {
             logView.addLine("Start pairing failed")
             otpLabel.text = "..."
         }
+        self.peerNameTextField.resignFirstResponder()
     }
 }
 
