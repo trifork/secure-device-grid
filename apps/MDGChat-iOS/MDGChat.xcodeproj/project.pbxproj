@@ -12,8 +12,6 @@
 		513B6A1C1BA72A2F00727A41 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 513B6A1B1BA72A2F00727A41 /* Images.xcassets */; };
 		513B6A1F1BA72A2F00727A41 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 513B6A1D1BA72A2F00727A41 /* LaunchScreen.xib */; };
 		513B6A431BA72A9100727A41 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 513B6A421BA72A9100727A41 /* Main.storyboard */; };
-		516DEED21BE8C51700AB9E10 /* MDG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 516DEED11BE8C51700AB9E10 /* MDG.framework */; };
-		516DEED41BE8C62800AB9E10 /* MDG.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 516DEED11BE8C51700AB9E10 /* MDG.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		516F23D41BAFFC1300BF427F /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516F23D31BAFFC1300BF427F /* WelcomeViewController.swift */; };
 		516F24621BB0057E00BF427F /* MDGClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516F24611BB0057E00BF427F /* MDGClient.swift */; };
 		516F24641BB015DA00BF427F /* PairAsAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516F24631BB015DA00BF427F /* PairAsAppViewController.swift */; };
@@ -28,19 +26,21 @@
 		5197C4F31BB2AA8A00057EAD /* ThePerfectApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5197C4F21BB2AA8A00057EAD /* ThePerfectApp.framework */; };
 		51D167A01C522FD700B9C3A4 /* MDGLogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D1679E1C522FD700B9C3A4 /* MDGLogFormatter.swift */; };
 		51D167A11C522FD700B9C3A4 /* TPALogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D1679F1C522FD700B9C3A4 /* TPALogger.swift */; };
+		5B30D32B1D6AFFC8005106C8 /* MDG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 516DEED11BE8C51700AB9E10 /* MDG.framework */; };
+		5B30D32C1D6AFFC8005106C8 /* MDG.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 516DEED11BE8C51700AB9E10 /* MDG.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5B7ABD751D63306200D40AD0 /* FrontTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7ABD741D63306200D40AD0 /* FrontTableViewController.swift */; };
 		5B99240D1D5DDF7900113D01 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B99240C1D5DDF7900113D01 /* LogView.swift */; };
 		E1CC9A66C5CD5ED3457CF7B8 /* Pods_MDGChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 467403A14D4136BDE5C7B0FD /* Pods_MDGChat.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		5197C4EA1BB185F200057EAD /* Embed Frameworks */ = {
+		5B30D32D1D6AFFC8005106C8 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				516DEED41BE8C62800AB9E10 /* MDG.framework in Embed Frameworks */,
+				5B30D32C1D6AFFC8005106C8 /* MDG.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -51,7 +51,7 @@
 		1874930CA256E138811E7F04 /* Pods-MDGChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MDGChatTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MDGChatTests/Pods-MDGChatTests.debug.xcconfig"; sourceTree = "<group>"; };
 		467403A14D4136BDE5C7B0FD /* Pods_MDGChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MDGChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5105701D1BBEE187005080FE /* MessageStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageStorage.swift; sourceTree = "<group>"; };
-		513B6A0F1BA72A2F00727A41 /* SDG Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SDG Chat.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		513B6A0F1BA72A2F00727A41 /* SDG Tool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SDG Tool.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		513B6A131BA72A2F00727A41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		513B6A141BA72A2F00727A41 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		513B6A1B1BA72A2F00727A41 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -86,7 +86,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5197C4F31BB2AA8A00057EAD /* ThePerfectApp.framework in Frameworks */,
-				516DEED21BE8C51700AB9E10 /* MDG.framework in Frameworks */,
+				5B30D32B1D6AFFC8005106C8 /* MDG.framework in Frameworks */,
 				5197C4F11BB2A95600057EAD /* libz.tbd in Frameworks */,
 				5197C4DC1BB12B3100057EAD /* SystemConfiguration.framework in Frameworks */,
 				5197C4DA1BB12B2700057EAD /* AudioToolbox.framework in Frameworks */,
@@ -136,7 +136,7 @@
 		513B6A101BA72A2F00727A41 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				513B6A0F1BA72A2F00727A41 /* SDG Chat.app */,
+				513B6A0F1BA72A2F00727A41 /* SDG Tool.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -201,10 +201,10 @@
 				513B6A0B1BA72A2F00727A41 /* Sources */,
 				513B6A0C1BA72A2F00727A41 /* Frameworks */,
 				513B6A0D1BA72A2F00727A41 /* Resources */,
-				5197C4EA1BB185F200057EAD /* Embed Frameworks */,
 				5B99240F1D5DF87C00113D01 /* SwiftLint */,
 				B4CF0FF87D4FCAF78A3398C0 /* 📦 Embed Pods Frameworks */,
 				EA55452DB8EA5794E146C479 /* 📦 Copy Pods Resources */,
+				5B30D32D1D6AFFC8005106C8 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -212,7 +212,7 @@
 			);
 			name = MDGChat;
 			productName = TDGChat;
-			productReference = 513B6A0F1BA72A2F00727A41 /* SDG Chat.app */;
+			productReference = 513B6A0F1BA72A2F00727A41 /* SDG Tool.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -460,7 +460,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.trifork.securedevicegrid;
-				PRODUCT_NAME = "SDG Chat";
+				PRODUCT_NAME = "SDG Tool";
 			};
 			name = Debug;
 		};
@@ -478,7 +478,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.trifork.securedevicegrid;
-				PRODUCT_NAME = "SDG Chat";
+				PRODUCT_NAME = "SDG Tool";
 			};
 			name = Release;
 		};

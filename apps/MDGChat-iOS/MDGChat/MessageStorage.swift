@@ -10,7 +10,7 @@ import UIKit
 import MDG
 
 enum MessageSender {
-    case Me, Them
+    case Me, Them, Info
 }
 
 struct Message {

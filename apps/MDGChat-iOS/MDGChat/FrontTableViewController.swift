@@ -9,7 +9,7 @@
 import UIKit
 
 class FrontTableViewController: UITableViewController {
-    let supportUrl = "https://github.com/trifork/secure-device-grid"
+    let supportUrl = "http://securedevicegrid.com/"
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -38,7 +38,7 @@
                             <constraint firstItem="exJ-KM-68A" firstAttribute="leading" secondItem="v2K-yw-Qcb" secondAttribute="leadingMargin" constant="-20" id="fhZ-mw-RSL"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="SDG Chat" id="uu3-vB-W4p"/>
+                    <navigationItem key="navigationItem" title="Secure Device Grid Tool" id="uu3-vB-W4p"/>
                 </viewController>
             </viewControllers>
             <point key="canvasLocation" x="543" y="370"/>

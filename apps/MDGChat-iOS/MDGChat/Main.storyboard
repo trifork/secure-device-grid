@@ -6,10 +6,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--SDG Chat-->
+        <!--Secure Device Grid Tool-->
         <scene sceneID="L4i-pg-Swm">
             <objects>
-                <tableViewController id="Rlv-rr-YB3" customClass="FrontTableViewController" customModule="SDG_Chat" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="Rlv-rr-YB3" customClass="FrontTableViewController" customModule="SDG_Tool" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="0gt-IQ-9dE">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -84,7 +84,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Chat with Peers" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CIl-IW-zYM">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Talk to Peers" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CIl-IW-zYM">
                                                     <rect key="frame" x="15" y="0.0" width="270" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -104,7 +104,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Secure Device Grid on Github" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="FPB-ds-Ui2">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Secure Device Grid" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="FPB-ds-Ui2">
                                                     <rect key="frame" x="15" y="0.0" width="290" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -122,7 +122,7 @@
                             <outlet property="delegate" destination="Rlv-rr-YB3" id="nr9-Bj-kFi"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="SDG Chat" id="yK3-lR-X66"/>
+                    <navigationItem key="navigationItem" title="Secure Device Grid Tool" id="yK3-lR-X66"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hcj-Ym-UEA" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -132,7 +132,7 @@
         <!--Welcome-->
         <scene sceneID="yb0-4l-B58">
             <objects>
-                <viewController id="GbZ-st-xlE" customClass="WelcomeViewController" customModule="SDG_Chat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="GbZ-st-xlE" customClass="WelcomeViewController" customModule="SDG_Tool" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="tuB-Ad-148"/>
                         <viewControllerLayoutGuide type="bottom" id="xJh-xA-AOU"/>
@@ -141,14 +141,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SDG Tool is a toolbox to use during development of M2M or Machine to App communication using SecureDeviceGrid™." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kfv-pB-I6f">
+                                <rect key="frame" x="16" y="72" width="288" height="81.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enter your email:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LnT-U0-OnV">
-                                <rect key="frame" x="16" y="80" width="288" height="21"/>
+                                <rect key="frame" x="16" y="161" width="288" height="21"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="john@appleseed.com" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ELO-cD-837">
-                                <rect key="frame" x="16" y="109" width="288" height="30"/>
+                                <rect key="frame" x="16" y="190" width="288" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="250" id="EAp-a0-Yua"/>
                                 </constraints>
@@ -163,14 +169,16 @@
                                     <outlet property="delegate" destination="GbZ-st-xlE" id="jnv-XM-AYc"/>
                                 </connections>
                             </textField>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="9BL-dW-baf">
-                                <rect key="frame" x="16" y="153" width="288" height="415"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9BL-dW-baf">
+                                <rect key="frame" x="8" y="228" width="304" height="340"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <string key="text">Then find another peer to "pair" and chat with. New peers must be paired to chat.
+                                <string key="text">Then find another peer to "pair" and talk to. New peers must be paired to communicate.
 
 To pair: Issue an OTP (one time password) by pairing in device role, then on another device pair as app and enter the OTP.
 
-More information is available at https://github.com/trifork/secure-device-grid</string>
+The SDG Tool will log all data on the SDG backend system.
+
+Source code and more information is available at https://github.com/trifork/secure-device-grid</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                 <dataDetectorType key="dataDetectorTypes" link="YES"/>
@@ -178,13 +186,18 @@ More information is available at https://github.com/trifork/secure-device-grid</
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="LnT-U0-OnV" firstAttribute="top" secondItem="Kfv-pB-I6f" secondAttribute="bottom" constant="8" id="4Qe-RB-ZLa"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Kfv-pB-I6f" secondAttribute="trailing" id="6ZN-ZD-b53"/>
                             <constraint firstAttribute="trailingMargin" secondItem="LnT-U0-OnV" secondAttribute="trailing" id="95X-vi-yJY"/>
-                            <constraint firstItem="9BL-dW-baf" firstAttribute="top" secondItem="ELO-cD-837" secondAttribute="bottom" constant="14" id="BdT-JU-35I"/>
+                            <constraint firstItem="9BL-dW-baf" firstAttribute="top" secondItem="ELO-cD-837" secondAttribute="bottom" constant="8" id="BdT-JU-35I"/>
+                            <constraint firstItem="Kfv-pB-I6f" firstAttribute="leading" secondItem="ujR-c3-CMV" secondAttribute="leadingMargin" id="H0l-N5-IOW"/>
                             <constraint firstItem="ELO-cD-837" firstAttribute="leading" secondItem="ujR-c3-CMV" secondAttribute="leadingMargin" id="HjB-6v-X46"/>
                             <constraint firstItem="LnT-U0-OnV" firstAttribute="leading" secondItem="ujR-c3-CMV" secondAttribute="leadingMargin" id="KrX-du-AJo"/>
+                            <constraint firstItem="LnT-U0-OnV" firstAttribute="top" secondItem="tuB-Ad-148" secondAttribute="bottom" constant="54" id="N0q-bV-rLu"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ELO-cD-837" secondAttribute="trailing" id="X79-0z-RgW"/>
-                            <constraint firstItem="9BL-dW-baf" firstAttribute="leading" secondItem="ujR-c3-CMV" secondAttribute="leadingMargin" id="Xge-ZF-3Fl"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="9BL-dW-baf" secondAttribute="trailing" id="eAj-5r-ykk"/>
+                            <constraint firstItem="9BL-dW-baf" firstAttribute="leading" secondItem="ujR-c3-CMV" secondAttribute="leadingMargin" constant="-8" id="Xge-ZF-3Fl"/>
+                            <constraint firstItem="Kfv-pB-I6f" firstAttribute="top" secondItem="tuB-Ad-148" secondAttribute="bottom" constant="8" id="acd-JC-apM"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="9BL-dW-baf" secondAttribute="trailing" constant="-8" id="eAj-5r-ykk"/>
                             <constraint firstItem="ELO-cD-837" firstAttribute="top" secondItem="LnT-U0-OnV" secondAttribute="bottom" constant="8" id="g4h-Ys-fJA"/>
                             <constraint firstItem="xJh-xA-AOU" firstAttribute="top" secondItem="9BL-dW-baf" secondAttribute="bottom" id="paw-Zi-ndo"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ELO-cD-837" secondAttribute="trailing" id="xEv-K4-k4q"/>
@@ -192,6 +205,8 @@ More information is available at https://github.com/trifork/secure-device-grid</
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="N0q-bV-rLu"/>
+                                <exclude reference="yUV-dM-WTL"/>
                                 <exclude reference="X79-0z-RgW"/>
                             </mask>
                         </variation>
@@ -209,7 +224,7 @@ More information is available at https://github.com/trifork/secure-device-grid</
         <!--Pair as App-->
         <scene sceneID="aee-KK-VSd">
             <objects>
-                <viewController id="63S-7C-jaF" customClass="PairAsAppViewController" customModule="SDG_Chat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="63S-7C-jaF" customClass="PairAsAppViewController" customModule="SDG_Tool" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8IR-p4-cEA"/>
                         <viewControllerLayoutGuide type="bottom" id="UIH-Ur-cLr"/>
@@ -305,7 +320,7 @@ More information is available at https://github.com/trifork/secure-device-grid</
         <!--Pair as Device-->
         <scene sceneID="L5W-JU-fs8">
             <objects>
-                <viewController id="gXa-0a-13g" customClass="PairAsDeviceViewController" customModule="SDG_Chat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="gXa-0a-13g" customClass="PairAsDeviceViewController" customModule="SDG_Tool" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="iKJ-Ym-73Z"/>
                         <viewControllerLayoutGuide type="bottom" id="Mne-EZ-BJR"/>
@@ -398,7 +413,7 @@ More information is available at https://github.com/trifork/secure-device-grid</
         <!--Select Peer-->
         <scene sceneID="hoH-XC-Vq1">
             <objects>
-                <viewController id="r0f-Dt-Ge3" customClass="PeerSelectionViewController" customModule="SDG_Chat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="r0f-Dt-Ge3" customClass="PeerSelectionViewController" customModule="SDG_Tool" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Loa-OQ-TQ2"/>
                         <viewControllerLayoutGuide type="bottom" id="lfN-mn-rx5"/>
@@ -462,10 +477,10 @@ More information is available at https://github.com/trifork/secure-device-grid</
             </objects>
             <point key="canvasLocation" x="211" y="2726"/>
         </scene>
-        <!--Chat with Peer-->
+        <!--Talk to Peer-->
         <scene sceneID="cuG-4d-h3T">
             <objects>
-                <viewController id="Uy3-Bp-Tnq" customClass="ChatWithPeerViewController" customModule="SDG_Chat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Uy3-Bp-Tnq" customClass="ChatWithPeerViewController" customModule="SDG_Tool" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="LkA-fl-X5i"/>
                         <viewControllerLayoutGuide type="bottom" id="8WW-U9-9TN"/>
@@ -475,7 +490,7 @@ More information is available at https://github.com/trifork/secure-device-grid</
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Chat with Peer" id="UyZ-sw-y3U">
+                    <navigationItem key="navigationItem" title="Talk to Peer" id="UyZ-sw-y3U">
                         <barButtonItem key="rightBarButtonItem" title="⃝" id="a4J-VP-D9q" userLabel="Connection State">
                             <connections>
                                 <action selector="stateButtonPressed:" destination="Uy3-Bp-Tnq" id="kJa-Ns-lKj"/>

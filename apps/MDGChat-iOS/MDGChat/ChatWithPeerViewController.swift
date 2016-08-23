@@ -23,6 +23,7 @@ class ChatWithPeerViewController: SLKTextViewController {
 
     let maxCharCount: UInt = 256
     let messageCellIdentifier: String = "MessageCell"
+    let infoMessage = "The SDG Tool will log all data on the SDG backend system."
 
     override var tableView: UITableView {
         get {
@@ -36,7 +37,30 @@ class ChatWithPeerViewController: SLKTextViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
+    }
 
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+
+        messageStorage.delegate = self
+        client.connectionDelegate = self
+
+        if let peerId = self.connection.peerId {
+            self.messages = self.messageStorage.messages.filter { $0.peerId == peerId }.reverse()
+        } else {
+            self.messages = []
+        }
+        setupInfoMessage()
+        self.tableView.reloadData()
+    }
+
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.waitingMessageData = nil
+    }
+
+    func setupView() {
         self.stateButton.enabled = false
         self.bounces = true
         self.shakeToClearEnabled = true
@@ -63,23 +87,11 @@ class ChatWithPeerViewController: SLKTextViewController {
         self.registerClassForTypingIndicatorView(UILabel.self)
     }
 
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-
-        messageStorage.delegate = self
-        client.connectionDelegate = self
-
-        if let peerId = self.connection.peerId {
-            self.messages = self.messageStorage.messages.filter { $0.peerId == peerId }.reverse()
-        } else {
-            self.messages = []
+    func setupInfoMessage() {
+        if self.messages.count == 0 {
+            let infoData = self.infoMessage.dataUsingEncoding(NSUTF8StringEncoding) ?? NSData()
+            self.messageStorage.addData(infoData, forConnection: self.connection, sender: .Info)
         }
-        self.tableView.reloadData()
-    }
-
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        self.waitingMessageData = nil
     }
 
     func addMessage(message: Message) {
@@ -125,7 +137,6 @@ extension ChatWithPeerViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier(messageCellIdentifier, forIndexPath: indexPath) as? MessageCell
         cell?.message = message
         cell?.transform = self.tableView.transform
-
         return cell ?? MessageCell()
     }
 }
@@ -170,10 +181,8 @@ extension ChatWithPeerViewController: ConnectionDelegate {
                 case .Disconnected:
                     self?.stateButton.enabled = true
                 case .PeerNotAvailable:
-                    dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                        self?.logView.addLine("Peer not available on conn_id \(connection.connectionId)")
-                        self?.navigationController?.popViewControllerAnimated(true)
-                    }
+                    self?.logView.addLine("Peer not available on conn_id \(connection.connectionId)")
+                    self?.navigationController?.popViewControllerAnimated(true)
                 default: break
                 }
             }

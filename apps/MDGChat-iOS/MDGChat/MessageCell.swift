@@ -62,6 +62,9 @@ class MessageCell: UITableViewCell {
         trailingMessageLabelConstraintMe.active = isMe
         leadingMessageLabelConstraintThem.active = !isMe
         trailingMessageLabelConstraintThem.active = !isMe
+
+        messageLabel.font = messageLabel.font.fontWithSize(sender == .Info ? 12 : 16)
+        messageLabel.numberOfLines = 2
         messageLabel.textColor = isMe ? textColorMe : textColorThem
         messageLabel.sizeToFit()
     }
