@@ -1,6 +1,6 @@
 # SecureDeviceGrid<sup>TM</sup>
 [logo]: http://securedevicegrid.com/wp-content/uploads/2016/05/logo_mark@2x.png "SecureDeviceGrid"
-[A secure and powerfull IoT platform for connectivity, software update, device management & realtime data analysis.](http://securedevicegrid.com)
+[A secure and powerful IoT platform for connectivity, software update, device management & realtime data analysis.](http://securedevicegrid.com)
 
 ## Sandbox chat clients
 
