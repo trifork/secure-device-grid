@@ -13,6 +13,7 @@ class PeerSelectionViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
     let client = MDGClient.sharedClient
+    let peers = MDGPeers.sharedPeers
     let logView = LogView()
 
     var waitingConnection: MDGPeerConnection?
@@ -46,7 +47,7 @@ extension PeerSelectionViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("PeerCell", forIndexPath: indexPath)
         cell.separatorInset = UIEdgeInsetsZero
-        cell.textLabel?.text = client.peerName(client.pairings[indexPath.row])
+        cell.textLabel?.text = peers.peerName(client.pairings[indexPath.row])
         return cell
     }
 }
@@ -55,7 +56,7 @@ extension PeerSelectionViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.waitingConnection = nil
         let peerId = client.pairings[indexPath.row]
-        let peerName = client.peerName(peerId)
+        let peerName = peers.peerName(peerId)
         logView.addLine("Connecting to \(peerName)")
 
         do {
@@ -81,7 +82,7 @@ extension PeerSelectionViewController: UITableViewDelegate {
             do {
                 try client.revokePair(peerId)
             } catch {
-                let peerName = client.peerName(peerId)
+                let peerName = peers.peerName(peerId)
                 logView.addLine("Failed to remove \(peerName)")
             }
             self.tableView.reloadData()

@@ -14,6 +14,7 @@ class PairAsAppViewController: UIViewController {
     @IBOutlet weak var peerNameTextField: UITextField!
 
     let client = MDGClient.sharedClient
+    let peers = MDGPeers.sharedPeers
     let logView = LogView()
 
     override func viewDidLoad() {
@@ -60,7 +61,7 @@ extension PairAsAppViewController : UITextFieldDelegate {
 extension PairAsAppViewController: PairingDelegate {
     func pairingStateChanged(state: MDGPairingState) {
         if state.status == .Completed {
-            client.setPeerName(peerNameTextField.text, forPeerId: state.peerId)
+            peers.setPeerName(peerNameTextField.text, forPeerId: state.peerId)
         }
 
         dispatch_async(dispatch_get_main_queue()) {

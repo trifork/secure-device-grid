@@ -23,6 +23,7 @@
 		5197C4DA1BB12B2700057EAD /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5197C4D91BB12B2700057EAD /* AudioToolbox.framework */; };
 		5197C4DC1BB12B3100057EAD /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5197C4DB1BB12B3100057EAD /* SystemConfiguration.framework */; };
 		5197C4F11BB2A95600057EAD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5197C4DD1BB12B7F00057EAD /* libz.tbd */; };
+		5B005D9C1D7464DE00055CDC /* MDGPeers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B005D9B1D7464DE00055CDC /* MDGPeers.swift */; };
 		5B30D32B1D6AFFC8005106C8 /* MDG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 516DEED11BE8C51700AB9E10 /* MDG.framework */; };
 		5B30D32C1D6AFFC8005106C8 /* MDG.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 516DEED11BE8C51700AB9E10 /* MDG.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5B7ABD751D63306200D40AD0 /* FrontTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7ABD741D63306200D40AD0 /* FrontTableViewController.swift */; };
@@ -66,6 +67,7 @@
 		5197C4D91BB12B2700057EAD /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		5197C4DB1BB12B3100057EAD /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		5197C4DD1BB12B7F00057EAD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		5B005D9B1D7464DE00055CDC /* MDGPeers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDGPeers.swift; sourceTree = "<group>"; };
 		5B7ABD741D63306200D40AD0 /* FrontTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontTableViewController.swift; sourceTree = "<group>"; };
 		5B99240C1D5DDF7900113D01 /* LogView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LogView.swift; path = Logging/LogView.swift; sourceTree = "<group>"; };
 		634EEACDD068F94E5945F942 /* Pods_MDGChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MDGChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +149,7 @@
 				516F246F1BB044B700BF427F /* MessageCell.swift */,
 				5105701D1BBEE187005080FE /* MessageStorage.swift */,
 				516F24611BB0057E00BF427F /* MDGClient.swift */,
+				5B005D9B1D7464DE00055CDC /* MDGPeers.swift */,
 				5B99240C1D5DDF7900113D01 /* LogView.swift */,
 				513B6A421BA72A9100727A41 /* Main.storyboard */,
 				513B6A1D1BA72A2F00727A41 /* LaunchScreen.xib */,
@@ -320,6 +323,7 @@
 				516F24641BB015DA00BF427F /* PairAsAppViewController.swift in Sources */,
 				516F24621BB0057E00BF427F /* MDGClient.swift in Sources */,
 				516F246C1BB0339500BF427F /* PeerSelectionViewController.swift in Sources */,
+				5B005D9C1D7464DE00055CDC /* MDGPeers.swift in Sources */,
 				5B7ABD751D63306200D40AD0 /* FrontTableViewController.swift in Sources */,
 				516F24711BB044B700BF427F /* MessageCell.swift in Sources */,
 				513B6A151BA72A2F00727A41 /* AppDelegate.swift in Sources */,

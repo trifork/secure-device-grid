@@ -6,10 +6,7 @@
 //  Copyright © 2015 Trifork A/S. All rights reserved.
 //
 
-import UIKit
 import MDG
-
-let peerNamesKey = "PeerNamesKey"
 
 public protocol PairingDelegate: NSObjectProtocol {
     func pairingStateChanged(state: MDGPairingState)
@@ -23,6 +20,7 @@ public protocol ReceiveDataDelegate: NSObjectProtocol {
     func didReceiveData(connection: MDGPeerConnection, data: NSData)
 }
 
+// MDGClient handles interaction with the MDG framework
 public class MDGClient: NSObject {
     public static let sharedClient = MDGClient()
     let messageStorage = MessageStorage()
@@ -40,8 +38,6 @@ public class MDGClient: NSObject {
     public var pairings: [String] {
         return core.pairings
     }
-
-    private var peerNames: [String: String] = (NSUserDefaults.standardUserDefaults().objectForKey(peerNamesKey) as? [String: String]) ?? [String: String]()
 
     public weak var pairingDelegate: PairingDelegate?
     public weak var connectionDelegate: ConnectionDelegate?
@@ -92,22 +88,6 @@ public class MDGClient: NSObject {
         } else {
             return try self.core.placeCallRemoteWithPeerId(peerId, protocolName: "chat-client", timeout: 10)
         }
-    }
-
-    public func setPeerName(name: String?, forPeerId peerId: String) {
-        guard let name = name where name != "" else {
-            return
-        }
-        peerNames[peerId] = name
-        NSUserDefaults.standardUserDefaults().setObject(peerNames, forKey: peerNamesKey)
-        NSUserDefaults.standardUserDefaults().synchronize()
-    }
-
-    public func peerName(peerId: String) -> String {
-        if let peerName = peerNames[peerId] where peerName != "" {
-            return peerName
-        }
-        return peerId.substringToIndex(peerId.startIndex.advancedBy(12)) + "..."
     }
 
     public func formatOtp(otp: String) -> String {
