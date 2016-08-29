@@ -1,27 +1,18 @@
 PODS:
-  - CocoaLumberjack/Core (2.2.0)
-  - CocoaLumberjack/Default (2.2.0):
-    - CocoaLumberjack/Core
-  - CocoaLumberjack/Extensions (2.2.0):
-    - CocoaLumberjack/Default
-  - CocoaLumberjack/Swift (2.2.0):
-    - CocoaLumberjack/Extensions
-  - IQKeyboardManagerSwift (3.3.6)
+  - IQKeyboardManagerSwift (4.0.4)
   - SlackTextViewController (1.9.4)
-  - Valet (2.2.0)
+  - Valet (2.2.2)
 
 DEPENDENCIES:
-  - CocoaLumberjack/Swift (~> 2.2.0)
-  - IQKeyboardManagerSwift (~> 3.3.4)
-  - SlackTextViewController (~> 1.9)
-  - Valet (~> 2.0)
+  - IQKeyboardManagerSwift
+  - SlackTextViewController
+  - Valet
 
 SPEC CHECKSUMS:
-  CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
-  IQKeyboardManagerSwift: 111f01f029d9cda0647a2156d3b6efc24ad1e7f1
+  IQKeyboardManagerSwift: e0964d04d6a29b71016fd346dca13ecb80a2823a
   SlackTextViewController: d490f354dba963bc469a6b9ce3213978eaed67a5
-  Valet: 774015aec66304d939c43ee0e2ccd4b50542e4ed
+  Valet: b16c837ed1b33586c60d3f852c3a23c2efe5c019
 
-PODFILE CHECKSUM: 69bc8b2a123e18dfffa63909db04000b0d9ea776
+PODFILE CHECKSUM: 5d43148322d94b38a0fb98aa107dc09568db0ab8
 
 COCOAPODS: 1.0.0

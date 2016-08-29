@@ -7,9 +7,7 @@
 //
 
 import UIKit
-import ThePerfectApp
 import IQKeyboardManagerSwift
-import CocoaLumberjack
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
