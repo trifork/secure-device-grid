@@ -25,12 +25,6 @@ class ChatWithPeerViewController: SLKTextViewController {
     let messageCellIdentifier: String = "MessageCell"
     let infoMessage = "The SDG Tool will log all data on the SDG backend system."
 
-    override var tableView: UITableView {
-        get {
-            return super.tableView!
-        }
-    }
-
     override class func tableViewStyleForCoder(decoder: NSCoder) -> UITableViewStyle {
         return .Plain
     }
@@ -52,7 +46,7 @@ class ChatWithPeerViewController: SLKTextViewController {
             self.messages = []
         }
         setupInfoMessage()
-        self.tableView.reloadData()
+        self.tableView?.reloadData()
     }
 
     override func viewDidDisappear(animated: Bool) {
@@ -79,16 +73,16 @@ class ChatWithPeerViewController: SLKTextViewController {
         self.textInputbar.counterStyle = .Split
         self.rightButton.tintColor = triforkOrange
 
-        self.tableView.backgroundColor = .whiteColor()
-        self.tableView.registerClass(MessageCell.classForCoder(), forCellReuseIdentifier: messageCellIdentifier)
-        self.tableView.rowHeight = UITableViewAutomaticDimension
-        self.tableView.estimatedRowHeight = 44.0
-        self.tableView.separatorStyle = .None
+        self.tableView?.backgroundColor = .whiteColor()
+        self.tableView?.registerClass(MessageCell.classForCoder(), forCellReuseIdentifier: messageCellIdentifier)
+        self.tableView?.rowHeight = UITableViewAutomaticDimension
+        self.tableView?.estimatedRowHeight = 44.0
+        self.tableView?.separatorStyle = .None
         self.registerClassForTypingIndicatorView(UILabel.self)
     }
 
     func setupInfoMessage() {
-        if self.messages.count == 0 {
+        if self.messages.isEmpty {
             let infoData = self.infoMessage.dataUsingEncoding(NSUTF8StringEncoding) ?? NSData()
             self.messageStorage.addData(infoData, forConnection: self.connection, sender: .Info)
         }
@@ -98,12 +92,12 @@ class ChatWithPeerViewController: SLKTextViewController {
         let indexPath = NSIndexPath(forRow: 0, inSection: 0)
         let rowAnimation: UITableViewRowAnimation = self.inverted ? .Top : .Bottom
         let scrollPosition: UITableViewScrollPosition = self.inverted ? .Bottom : .Top
-        self.tableView.beginUpdates()
+        self.tableView?.beginUpdates()
         self.messages.insert(message, atIndex: 0)
-        self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: rowAnimation)
-        self.tableView.endUpdates()
+        self.tableView?.insertRowsAtIndexPaths([indexPath], withRowAnimation: rowAnimation)
+        self.tableView?.endUpdates()
 
-        self.tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: scrollPosition, animated: true)
+        self.tableView?.scrollToRowAtIndexPath(indexPath, atScrollPosition: scrollPosition, animated: true)
     }
 
     func sendData(data: NSData) throws {
@@ -134,10 +128,10 @@ extension ChatWithPeerViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let message = self.messages[indexPath.row]
 
-        let cell = tableView.dequeueReusableCellWithIdentifier(messageCellIdentifier, forIndexPath: indexPath) as? MessageCell
-        cell?.message = message
-        cell?.transform = self.tableView.transform
-        return cell ?? MessageCell()
+        let cell = tableView.dequeueReusableCellWithIdentifier(messageCellIdentifier, forIndexPath: indexPath) as? MessageCell ?? MessageCell()
+        cell.message = message
+        cell.transform = self.tableView?.transform ?? CGAffineTransform()
+        return cell
     }
 }
 
