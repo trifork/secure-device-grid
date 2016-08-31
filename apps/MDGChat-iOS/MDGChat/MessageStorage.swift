@@ -17,6 +17,7 @@ struct Message {
     let data: NSData
     let sender: MessageSender
     let peerId: String
+    var isRead: Bool
 
     var text: String? {
         let messageText: String
@@ -39,9 +40,17 @@ class MessageStorage: NSObject {
 
     func addData(data: NSData, forConnection connection: MDGPeerConnection, sender: MessageSender) {
         if let peerId = connection.peerId {
-            let message = Message(data: data, sender: sender, peerId: peerId)
+            let message = Message(data: data, sender: sender, peerId: peerId, isRead: false)
             self.messages.append(message)
             self.delegate?.addedMessage(message)
+        }
+    }
+
+    func markAllAsRead(peerId: String?) {
+        for index in 0..<self.messages.count {
+            if self.messages[index].peerId == peerId {
+                self.messages[index].isRead = true
+            }
         }
     }
 }

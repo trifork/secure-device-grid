@@ -13,10 +13,6 @@ private class LogStore: NSObject {
     static let sharedLogStore = LogStore()
     private var log: String = "Log Output"
 
-    override init() {
-        super.init()
-    }
-
     func getLog() -> String {
         return log
     }

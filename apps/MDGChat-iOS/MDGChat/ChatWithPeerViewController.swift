@@ -49,9 +49,11 @@ class ChatWithPeerViewController: SLKTextViewController {
         self.tableView?.reloadData()
     }
 
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+
         self.waitingMessageData = nil
+        self.messageStorage.markAllAsRead(self.connection.peerId)
     }
 
     func setupView() {

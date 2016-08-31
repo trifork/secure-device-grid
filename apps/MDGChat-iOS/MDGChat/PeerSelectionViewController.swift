@@ -26,12 +26,13 @@ class PeerSelectionViewController: UIViewController {
         self.view.addSubview(self.logView)
     }
 
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
 
         client.connectionDelegate = self
         client.receiveDataDelegate = self
         self.logView.update()
+        self.tableView.reloadData()
     }
 }
 
@@ -46,9 +47,25 @@ extension PeerSelectionViewController: UITableViewDataSource {
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("PeerCell", forIndexPath: indexPath)
-        cell.separatorInset = UIEdgeInsetsZero
         cell.textLabel?.text = peers.peerName(client.pairings[indexPath.row])
+
+        let peerId = client.pairings[indexPath.row]
+        let unreadMessages = self.client.messageStorage.messages.filter { $0.peerId == peerId && $0.isRead == false }
+        cell.accessoryView = unreadMessages.isEmpty ? nil : createBadgeAccessoryView(unreadMessages.count)
+
         return cell
+    }
+
+    func createBadgeAccessoryView(count: Int) -> UILabel {
+        let badge = UILabel(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        badge.text = String(count)
+        badge.backgroundColor = triforkOrange
+        badge.textColor = UIColor.whiteColor()
+        badge.adjustsFontSizeToFitWidth = true
+        badge.textAlignment = .Center
+        badge.layer.cornerRadius = 4
+        badge.clipsToBounds = true
+        return badge
     }
 }
 
@@ -131,6 +148,7 @@ extension PeerSelectionViewController: ReceiveDataDelegate {
         dispatch_async(dispatch_get_main_queue()) { [weak self, weak connection] in
             if let connectionId = connection?.connectionId {
                 self?.logView.addLine("Received data from conn_id \(connectionId)")
+                self?.tableView.reloadData()
             }
         }
     }

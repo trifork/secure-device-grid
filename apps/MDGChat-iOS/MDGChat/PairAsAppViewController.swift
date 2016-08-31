@@ -21,7 +21,7 @@ class PairAsAppViewController: UIViewController {
         super.viewDidLoad()
 
         client.pairingDelegate = self
-        self.otpTextField.addTarget(self, action: #selector(PairAsAppViewController.otpTextFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
+        self.otpTextField.addTarget(self, action: #selector(PairAsAppViewController.otpTextFieldChanged), forControlEvents: UIControlEvents.EditingChanged)
 
         self.view.addSubview(logView)
     }
@@ -44,7 +44,7 @@ class PairAsAppViewController: UIViewController {
     }
 }
 
-extension PairAsAppViewController : UITextFieldDelegate {
+extension PairAsAppViewController: UITextFieldDelegate {
     @IBAction func doneButtonClicked(sender: AnyObject) {
         pair()
     }
