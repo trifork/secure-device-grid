@@ -19,14 +19,14 @@ class ChatWithPeerViewController: SLKTextViewController {
     let logView = LogView()
 
     var messages = [Message]()
-    var waitingMessageData: NSData?
+    var waitingMessageData: Data?
 
     let maxCharCount: UInt = 256
     let messageCellIdentifier: String = "MessageCell"
     let infoMessage = "The SDG Tool will log all data on the SDG backend system."
 
-    override class func tableViewStyleForCoder(decoder: NSCoder) -> UITableViewStyle {
-        return .Plain
+    override class func tableViewStyle(for decoder: NSCoder) -> UITableViewStyle {
+        return .plain
     }
 
     override func viewDidLoad() {
@@ -34,14 +34,14 @@ class ChatWithPeerViewController: SLKTextViewController {
         setupView()
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         messageStorage.delegate = self
         client.connectionDelegate = self
 
         if let peerId = self.connection.peerId {
-            self.messages = self.messageStorage.messages.filter { $0.peerId == peerId }.reverse()
+            self.messages = self.messageStorage.messages.filter { $0.peerId == peerId }.reversed()
         } else {
             self.messages = []
         }
@@ -49,88 +49,88 @@ class ChatWithPeerViewController: SLKTextViewController {
         self.tableView?.reloadData()
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         self.waitingMessageData = nil
-        self.messageStorage.markAllAsRead(self.connection.peerId)
+        self.messageStorage.markAllAsRead(forPeerId: self.connection.peerId)
     }
 
     func setupView() {
-        self.stateButton.enabled = false
+        self.stateButton.isEnabled = false
         self.bounces = true
         self.shakeToClearEnabled = true
-        self.keyboardPanningEnabled = true
+        self.isKeyboardPanningEnabled = true
         self.shouldScrollToBottomAfterKeyboardShows = false
-        self.inverted = true
+        self.isInverted = true
 
         self.textView.placeholder = "Type something..."
-        self.textView.placeholderColor = .lightGrayColor()
+        self.textView.placeholderColor = UIColor.lightGray
 
-        self.rightButton.setTitle("Send", forState: .Normal)
+        self.rightButton.setTitle("Send", for: .normal)
 
         self.textInputbar.autoHideRightButton = true
         self.textInputbar.maxCharCount = maxCharCount
-        self.textInputbar.counterPosition = .Top
-        self.textInputbar.counterStyle = .Split
+        self.textInputbar.counterPosition = .top
+        self.textInputbar.counterStyle = .split
         self.rightButton.tintColor = triforkOrange
 
-        self.tableView?.backgroundColor = .whiteColor()
-        self.tableView?.registerClass(MessageCell.classForCoder(), forCellReuseIdentifier: messageCellIdentifier)
+        self.tableView?.backgroundColor = UIColor.white
+        self.tableView?.register(MessageCell.classForCoder(), forCellReuseIdentifier: messageCellIdentifier)
         self.tableView?.rowHeight = UITableViewAutomaticDimension
         self.tableView?.estimatedRowHeight = 44.0
-        self.tableView?.separatorStyle = .None
-        self.registerClassForTypingIndicatorView(UILabel.self)
+        self.tableView?.separatorStyle = .none
+        self.registerClass(forTypingIndicatorView: UILabel.self)
     }
 
     func setupInfoMessage() {
         if self.messages.isEmpty {
-            let infoData = self.infoMessage.dataUsingEncoding(NSUTF8StringEncoding) ?? NSData()
-            self.messageStorage.addData(infoData, forConnection: self.connection, sender: .Info)
+            let infoData = self.infoMessage.data(using: String.Encoding.utf8) ?? Data()
+            self.messageStorage.add(data: infoData, forConnection: self.connection, sender: .Info)
         }
     }
 
-    func addMessage(message: Message) {
-        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-        let rowAnimation: UITableViewRowAnimation = self.inverted ? .Top : .Bottom
-        let scrollPosition: UITableViewScrollPosition = self.inverted ? .Bottom : .Top
+    func add(message: Message) {
+        let indexPath = IndexPath(row: 0, section: 0)
+        let rowAnimation: UITableViewRowAnimation = self.isInverted ? .top : .bottom
+        let scrollPosition: UITableViewScrollPosition = self.isInverted ? .bottom : .top
         self.tableView?.beginUpdates()
-        self.messages.insert(message, atIndex: 0)
-        self.tableView?.insertRowsAtIndexPaths([indexPath], withRowAnimation: rowAnimation)
+        self.messages.insert(message, at: 0)
+        self.tableView?.insertRows(at: [indexPath], with: rowAnimation)
         self.tableView?.endUpdates()
 
-        self.tableView?.scrollToRowAtIndexPath(indexPath, atScrollPosition: scrollPosition, animated: true)
+        self.tableView?.scrollToRow(at: indexPath, at: scrollPosition, animated: true)
     }
 
-    func sendData(data: NSData) throws {
+    func send(data: Data) throws {
         do {
-            try self.connection.sendData(data)
+            try self.connection.send(data)
         } catch {
             // Try to reconnect and send data again
             self.waitingMessageData = data
             do {
-                self.connection = try client.connectToPeer(connection.peerId ?? "")
+                self.connection = try client.connectTo(peerId: connection.peerId ?? "")
             } catch {
                 return
             }
         }
-        self.messageStorage.addData(data, forConnection: self.connection, sender: .Me)
+        self.messageStorage.add(data: data, forConnection: self.connection, sender: .Me)
     }
 }
 
 extension ChatWithPeerViewController {
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.messages.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let message = self.messages[indexPath.row]
 
-        let cell = tableView.dequeueReusableCellWithIdentifier(messageCellIdentifier, forIndexPath: indexPath) as? MessageCell ?? MessageCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: messageCellIdentifier, for: indexPath) as? MessageCell ?? MessageCell()
         cell.message = message
         cell.transform = self.tableView?.transform ?? CGAffineTransform()
         return cell
@@ -138,47 +138,47 @@ extension ChatWithPeerViewController {
 }
 
 extension ChatWithPeerViewController {
-    override func didPressRightButton(sender: AnyObject!) {
+    override func didPressRightButton(_ sender: Any?) {
         self.textView.refreshFirstResponder()
-        let data = self.textView.text.dataUsingEncoding(NSUTF8StringEncoding) ?? NSData()
-        _ = try? sendData(data)
+        let data = self.textView.text.data(using: String.Encoding.utf8) ?? Data()
+        _ = try? send(data: data)
 
         super.didPressRightButton(sender)
     }
 
-    @IBAction func stateButtonPressed(sender: AnyObject) {
+    @IBAction func stateButtonPressed(_ sender: Any) {
         do {
-            self.connection = try client.connectToPeer(self.connection.peerId ?? "")
+            self.connection = try client.connectTo(peerId: self.connection.peerId ?? "")
         } catch {}
     }
 }
 
 extension ChatWithPeerViewController: MessageStorageDelegate {
-    func addedMessage(message: Message) {
-        if let peerId = self.connection.peerId where message.peerId == peerId {
-            dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                self?.addMessage(message)
+    func added(message: Message) {
+        if let peerId = self.connection.peerId, message.peerId == peerId {
+            DispatchQueue.main.async { [weak self] in
+                self?.add(message: message)
             }
         }
     }
 }
 
 extension ChatWithPeerViewController: ConnectionDelegate {
-    func routingStatusChanged(connection: MDGPeerConnection, status: MDGRoutingStatus) {
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+    func routingChanged(status: MDGRoutingStatus, connection: MDGPeerConnection) {
+        DispatchQueue.main.async { [weak self] in
             if self?.connection.peerId == connection.peerId {
                 switch status {
-                case .Connected:
+                case .connected:
                     if let messageData = self?.waitingMessageData {
-                        _ = try? self?.sendData(messageData)
+                        _ = try? self?.send(data: messageData)
                         self?.waitingMessageData = nil
                     }
-                    self?.stateButton.enabled = false
-                case .Disconnected:
-                    self?.stateButton.enabled = true
-                case .PeerNotAvailable:
-                    self?.logView.addLine("Peer not available on conn_id \(connection.connectionId)")
-                    self?.navigationController?.popViewControllerAnimated(true)
+                    self?.stateButton.isEnabled = false
+                case .disconnected:
+                    self?.stateButton.isEnabled = true
+                case .peerNotAvailable:
+                    self?.logView.add(line: "Peer not available on conn_id \(connection.connectionId)")
+                    _ = self?.navigationController?.popViewController(animated: true)
                 default: break
                 }
             }

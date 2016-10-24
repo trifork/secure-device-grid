@@ -26,7 +26,7 @@ class PeerSelectionViewController: UIViewController {
         self.view.addSubview(self.logView)
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         client.connectionDelegate = self
@@ -37,32 +37,45 @@ class PeerSelectionViewController: UIViewController {
 }
 
 extension PeerSelectionViewController: UITableViewDataSource {
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return client.pairings.count
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("PeerCell", forIndexPath: indexPath)
-        cell.textLabel?.text = peers.peerName(client.pairings[indexPath.row])
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PeerCell", for: indexPath)
+        cell.textLabel?.text = peers.peerName(forPeerId: client.pairings[indexPath.row])
 
         let peerId = client.pairings[indexPath.row]
         let unreadMessages = self.client.messageStorage.messages.filter { $0.peerId == peerId && $0.isRead == false }
-        cell.accessoryView = unreadMessages.isEmpty ? nil : createBadgeAccessoryView(unreadMessages.count)
+        cell.accessoryView = unreadMessages.isEmpty ? nil : createBadgeAccessoryView(count: unreadMessages.count)
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let peerId = client.pairings[indexPath.row]
+            do {
+                try client.revokePair(peerId: peerId)
+            } catch {
+                let peerName = peers.peerName(forPeerId: peerId)
+                logView.add(line: "Failed to remove \(peerName)")
+            }
+            self.tableView.reloadData()
+        }
     }
 
     func createBadgeAccessoryView(count: Int) -> UILabel {
         let badge = UILabel(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         badge.text = String(count)
         badge.backgroundColor = triforkOrange
-        badge.textColor = UIColor.whiteColor()
+        badge.textColor = UIColor.white
         badge.adjustsFontSizeToFitWidth = true
-        badge.textAlignment = .Center
+        badge.textAlignment = .center
         badge.layer.cornerRadius = 4
         badge.clipsToBounds = true
         return badge
@@ -70,50 +83,38 @@ extension PeerSelectionViewController: UITableViewDataSource {
 }
 
 extension PeerSelectionViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.waitingConnection = nil
         let peerId = client.pairings[indexPath.row]
-        let peerName = peers.peerName(peerId)
-        logView.addLine("Connecting to \(peerName)")
+        let peerName = peers.peerName(forPeerId: peerId)
+        logView.add(line: "Connecting to \(peerName)")
 
         do {
-            let connection = try client.connectToPeer(client.pairings[indexPath.row])
+            let connection = try client.connectTo(peerId: client.pairings[indexPath.row])
             let connectedText = connection.connected ? "connected" : "not connected"
 
-            logView.addLine("Connection \(connection.connectionId): \(connectedText)")
-            self.tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            logView.add(line: "Connection \(connection.connectionId): \(connectedText)")
+            self.tableView.deselectRow(at: indexPath, animated: false)
 
             if connection.connected {
-                self.showConnection(connection)
+                self.show(connection: connection)
             } else {
                 self.waitingConnection = connection
             }
         } catch let error as NSError {
-            logView.addLine("Connect failed: \(error)")
-        }
-    }
-
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            let peerId = client.pairings[indexPath.row]
-            do {
-                try client.revokePair(peerId)
-            } catch {
-                let peerName = peers.peerName(peerId)
-                logView.addLine("Failed to remove \(peerName)")
-            }
-            self.tableView.reloadData()
+            logView.add(line: "Connect failed: \(error)")
         }
     }
 }
 
 extension PeerSelectionViewController {
-    func showConnection(connection: MDGPeerConnection) {
-        self.performSegueWithIdentifier("connection.start", sender: connection)
+    func show(connection: MDGPeerConnection) {
+        self.performSegue(withIdentifier: "connection.start", sender: connection)
     }
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let chatVC = segue.destinationViewController as? ChatWithPeerViewController, connection = sender as? MDGPeerConnection {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let chatVC = segue.destination as? ChatWithPeerViewController,
+            let connection = sender as? MDGPeerConnection {
             chatVC.connection = connection
             chatVC.messageStorage = self.client.messageStorage
         }
@@ -121,33 +122,35 @@ extension PeerSelectionViewController {
 }
 
 extension PeerSelectionViewController: ConnectionDelegate {
-    func routingStatusChanged(connection: MDGPeerConnection, status: MDGRoutingStatus) {
+    func routingChanged(status: MDGRoutingStatus, connection: MDGPeerConnection) {
         let connId = connection.connectionId
-        dispatch_async(dispatch_get_main_queue()) { [weak self, weak connection] in
+
+        DispatchQueue.main.async { [weak self, weak connection] in
             switch status {
-            case .Connected:
-                self?.logView.addLine("Connected to peer on conn_id \(connId)")
-                if let waitingConnection = self?.waitingConnection, connection = connection where waitingConnection.peerId == connection.peerId {
-                    self?.showConnection(waitingConnection)
+            case .connected:
+                self?.logView.add(line: "Connected to peer on conn_id \(connId)")
+                if let waitingConnection = self?.waitingConnection,
+                    let connection = connection, waitingConnection.peerId == connection.peerId {
+                    self?.show(connection: waitingConnection)
                 }
-            case .PeerNotAvailable:
-                self?.logView.addLine("Peer not available on conn_id \(connId)")
-            case .Failed:
-                self?.logView.addLine("Connect failed on conn_id \(connId)")
-            case .Disconnected:
-                self?.logView.addLine("Connect closed on conn_id \(connId)")
-            case .Unknown:
-                self?.logView.addLine("Unknown error occurred on conn_id \(connId)")
+            case .peerNotAvailable:
+                self?.logView.add(line: "Peer not available on conn_id \(connId)")
+            case .failed:
+                self?.logView.add(line: "Connect failed on conn_id \(connId)")
+            case .disconnected:
+                self?.logView.add(line: "Connect closed on conn_id \(connId)")
+            case .unknown:
+                self?.logView.add(line: "Unknown error occurred on conn_id \(connId)")
             }
         }
     }
 }
 
 extension PeerSelectionViewController: ReceiveDataDelegate {
-    func didReceiveData(connection: MDGPeerConnection, data: NSData) {
-        dispatch_async(dispatch_get_main_queue()) { [weak self, weak connection] in
+    func didReceive(data: Data, connection: MDGPeerConnection) {
+        DispatchQueue.main.async { [weak self, weak connection] in
             if let connectionId = connection?.connectionId {
-                self?.logView.addLine("Received data from conn_id \(connectionId)")
+                self?.logView.add(line: "Received data from conn_id \(connectionId)")
                 self?.tableView.reloadData()
             }
         }

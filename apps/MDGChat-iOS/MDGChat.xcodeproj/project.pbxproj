@@ -26,8 +26,8 @@
 		5B005D9C1D7464DE00055CDC /* MDGPeers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B005D9B1D7464DE00055CDC /* MDGPeers.swift */; };
 		5B30D32B1D6AFFC8005106C8 /* MDG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 516DEED11BE8C51700AB9E10 /* MDG.framework */; };
 		5B30D32C1D6AFFC8005106C8 /* MDG.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 516DEED11BE8C51700AB9E10 /* MDG.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5B3CECF01DBDE43600EDD504 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3CECEF1DBDE43600EDD504 /* LogView.swift */; };
 		5B7ABD751D63306200D40AD0 /* FrontTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7ABD741D63306200D40AD0 /* FrontTableViewController.swift */; };
-		5B99240D1D5DDF7900113D01 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B99240C1D5DDF7900113D01 /* LogView.swift */; };
 		E1CC9A66C5CD5ED3457CF7B8 /* Pods_MDGChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 467403A14D4136BDE5C7B0FD /* Pods_MDGChat.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,8 +68,8 @@
 		5197C4DB1BB12B3100057EAD /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		5197C4DD1BB12B7F00057EAD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		5B005D9B1D7464DE00055CDC /* MDGPeers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDGPeers.swift; sourceTree = "<group>"; };
+		5B3CECEF1DBDE43600EDD504 /* LogView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		5B7ABD741D63306200D40AD0 /* FrontTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontTableViewController.swift; sourceTree = "<group>"; };
-		5B99240C1D5DDF7900113D01 /* LogView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LogView.swift; path = Logging/LogView.swift; sourceTree = "<group>"; };
 		634EEACDD068F94E5945F942 /* Pods_MDGChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MDGChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7527463DAD60155ABBF7CFC5 /* Pods-MDGChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MDGChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MDGChatTests/Pods-MDGChatTests.release.xcconfig"; sourceTree = "<group>"; };
 		B6F23A3E1810E684739CFCEF /* Pods-MDGChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MDGChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MDGChat/Pods-MDGChat.debug.xcconfig"; sourceTree = "<group>"; };
@@ -146,11 +146,11 @@
 				516F24651BB0219700BF427F /* PairAsDeviceViewController.swift */,
 				516F246B1BB0339500BF427F /* PeerSelectionViewController.swift */,
 				516F24691BB02B0000BF427F /* ChatWithPeerViewController.swift */,
+				5B3CECEF1DBDE43600EDD504 /* LogView.swift */,
 				516F246F1BB044B700BF427F /* MessageCell.swift */,
 				5105701D1BBEE187005080FE /* MessageStorage.swift */,
 				516F24611BB0057E00BF427F /* MDGClient.swift */,
 				5B005D9B1D7464DE00055CDC /* MDGPeers.swift */,
-				5B99240C1D5DDF7900113D01 /* LogView.swift */,
 				513B6A421BA72A9100727A41 /* Main.storyboard */,
 				513B6A1D1BA72A2F00727A41 /* LaunchScreen.xib */,
 				513B6A1B1BA72A2F00727A41 /* Images.xcassets */,
@@ -182,13 +182,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 513B6A2E1BA72A2F00727A41 /* Build configuration list for PBXNativeTarget "MDGChat" */;
 			buildPhases = (
-				765ED6E541B6A436A0CEFD50 /* 📦 Check Pods Manifest.lock */,
+				765ED6E541B6A436A0CEFD50 /* [CP] Check Pods Manifest.lock */,
 				513B6A0B1BA72A2F00727A41 /* Sources */,
 				513B6A0C1BA72A2F00727A41 /* Frameworks */,
 				513B6A0D1BA72A2F00727A41 /* Resources */,
 				5B99240F1D5DF87C00113D01 /* SwiftLint */,
-				B4CF0FF87D4FCAF78A3398C0 /* 📦 Embed Pods Frameworks */,
-				EA55452DB8EA5794E146C479 /* 📦 Copy Pods Resources */,
+				B4CF0FF87D4FCAF78A3398C0 /* [CP] Embed Pods Frameworks */,
+				EA55452DB8EA5794E146C479 /* [CP] Copy Pods Resources */,
 				5B30D32D1D6AFFC8005106C8 /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -208,11 +208,13 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Trifork A/S";
 				TargetAttributes = {
 					513B6A0E1BA72A2F00727A41 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = ZZGMPFLA2F;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 0;
@@ -267,29 +269,29 @@
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nfi";
 		};
-		765ED6E541B6A436A0CEFD50 /* 📦 Check Pods Manifest.lock */ = {
+		765ED6E541B6A436A0CEFD50 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		B4CF0FF87D4FCAF78A3398C0 /* 📦 Embed Pods Frameworks */ = {
+		B4CF0FF87D4FCAF78A3398C0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -297,14 +299,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MDGChat/Pods-MDGChat-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		EA55452DB8EA5794E146C479 /* 📦 Copy Pods Resources */ = {
+		EA55452DB8EA5794E146C479 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -319,8 +321,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5B99240D1D5DDF7900113D01 /* LogView.swift in Sources */,
 				516F24641BB015DA00BF427F /* PairAsAppViewController.swift in Sources */,
+				5B3CECF01DBDE43600EDD504 /* LogView.swift in Sources */,
 				516F24621BB0057E00BF427F /* MDGClient.swift in Sources */,
 				516F246C1BB0339500BF427F /* PeerSelectionViewController.swift in Sources */,
 				5B005D9C1D7464DE00055CDC /* MDGPeers.swift in Sources */,
@@ -361,8 +363,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -406,8 +410,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -426,6 +432,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -436,6 +443,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = ZZGMPFLA2F;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Externals",
@@ -446,6 +454,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.trifork.securedevicegrid;
 				PRODUCT_NAME = "SDG Tool";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -455,6 +464,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = ZZGMPFLA2F;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Externals",
@@ -465,6 +475,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.trifork.securedevicegrid;
 				PRODUCT_NAME = "SDG Tool";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

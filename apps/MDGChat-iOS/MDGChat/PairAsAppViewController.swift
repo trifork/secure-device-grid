@@ -21,16 +21,16 @@ class PairAsAppViewController: UIViewController {
         super.viewDidLoad()
 
         client.pairingDelegate = self
-        self.otpTextField.addTarget(self, action: #selector(PairAsAppViewController.otpTextFieldChanged), forControlEvents: UIControlEvents.EditingChanged)
+        self.otpTextField.addTarget(self, action: #selector(PairAsAppViewController.otpTextFieldChanged), for: UIControlEvents.editingChanged)
 
         self.view.addSubview(logView)
     }
 
     func pair() {
         do {
-            try client.pair(self.otpTextField.text ?? "")
+            try client.pair(otp: self.otpTextField.text ?? "")
         } catch {
-            logView.addLine("Pairing failed")
+            logView.add(line: "Pairing failed")
         }
         self.otpTextField.text = ""
         self.otpTextField.resignFirstResponder()
@@ -39,17 +39,17 @@ class PairAsAppViewController: UIViewController {
 
     func otpTextFieldChanged(textField: UITextField) {
         if let text = textField.text {
-            textField.text = client.formatOtp(text)
+            textField.text = client.format(otp: text)
         }
     }
 }
 
 extension PairAsAppViewController: UITextFieldDelegate {
-    @IBAction func doneButtonClicked(sender: AnyObject) {
+    @IBAction func doneButtonClicked(_ sender: Any) {
         pair()
     }
 
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == self.peerNameTextField {
             pair()
             textField.resignFirstResponder()
@@ -59,13 +59,13 @@ extension PairAsAppViewController: UITextFieldDelegate {
 }
 
 extension PairAsAppViewController: PairingDelegate {
-    func pairingStateChanged(state: MDGPairingState) {
-        if state.status == .Completed {
-            peers.setPeerName(peerNameTextField.text, forPeerId: state.peerId)
+    func pairingChanged(state: MDGPairingState) {
+        if state.status == .completed {
+            peers.setPeer(name: peerNameTextField.text, forPeerId: state.peerId)
         }
 
-        dispatch_async(dispatch_get_main_queue()) {
-            self.logView.addLine(state.status.stringValue)
+        DispatchQueue.main.async {
+            self.logView.add(line: state.status.stringValue)
         }
     }
 }

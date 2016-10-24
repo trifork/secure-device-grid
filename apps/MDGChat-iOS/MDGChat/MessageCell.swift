@@ -12,7 +12,7 @@ let triforkOrange = UIColor(red: 253/255, green: 120/255, blue: 36/250, alpha: 1
 
 class MessageCell: UITableViewCell {
     var messageLabel: UILabel = UILabel()
-    let textColorThem = UIColor.darkTextColor()
+    let textColorThem = UIColor.darkText
     let textColorMe = triforkOrange
     let closestEdge: CGFloat = 5
 
@@ -31,21 +31,21 @@ class MessageCell: UITableViewCell {
     }
 
     func configureView() {
-        self.selectionStyle = .None
-        self.backgroundColor = UIColor.whiteColor()
+        self.selectionStyle = .none
+        self.backgroundColor = UIColor.white
         self.contentView.addSubview(self.messageLabel)
         self.messageLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        leadingMessageLabelConstraintThem = NSLayoutConstraint(item: messageLabel, attribute: .Leading, relatedBy: .Equal, toItem: contentView, attribute: .LeadingMargin, multiplier: 1, constant: closestEdge)
-        leadingMessageLabelConstraintMe = NSLayoutConstraint(item: messageLabel, attribute: .Leading, relatedBy: .GreaterThanOrEqual, toItem: contentView, attribute: .LeadingMargin, multiplier: 1, constant: 0)
-        trailingMessageLabelConstraintThem = NSLayoutConstraint(item: contentView, attribute: .TrailingMargin, relatedBy: .GreaterThanOrEqual, toItem: messageLabel, attribute: .Trailing, multiplier: 1, constant: 0)
-        trailingMessageLabelConstraintMe = NSLayoutConstraint(item: contentView, attribute: .TrailingMargin, relatedBy: .Equal, toItem: messageLabel, attribute: .Trailing, multiplier: 1, constant: closestEdge)
+        leadingMessageLabelConstraintThem = NSLayoutConstraint(item: messageLabel, attribute: .leading, relatedBy: .equal, toItem: contentView, attribute: .leadingMargin, multiplier: 1, constant: closestEdge)
+        leadingMessageLabelConstraintMe = NSLayoutConstraint(item: messageLabel, attribute: .leading, relatedBy: .greaterThanOrEqual, toItem: contentView, attribute: .leadingMargin, multiplier: 1, constant: 0)
+        trailingMessageLabelConstraintThem = NSLayoutConstraint(item: contentView, attribute: .trailingMargin, relatedBy: .greaterThanOrEqual, toItem: messageLabel, attribute: .trailing, multiplier: 1, constant: 0)
+        trailingMessageLabelConstraintMe = NSLayoutConstraint(item: contentView, attribute: .trailingMargin, relatedBy: .equal, toItem: messageLabel, attribute: .trailing, multiplier: 1, constant: closestEdge)
     }
 
     var message: Message? {
         didSet {
             messageLabel.text = message?.text
-            setSender(message?.sender)
+            set(sender: message?.sender)
         }
     }
 
@@ -56,14 +56,14 @@ class MessageCell: UITableViewCell {
         message = nil
     }
 
-    func setSender(sender: MessageSender?) {
+    func set(sender: MessageSender?) {
         let isMe = sender == .Me
-        leadingMessageLabelConstraintMe.active = isMe
-        trailingMessageLabelConstraintMe.active = isMe
-        leadingMessageLabelConstraintThem.active = !isMe
-        trailingMessageLabelConstraintThem.active = !isMe
+        leadingMessageLabelConstraintMe.isActive = isMe
+        trailingMessageLabelConstraintMe.isActive = isMe
+        leadingMessageLabelConstraintThem.isActive = !isMe
+        trailingMessageLabelConstraintThem.isActive = !isMe
 
-        messageLabel.font = messageLabel.font.fontWithSize(sender == .Info ? 12 : 16)
+        messageLabel.font = messageLabel.font.withSize(sender == .Info ? 12 : 16)
         messageLabel.numberOfLines = 2
         messageLabel.textColor = isMe ? textColorMe : textColorThem
         messageLabel.sizeToFit()

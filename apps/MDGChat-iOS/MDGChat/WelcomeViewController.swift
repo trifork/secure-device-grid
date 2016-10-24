@@ -17,23 +17,23 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let savedEmail = NSUserDefaults.standardUserDefaults().stringForKey(userEmailKey) {
+        if let savedEmail = UserDefaults.standard.string(forKey: userEmailKey) {
             email = savedEmail
             self.emailTextField.text = savedEmail
         }
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         let newEmail = self.emailTextField.text
         if newEmail != email {
-            NSUserDefaults.standardUserDefaults().setObject(newEmail, forKey: userEmailKey)
-            NSUserDefaults.standardUserDefaults().synchronize()
+            UserDefaults.standard.set(newEmail, forKey: userEmailKey)
+            UserDefaults.standard.synchronize()
             MDGClient.sharedClient.reconnect()
         }
     }
 
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        self.navigationController?.popViewControllerAnimated(true)
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        _ = self.navigationController?.popViewController(animated: true)
         return false
     }
 }

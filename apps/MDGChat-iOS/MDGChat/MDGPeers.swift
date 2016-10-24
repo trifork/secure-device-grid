@@ -17,22 +17,23 @@ public class MDGPeers: NSObject {
 
     override init() {
         super.init()
-        self.peerNames = (NSUserDefaults.standardUserDefaults().objectForKey(self.peerNamesKey) as? [String: String]) ?? [String: String]()
+        self.peerNames = (UserDefaults.standard.object(forKey: self.peerNamesKey) as? [String: String]) ?? [String: String]()
     }
 
-    public func setPeerName(name: String?, forPeerId peerId: String) {
-        guard let name = name where name != "" else {
+    public func setPeer(name: String?, forPeerId peerId: String) {
+        guard let name = name, name != "" else {
             return
         }
         self.peerNames[peerId] = name
-        NSUserDefaults.standardUserDefaults().setObject(self.peerNames, forKey: self.peerNamesKey)
-        NSUserDefaults.standardUserDefaults().synchronize()
+        UserDefaults.standard.set(self.peerNames, forKey: self.peerNamesKey)
+        UserDefaults.standard.synchronize()
     }
 
-    public func peerName(peerId: String) -> String {
-        if let peerName = self.peerNames[peerId] where peerName != "" {
+    public func peerName(forPeerId: String) -> String {
+        if let peerName = self.peerNames[forPeerId], peerName != "" {
             return peerName
         }
-        return peerId.substringToIndex(peerId.startIndex.advancedBy(12)) + "..."
+        let index = forPeerId.index(forPeerId.startIndex, offsetBy: 12)
+        return forPeerId.substring(to: index) + "..."
     }
 }

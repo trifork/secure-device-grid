@@ -9,15 +9,15 @@
 import MDG
 
 public protocol PairingDelegate: NSObjectProtocol {
-    func pairingStateChanged(state: MDGPairingState)
+    func pairingChanged(state: MDGPairingState)
 }
 
 public protocol ConnectionDelegate: NSObjectProtocol {
-    func routingStatusChanged(connection: MDGPeerConnection, status: MDGRoutingStatus)
+    func routingChanged(status: MDGRoutingStatus, connection: MDGPeerConnection)
 }
 
 public protocol ReceiveDataDelegate: NSObjectProtocol {
-    func didReceiveData(connection: MDGPeerConnection, data: NSData)
+    func didReceive(data: Data, connection: MDGPeerConnection)
 }
 
 // MDGClient handles interaction with the MDG framework
@@ -26,10 +26,10 @@ public class MDGClient: NSObject {
     let messageStorage = MessageStorage()
 
     private let otpLength: Int = 7
-    private let core = MDGCore.sharedCore()
+    private let core = MDGCore.shared()
     private var properties: [String: String] {
         var props = [String: String]()
-        if let userEmail = NSUserDefaults.standardUserDefaults().stringForKey(userEmailKey) {
+        if let userEmail = UserDefaults.standard.string(forKey: userEmailKey) {
             props["client_email"] = userEmail
         }
         return props
@@ -45,18 +45,18 @@ public class MDGClient: NSObject {
 
     private override init() {
         super.init()
-        core.startWithConfiguration(nil)
+        core.start(with: nil)
         core.delegate = self
     }
 
     public func connect() {
-        _ = try? core.connectWithProperties(self.properties)
+        _ = try? core.connect(withProperties: self.properties)
     }
 
     public func disconnect() {
         _ = try? core.disconnect()
         for connection in core.connections {
-            _ = try? connection.closeConnection()
+            _ = try? connection.close()
         }
     }
 
@@ -66,40 +66,41 @@ public class MDGClient: NSObject {
     }
 
     public func pair(otp: String) throws {
-        try core.pairRemoteWithOneTimePasscode(otp)
+        try core.pairRemote(withOneTimePasscode: otp)
     }
 
     public func revokePair(peerId: String) throws {
-        try core.revokePairingWithPeerId(peerId)
+        try core.revokePairing(withPeerId: peerId)
     }
 
     public func enablePairing() throws {
         self.disablePairing()
-        try core.enablePairingModeForSeconds(120)
+        try core.enablePairingMode(forSeconds: 120)
     }
 
     public func disablePairing() {
         core.disablePairingMode()
     }
 
-    public func connectToPeer(peerId: String) throws -> MDGPeerConnection {
-        if let connectionIndex = self.core.connections.indexOf({ $0.peerId == peerId }) {
+    public func connectTo(peerId: String) throws -> MDGPeerConnection {
+        if let connectionIndex = self.core.connections.index(where: { $0.peerId == peerId }) {
             return self.core.connections[connectionIndex]
         } else {
-            return try self.core.placeCallRemoteWithPeerId(peerId, protocolName: "chat-client", timeout: 10)
+            return try self.core.placeCallRemote(withPeerId: peerId, protocolName: "chat-client", timeout: 10)
         }
     }
 
-    public func formatOtp(otp: String) -> String {
+    public func format(otp: String) -> String {
         var formattedOtp = ""
-        let allowedCharacters = NSCharacterSet(charactersInString: "0123456789").invertedSet
-        var strippedOtp: String = otp.componentsSeparatedByCharactersInSet(allowedCharacters).joinWithSeparator("")
+        let allowedCharacters = NSCharacterSet(charactersIn: "0123456789").inverted
+        var strippedOtp = otp.components(separatedBy: allowedCharacters).joined(separator: "")
 
         if strippedOtp.characters.count > otpLength {
-            strippedOtp = strippedOtp.substringToIndex(strippedOtp.startIndex.advancedBy(otpLength))
+            let index = strippedOtp.index(strippedOtp.startIndex, offsetBy: otpLength)
+            strippedOtp = strippedOtp.substring(to: index)
         }
 
-        for (i, number) in strippedOtp.characters.enumerate() {
+        for (i, number) in strippedOtp.characters.enumerated() {
             formattedOtp.append(number)
             if (i % 3 == 2) && (i < strippedOtp.characters.count - 1) {
                 formattedOtp += "-"
@@ -110,22 +111,22 @@ public class MDGClient: NSObject {
 }
 
 extension MDGClient: MDGCoreDelegate {
-    public func pairingStateChanged(state: MDGPairingState) {
+    public func pairingStateChanged(_ state: MDGPairingState) {
         if let delegate = pairingDelegate {
-            delegate.pairingStateChanged(state)
+            delegate.pairingChanged(state: state)
         }
     }
 
-    public func routingStatusChanged(connection: MDGPeerConnection, toStatus status: MDGRoutingStatus) {
+    public func routingStatusChanged(_ connection: MDGPeerConnection, to status: MDGRoutingStatus) {
         if let delegate = connectionDelegate {
-            delegate.routingStatusChanged(connection, status: status)
+            delegate.routingChanged(status: status, connection: connection)
         }
     }
 
-    public func connection(connection: MDGPeerConnection, didReceiveData data: NSData) {
-        self.messageStorage.addData(data, forConnection: connection, sender: .Them)
+    public func connection(_ connection: MDGPeerConnection, didReceive data: Data) {
+        self.messageStorage.add(data: data, forConnection: connection, sender: .Them)
         if let delegate = receiveDataDelegate {
-            delegate.didReceiveData(connection, data: data)
+            delegate.didReceive(data: data, connection: connection)
         }
     }
 }
@@ -134,17 +135,17 @@ extension MDGPairingStatus {
     var stringValue: String {
         let value: String
         switch self {
-        case .Completed:
+        case .completed:
             value = "Pairing completed"
-        case .FailedGeneric:
+        case .failedGeneric:
             value = "Pairing failed generic"
-        case .FailedOneTimePasscode:
+        case .failedOneTimePasscode:
             value = "One time passcode failed"
-        case .OneTimePasscodeReady:
+        case .oneTimePasscodeReady:
             value = "One time passcode is ready"
-        case .Starting:
+        case .starting:
             value = "Pairing starting"
-        case .Unknown:
+        case .unknown:
             value = "Pairing status unknown"
         }
         return value

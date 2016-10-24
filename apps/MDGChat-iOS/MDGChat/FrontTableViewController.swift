@@ -15,12 +15,12 @@ class FrontTableViewController: UITableViewController {
         super.viewDidLoad()
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 4 {
-            if let url = NSURL(string: supportUrl) {
-                UIApplication.sharedApplication().openURL(url)
+            if let url = URL(string: supportUrl) {
+                UIApplication.shared.openURL(url)
             }
-            self.tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            self.tableView.deselectRow(at: indexPath, animated: false)
         }
     }
 }

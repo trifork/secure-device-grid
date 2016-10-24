@@ -21,16 +21,16 @@ private class LogStore: NSObject {
         log = ""
     }
 
-    func addLine(text: String) -> String {
-        let line = "\(getTimestamp()): \(text)\n"
-        log = "\(line)\(log)"
+    func add(line: String) -> String {
+        let newLine = "\(getTimestamp()): \(line)\n"
+        log = "\(newLine)\(log)"
         return log
     }
 
     func getTimestamp() -> String {
-        let formatter = NSDateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm:ss.SSS"
-        return formatter.stringFromDate(NSDate())
+        return formatter.string(from: Date())
     }
 }
 
@@ -40,7 +40,7 @@ public class LogView: UIView {
     private let textView = UITextView()
     private let logStore = LogStore.sharedLogStore
 
-    var barStyle = UIBarStyle.Default {
+    var barStyle = UIBarStyle.default {
         didSet {
             self.toolBar.barStyle = self.barStyle
         }
@@ -58,10 +58,10 @@ public class LogView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        updateFrame(frame)
+        updateFrame(frame: frame)
         createView()
 
-        NSNotificationCenter.defaultCenter().addObserverForName(UIDeviceOrientationDidChangeNotification, object: nil, queue: nil, usingBlock: { _ in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.UIDeviceOrientationDidChange, object: nil, queue: nil, using: { _ in
             self.updateFrame()
         })
     }
@@ -70,8 +70,8 @@ public class LogView: UIView {
         super.init(coder: aDecoder)
     }
 
-    func addLine(text: String) {
-        textView.text = logStore.addLine(text)
+    func add(line: String) {
+        textView.text = logStore.add(line: line)
         scrollToTop()
     }
 
@@ -89,8 +89,8 @@ public class LogView: UIView {
 
     private func updateFrame(frame: CGRect = CGRect(x: 0, y: 0, width: 0, height: 0)) {
         if frame.size.height == 0 && frame.size.width == 0 {
-            let windowWidth = UIApplication.sharedApplication().keyWindow?.frame.size.width ?? 0
-            let windowHeight = UIApplication.sharedApplication().keyWindow?.frame.size.height ?? 0
+            let windowWidth = UIApplication.shared.keyWindow?.frame.size.width ?? 0
+            let windowHeight = UIApplication.shared.keyWindow?.frame.size.height ?? 0
             let mainBound = CGRect(x: 0, y: windowHeight - maxHeight, width: windowWidth, height: maxHeight)
             self.frame = mainBound
         } else {
@@ -105,12 +105,12 @@ public class LogView: UIView {
     }
 
     private func createView() {
-        textView.backgroundColor = UIColor.clearColor()
-        textView.editable = false
-        textView.selectable = false
+        textView.backgroundColor = UIColor.clear
+        textView.isEditable = false
+        textView.isSelectable = false
         textView.showsHorizontalScrollIndicator = false
         textView.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 2, right: 0)
-        textView.text = logStore.log
+        textView.text = logStore.getLog()
 
         toolBar.addSubview(textView)
         toolBar.barStyle = barStyle

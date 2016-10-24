@@ -24,7 +24,7 @@ class PairAsDeviceViewController: UIViewController {
         self.view.addSubview(logView)
     }
 
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         client.disablePairing()
@@ -34,7 +34,7 @@ class PairAsDeviceViewController: UIViewController {
         do {
             try client.enablePairing()
         } catch {
-            logView.addLine("Start pairing failed")
+            logView.add(line: "Start pairing failed")
             otpLabel.text = "..."
         }
         self.peerNameTextField.resignFirstResponder()
@@ -42,11 +42,11 @@ class PairAsDeviceViewController: UIViewController {
 }
 
 extension PairAsDeviceViewController : UITextFieldDelegate {
-    @IBAction func doneButtonClicked(sender: AnyObject) {
+    @IBAction func doneButtonClicked(_ sender: Any) {
         openForPairing()
     }
 
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == self.peerNameTextField {
             openForPairing()
             textField.resignFirstResponder()
@@ -56,15 +56,15 @@ extension PairAsDeviceViewController : UITextFieldDelegate {
 }
 
 extension PairAsDeviceViewController: PairingDelegate {
-    func pairingStateChanged(state: MDGPairingState) {
-        if state.status == .Completed {
-            peers.setPeerName(peerNameTextField.text, forPeerId: state.peerId)
+    func pairingChanged(state: MDGPairingState) {
+        if state.status == .completed {
+            peers.setPeer(name: peerNameTextField.text, forPeerId: state.peerId)
         }
 
-        dispatch_async(dispatch_get_main_queue()) {
-            self.logView.addLine(state.status.stringValue)
-            if state.status == .OneTimePasscodeReady {
-                self.otpLabel.text = self.client.formatOtp(state.oneTimePasscode)
+        DispatchQueue.main.async { [weak self] in
+            self?.logView.add(line: state.status.stringValue)
+            if state.status == .oneTimePasscodeReady {
+                self?.otpLabel.text = self?.client.format(otp: state.oneTimePasscode)
             }
         }
     }

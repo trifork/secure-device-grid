@@ -14,14 +14,14 @@ enum MessageSender {
 }
 
 struct Message {
-    let data: NSData
+    let data: Data
     let sender: MessageSender
     let peerId: String
     var isRead: Bool
 
     var text: String? {
         let messageText: String
-        if let text = NSString(data: self.data, encoding: NSUTF8StringEncoding) as? String {
+        if let text = NSString(data: self.data, encoding: String.Encoding.utf8.rawValue) as? String {
             messageText = text
         } else {
             messageText = self.data.hexString
@@ -31,40 +31,34 @@ struct Message {
 }
 
 protocol MessageStorageDelegate {
-    func addedMessage(message: Message)
+    func added(message: Message)
 }
 
 class MessageStorage: NSObject {
     var delegate: MessageStorageDelegate?
     var messages = [Message]()
 
-    func addData(data: NSData, forConnection connection: MDGPeerConnection, sender: MessageSender) {
+    func add(data: Data, forConnection connection: MDGPeerConnection, sender: MessageSender) {
         if let peerId = connection.peerId {
             let message = Message(data: data, sender: sender, peerId: peerId, isRead: false)
             self.messages.append(message)
-            self.delegate?.addedMessage(message)
+            self.delegate?.added(message: message)
         }
     }
 
-    func markAllAsRead(peerId: String?) {
+    func markAllAsRead(forPeerId: String?) {
         for index in 0..<self.messages.count {
-            if self.messages[index].peerId == peerId {
+            if forPeerId == nil {
+                self.messages[index].isRead = true
+            } else if self.messages[index].peerId == forPeerId {
                 self.messages[index].isRead = true
             }
         }
     }
 }
 
-extension NSData {
+extension Data {
     var hexString: String {
-        let bytes = UnsafePointer<UInt8>(self.bytes)
-
-        var hexString = ""
-        for i in 0..<self.length {
-            let byte = bytes.advancedBy(i)
-            hexString += String(format: "%02x", arguments: [UInt(byte.memory)])
-        }
-
-        return hexString
+        return map { String(format: "%02hhx", $0) }.joined()
     }
 }
