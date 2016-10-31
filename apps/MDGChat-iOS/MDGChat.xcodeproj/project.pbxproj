@@ -26,10 +26,23 @@
 		5B005D9C1D7464DE00055CDC /* MDGPeers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B005D9B1D7464DE00055CDC /* MDGPeers.swift */; };
 		5B30D32B1D6AFFC8005106C8 /* MDG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 516DEED11BE8C51700AB9E10 /* MDG.framework */; };
 		5B30D32C1D6AFFC8005106C8 /* MDG.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 516DEED11BE8C51700AB9E10 /* MDG.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		5B3CECF01DBDE43600EDD504 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3CECEF1DBDE43600EDD504 /* LogView.swift */; };
 		5B7ABD751D63306200D40AD0 /* FrontTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7ABD741D63306200D40AD0 /* FrontTableViewController.swift */; };
+		5B8A0AA51DC3840D002ED418 /* LogView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B8A0AA31DC3840D002ED418 /* LogView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5B8A0AA81DC3840D002ED418 /* LogView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B8A0AA11DC3840D002ED418 /* LogView.framework */; };
+		5B8A0AA91DC3840D002ED418 /* LogView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5B8A0AA11DC3840D002ED418 /* LogView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5B8A0AB01DC3887D002ED418 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8A0AAF1DC3887D002ED418 /* LogView.swift */; };
 		E1CC9A66C5CD5ED3457CF7B8 /* Pods_MDGChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 467403A14D4136BDE5C7B0FD /* Pods_MDGChat.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5B8A0AA61DC3840D002ED418 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 513B6A071BA72A2F00727A41 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5B8A0AA01DC3840D002ED418;
+			remoteInfo = LogView;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		5B30D32D1D6AFFC8005106C8 /* Embed Frameworks */ = {
@@ -38,6 +51,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				5B8A0AA91DC3840D002ED418 /* LogView.framework in Embed Frameworks */,
 				5B30D32C1D6AFFC8005106C8 /* MDG.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -68,8 +82,11 @@
 		5197C4DB1BB12B3100057EAD /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		5197C4DD1BB12B7F00057EAD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		5B005D9B1D7464DE00055CDC /* MDGPeers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDGPeers.swift; sourceTree = "<group>"; };
-		5B3CECEF1DBDE43600EDD504 /* LogView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		5B7ABD741D63306200D40AD0 /* FrontTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontTableViewController.swift; sourceTree = "<group>"; };
+		5B8A0AA11DC3840D002ED418 /* LogView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B8A0AA31DC3840D002ED418 /* LogView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LogView.h; sourceTree = "<group>"; };
+		5B8A0AA41DC3840D002ED418 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5B8A0AAF1DC3887D002ED418 /* LogView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		634EEACDD068F94E5945F942 /* Pods_MDGChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MDGChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7527463DAD60155ABBF7CFC5 /* Pods-MDGChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MDGChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MDGChatTests/Pods-MDGChatTests.release.xcconfig"; sourceTree = "<group>"; };
 		B6F23A3E1810E684739CFCEF /* Pods-MDGChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MDGChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MDGChat/Pods-MDGChat.debug.xcconfig"; sourceTree = "<group>"; };
@@ -85,8 +102,16 @@
 				5197C4F11BB2A95600057EAD /* libz.tbd in Frameworks */,
 				5197C4DC1BB12B3100057EAD /* SystemConfiguration.framework in Frameworks */,
 				5197C4DA1BB12B2700057EAD /* AudioToolbox.framework in Frameworks */,
+				5B8A0AA81DC3840D002ED418 /* LogView.framework in Frameworks */,
 				5197C4D81BB12B1F00057EAD /* CoreMotion.framework in Frameworks */,
 				E1CC9A66C5CD5ED3457CF7B8 /* Pods_MDGChat.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5B8A0A9D1DC3840D002ED418 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				513B6A111BA72A2F00727A41 /* MDGChat */,
+				5B8A0AA21DC3840D002ED418 /* LogView */,
 				513B6A341BA72A4500727A41 /* Externals */,
 				513B6A101BA72A2F00727A41 /* Products */,
 				2C1E6A485DFC8B74F8510B30 /* Frameworks */,
@@ -132,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				513B6A0F1BA72A2F00727A41 /* SDG Tool.app */,
+				5B8A0AA11DC3840D002ED418 /* LogView.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -146,7 +173,6 @@
 				516F24651BB0219700BF427F /* PairAsDeviceViewController.swift */,
 				516F246B1BB0339500BF427F /* PeerSelectionViewController.swift */,
 				516F24691BB02B0000BF427F /* ChatWithPeerViewController.swift */,
-				5B3CECEF1DBDE43600EDD504 /* LogView.swift */,
 				516F246F1BB044B700BF427F /* MessageCell.swift */,
 				5105701D1BBEE187005080FE /* MessageStorage.swift */,
 				516F24611BB0057E00BF427F /* MDGClient.swift */,
@@ -175,7 +201,28 @@
 			path = Externals;
 			sourceTree = "<group>";
 		};
+		5B8A0AA21DC3840D002ED418 /* LogView */ = {
+			isa = PBXGroup;
+			children = (
+				5B8A0AAF1DC3887D002ED418 /* LogView.swift */,
+				5B8A0AA31DC3840D002ED418 /* LogView.h */,
+				5B8A0AA41DC3840D002ED418 /* Info.plist */,
+			);
+			path = LogView;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		5B8A0A9E1DC3840D002ED418 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B8A0AA51DC3840D002ED418 /* LogView.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		513B6A0E1BA72A2F00727A41 /* MDGChat */ = {
@@ -194,11 +241,30 @@
 			buildRules = (
 			);
 			dependencies = (
+				5B8A0AA71DC3840D002ED418 /* PBXTargetDependency */,
 			);
 			name = MDGChat;
 			productName = TDGChat;
 			productReference = 513B6A0F1BA72A2F00727A41 /* SDG Tool.app */;
 			productType = "com.apple.product-type.application";
+		};
+		5B8A0AA01DC3840D002ED418 /* LogView */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5B8A0AAC1DC3840D002ED418 /* Build configuration list for PBXNativeTarget "LogView" */;
+			buildPhases = (
+				5B8A0A9C1DC3840D002ED418 /* Sources */,
+				5B8A0A9D1DC3840D002ED418 /* Frameworks */,
+				5B8A0A9E1DC3840D002ED418 /* Headers */,
+				5B8A0A9F1DC3840D002ED418 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LogView;
+			productName = LogView;
+			productReference = 5B8A0AA11DC3840D002ED418 /* LogView.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -221,6 +287,12 @@
 							};
 						};
 					};
+					5B8A0AA01DC3840D002ED418 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = ZZGMPFLA2F;
+						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 513B6A0A1BA72A2F00727A41 /* Build configuration list for PBXProject "MDGChat" */;
@@ -237,6 +309,7 @@
 			projectRoot = "";
 			targets = (
 				513B6A0E1BA72A2F00727A41 /* MDGChat */,
+				5B8A0AA01DC3840D002ED418 /* LogView */,
 			);
 		};
 /* End PBXProject section */
@@ -249,6 +322,13 @@
 				513B6A1F1BA72A2F00727A41 /* LaunchScreen.xib in Resources */,
 				513B6A1C1BA72A2F00727A41 /* Images.xcassets in Resources */,
 				513B6A431BA72A9100727A41 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5B8A0A9F1DC3840D002ED418 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,7 +402,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				516F24641BB015DA00BF427F /* PairAsAppViewController.swift in Sources */,
-				5B3CECF01DBDE43600EDD504 /* LogView.swift in Sources */,
 				516F24621BB0057E00BF427F /* MDGClient.swift in Sources */,
 				516F246C1BB0339500BF427F /* PeerSelectionViewController.swift in Sources */,
 				5B005D9C1D7464DE00055CDC /* MDGPeers.swift in Sources */,
@@ -336,7 +415,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5B8A0A9C1DC3840D002ED418 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B8A0AB01DC3887D002ED418 /* LogView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5B8A0AA71DC3840D002ED418 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5B8A0AA01DC3840D002ED418 /* LogView */;
+			targetProxy = 5B8A0AA61DC3840D002ED418 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		513B6A1D1BA72A2F00727A41 /* LaunchScreen.xib */ = {
@@ -441,6 +536,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B6F23A3E1810E684739CFCEF /* Pods-MDGChat.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = ZZGMPFLA2F;
@@ -462,6 +558,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CB701B164017E2357927B953 /* Pods-MDGChat.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = ZZGMPFLA2F;
@@ -476,6 +573,67 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.trifork.securedevicegrid;
 				PRODUCT_NAME = "SDG Tool";
 				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		5B8A0AAA1DC3840D002ED418 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = ZZGMPFLA2F;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = LogView/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.trifork.LogView;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		5B8A0AAB1DC3840D002ED418 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = ZZGMPFLA2F;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = LogView/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.trifork.LogView;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -499,6 +657,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		5B8A0AAC1DC3840D002ED418 /* Build configuration list for PBXNativeTarget "LogView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5B8A0AAA1DC3840D002ED418 /* Debug */,
+				5B8A0AAB1DC3840D002ED418 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

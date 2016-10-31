@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import LogView
 import MDG
 
 class PairAsDeviceViewController: UIViewController {
@@ -15,13 +16,11 @@ class PairAsDeviceViewController: UIViewController {
 
     let client = MDGClient.sharedClient
     let peers = MDGPeers.sharedPeers
-    let logView = LogView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         client.pairingDelegate = self
-        self.view.addSubview(logView)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -34,7 +33,7 @@ class PairAsDeviceViewController: UIViewController {
         do {
             try client.enablePairing()
         } catch {
-            logView.add(line: "Start pairing failed")
+            LogView.sharedLogView.add(line: "Start pairing failed")
             otpLabel.text = "..."
         }
         self.peerNameTextField.resignFirstResponder()
@@ -62,7 +61,7 @@ extension PairAsDeviceViewController: PairingDelegate {
         }
 
         DispatchQueue.main.async { [weak self] in
-            self?.logView.add(line: state.status.stringValue)
+            LogView.sharedLogView.add(line: state.status.stringValue)
             if state.status == .oneTimePasscodeReady {
                 self?.otpLabel.text = self?.client.format(otp: state.oneTimePasscode)
             }

@@ -8,6 +8,7 @@
 
 import UIKit
 import SlackTextViewController
+import LogView
 import MDG
 
 class ChatWithPeerViewController: SLKTextViewController {
@@ -16,7 +17,6 @@ class ChatWithPeerViewController: SLKTextViewController {
     var connection: MDGPeerConnection!
     var messageStorage: MessageStorage!
     let client = MDGClient.sharedClient
-    let logView = LogView()
 
     var messages = [Message]()
     var waitingMessageData: Data?
@@ -31,11 +31,13 @@ class ChatWithPeerViewController: SLKTextViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
+        renderView()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        LogView.sharedLogView.hide()
 
         messageStorage.delegate = self
         client.connectionDelegate = self
@@ -56,7 +58,13 @@ class ChatWithPeerViewController: SLKTextViewController {
         self.messageStorage.markAllAsRead(forPeerId: self.connection.peerId)
     }
 
-    func setupView() {
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        LogView.sharedLogView.show()
+    }
+
+    func renderView() {
         self.stateButton.isEnabled = false
         self.bounces = true
         self.shakeToClearEnabled = true
@@ -177,7 +185,7 @@ extension ChatWithPeerViewController: ConnectionDelegate {
                 case .disconnected:
                     self?.stateButton.isEnabled = true
                 case .peerNotAvailable:
-                    self?.logView.add(line: "Peer not available on conn_id \(connection.connectionId)")
+                    LogView.sharedLogView.add(line: "Peer not available on conn_id \(connection.connectionId)")
                     _ = self?.navigationController?.popViewController(animated: true)
                 default: break
                 }

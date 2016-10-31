@@ -14,8 +14,8 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTextField: UITextField!
     var email: String = ""
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
         if let savedEmail = UserDefaults.standard.string(forKey: userEmailKey) {
             email = savedEmail

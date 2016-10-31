@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import LogView
 import MDG
 
 class PairAsAppViewController: UIViewController {
@@ -15,22 +16,19 @@ class PairAsAppViewController: UIViewController {
 
     let client = MDGClient.sharedClient
     let peers = MDGPeers.sharedPeers
-    let logView = LogView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         client.pairingDelegate = self
         self.otpTextField.addTarget(self, action: #selector(PairAsAppViewController.otpTextFieldChanged), for: UIControlEvents.editingChanged)
-
-        self.view.addSubview(logView)
     }
 
     func pair() {
         do {
             try client.pair(otp: self.otpTextField.text ?? "")
         } catch {
-            logView.add(line: "Pairing failed")
+            LogView.sharedLogView.add(line: "Pairing failed")
         }
         self.otpTextField.text = ""
         self.otpTextField.resignFirstResponder()
@@ -65,7 +63,7 @@ extension PairAsAppViewController: PairingDelegate {
         }
 
         DispatchQueue.main.async {
-            self.logView.add(line: state.status.stringValue)
+            LogView.sharedLogView.add(line: state.status.stringValue)
         }
     }
 }

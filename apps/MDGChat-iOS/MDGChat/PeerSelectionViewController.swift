@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import LogView
 import MDG
 
 class PeerSelectionViewController: UIViewController {
@@ -14,7 +15,6 @@ class PeerSelectionViewController: UIViewController {
 
     let client = MDGClient.sharedClient
     let peers = MDGPeers.sharedPeers
-    let logView = LogView()
 
     var waitingConnection: MDGPeerConnection?
 
@@ -23,7 +23,6 @@ class PeerSelectionViewController: UIViewController {
 
         self.tableView.dataSource = self
         self.tableView.delegate = self
-        self.view.addSubview(self.logView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -31,7 +30,7 @@ class PeerSelectionViewController: UIViewController {
 
         client.connectionDelegate = self
         client.receiveDataDelegate = self
-        self.logView.update()
+        LogView.sharedLogView.update()
         self.tableView.reloadData()
     }
 }
@@ -63,7 +62,7 @@ extension PeerSelectionViewController: UITableViewDataSource {
                 try client.revokePair(peerId: peerId)
             } catch {
                 let peerName = peers.peerName(forPeerId: peerId)
-                logView.add(line: "Failed to remove \(peerName)")
+                LogView.sharedLogView.add(line: "Failed to remove \(peerName)")
             }
             self.tableView.reloadData()
         }
@@ -87,13 +86,13 @@ extension PeerSelectionViewController: UITableViewDelegate {
         self.waitingConnection = nil
         let peerId = client.pairings[indexPath.row]
         let peerName = peers.peerName(forPeerId: peerId)
-        logView.add(line: "Connecting to \(peerName)")
+        LogView.sharedLogView.add(line: "Connecting to \(peerName)")
 
         do {
             let connection = try client.connectTo(peerId: client.pairings[indexPath.row])
             let connectedText = connection.connected ? "connected" : "not connected"
 
-            logView.add(line: "Connection \(connection.connectionId): \(connectedText)")
+            LogView.sharedLogView.add(line: "Connection \(connection.connectionId): \(connectedText)")
             self.tableView.deselectRow(at: indexPath, animated: false)
 
             if connection.connected {
@@ -102,7 +101,7 @@ extension PeerSelectionViewController: UITableViewDelegate {
                 self.waitingConnection = connection
             }
         } catch let error as NSError {
-            logView.add(line: "Connect failed: \(error)")
+            LogView.sharedLogView.add(line: "Connect failed: \(error)")
         }
     }
 }
@@ -128,19 +127,19 @@ extension PeerSelectionViewController: ConnectionDelegate {
         DispatchQueue.main.async { [weak self, weak connection] in
             switch status {
             case .connected:
-                self?.logView.add(line: "Connected to peer on conn_id \(connId)")
+                LogView.sharedLogView.add(line: "Connected to peer on conn_id \(connId)")
                 if let waitingConnection = self?.waitingConnection,
                     let connection = connection, waitingConnection.peerId == connection.peerId {
                     self?.show(connection: waitingConnection)
                 }
             case .peerNotAvailable:
-                self?.logView.add(line: "Peer not available on conn_id \(connId)")
+                LogView.sharedLogView.add(line: "Peer not available on conn_id \(connId)")
             case .failed:
-                self?.logView.add(line: "Connect failed on conn_id \(connId)")
+                LogView.sharedLogView.add(line: "Connect failed on conn_id \(connId)")
             case .disconnected:
-                self?.logView.add(line: "Connect closed on conn_id \(connId)")
+                LogView.sharedLogView.add(line: "Connect closed on conn_id \(connId)")
             case .unknown:
-                self?.logView.add(line: "Unknown error occurred on conn_id \(connId)")
+                LogView.sharedLogView.add(line: "Unknown error occurred on conn_id \(connId)")
             }
         }
     }
@@ -150,7 +149,7 @@ extension PeerSelectionViewController: ReceiveDataDelegate {
     func didReceive(data: Data, connection: MDGPeerConnection) {
         DispatchQueue.main.async { [weak self, weak connection] in
             if let connectionId = connection?.connectionId {
-                self?.logView.add(line: "Received data from conn_id \(connectionId)")
+                LogView.sharedLogView.add(line: "Received data from conn_id \(connectionId)")
                 self?.tableView.reloadData()
             }
         }

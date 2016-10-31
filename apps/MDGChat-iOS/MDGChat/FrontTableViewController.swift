@@ -7,12 +7,15 @@
 //
 
 import UIKit
+import LogView
 
 class FrontTableViewController: UITableViewController {
     let supportUrl = "http://securedevicegrid.com/"
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        LogView.sharedLogView.show()
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
