@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSUInteger connectionId;
 @property (nonatomic, readonly, nullable) NSString *peerId;
 @property (nonatomic, readonly, nullable) NSString *protocolName;
+@property (nonatomic, readonly, nullable) NSString *issuedById;
 @property (nonatomic, readonly) BOOL connected;
 @property (nonatomic, readonly) BOOL connecting;
 

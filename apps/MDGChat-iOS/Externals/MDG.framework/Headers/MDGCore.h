@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedCore;
 
 #pragma mark - General
-- (void)startWithConfiguration:(nullable MDGConfiguration *)configuration; // Must be run before anything else
+- (BOOL)startWithConfiguration:(nullable MDGConfiguration *)configuration error:(NSError * __autoreleasing _Nullable * _Nullable)error;
 - (nullable MDGStatus *)statusWithError:(NSError * __autoreleasing _Nullable * _Nullable)error;
 - (BOOL)aggressivePingForSeconds:(NSUInteger)durationInSeconds error:(NSError * __autoreleasing _Nullable * _Nullable)error;
 - (nullable NSString *)whoAmIWithError:(NSError * __autoreleasing _Nullable * _Nullable)error;

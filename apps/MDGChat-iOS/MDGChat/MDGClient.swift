@@ -35,6 +35,17 @@ public class MDGClient: NSObject {
         return props
     }
 
+    private var configuration: MDGConfiguration {
+        // Server endpoint and key for test server. Do not use in production!
+        let servers = [
+            MDGServerEndpoint(hostname: "77.66.11.95", port: 443)
+        ]
+        let keys = [
+            Data(bytes: [81, 13, 101, 52, 29, 109, 136, 196, 86, 91, 34, 91, 3, 19, 150, 3, 215, 43, 210, 9, 242, 146, 119, 188, 153, 245, 78, 232, 94, 113, 37, 47])
+        ]
+        return MDGConfiguration(servers: servers, trustedServerKeys: keys, mdnsName: nil)
+    }
+
     public var pairings: [String] {
         return core.pairings
     }
@@ -45,7 +56,8 @@ public class MDGClient: NSObject {
 
     private override init() {
         super.init()
-        core.start(with: nil)
+
+        _ = try? core.start(with: self.configuration)
         core.delegate = self
     }
 
