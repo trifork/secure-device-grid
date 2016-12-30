@@ -51,4 +51,4 @@ Here are the steps to get started using the client libraries.
 
 You may use these examples and demos for evaluation purposes only.
 Using SecureDeviceGrid<sup>TM</sup> in your product requires a
-license. [Please contact us.](http://trifork.com)
+license. [Please contact us.](http://securedevicegrid.com)
