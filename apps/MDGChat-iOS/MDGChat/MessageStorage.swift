@@ -21,7 +21,7 @@ struct Message {
 
     var text: String? {
         let messageText: String
-        if let text = NSString(data: self.data, encoding: String.Encoding.utf8.rawValue) as? String {
+        if let text = String(data: self.data, encoding: String.Encoding.utf8) {
             messageText = text
         } else {
             messageText = self.data.hexString
@@ -30,12 +30,12 @@ struct Message {
     }
 }
 
-protocol MessageStorageDelegate {
+protocol MessageStorageDelegate: class {
     func added(message: Message)
 }
 
 class MessageStorage: NSObject {
-    var delegate: MessageStorageDelegate?
+    weak var delegate: MessageStorageDelegate?
     var messages = [Message]()
 
     func add(data: Data, forConnection connection: MDGPeerConnection, sender: MessageSender) {
